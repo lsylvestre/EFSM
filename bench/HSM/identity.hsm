@@ -1,0 +1,4 @@
+let rec q = 
+  if true then () := (); q 
+in
+  q

@@ -1,0 +1,10 @@
+let rec fact =
+  if true then (n, x) := (a, 1);
+    let rec aux =
+      if n <= 0 then (r,n) := (x,n);k 
+      if n > 0 then
+        (n, x) := (n - 1, n * x); aux 
+  in aux
+and k = 
+in 
+fact

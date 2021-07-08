@@ -1,0 +1,4 @@
+automaton 
+| q -> if b then x := 3 ; q1
+| q1 -> if x = 3 then b := true ; q end
+

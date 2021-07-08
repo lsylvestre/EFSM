@@ -1,0 +1,1 @@
+automaton q -> if true then () := () ; q end

@@ -1,0 +1,4 @@
+automaton 
+| q -> if 5 then () := () ; q 
+end
+

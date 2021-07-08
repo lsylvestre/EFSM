@@ -1,0 +1,4 @@
+automaton 
+| q -> if x then x := 3 ; q 
+end
+
