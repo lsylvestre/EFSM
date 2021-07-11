@@ -66,21 +66,21 @@ let c_assign fmt s =
 let c_transitions state_var fmt (q,ts) =
   match ts with 
   | [] -> fprintf fmt "@,when %a => NULL;" c_state q;
-  | (a,s,q)::ts' ->
+  | (a,s,q')::ts' -> 
     fprintf fmt "@,@[<v 2>when %a =>@," c_state q;
     
     fprintf fmt "@[<v 2>if %a then@,%a@,%a@]@,"
         c_atom a 
         c_assign s
-        (c_next_state state_var) q;
+        (c_next_state state_var) q';
 
     List.iter (fun (a,s,q) -> 
       fprintf fmt "@[<v 2>elsif %a then@,%a@,%a@]@,"
         c_atom a 
         c_assign s
-        (c_next_state state_var) q
+        (c_next_state state_var) q'
     ) ts';
-    fprintf fmt "else NULL;@,end if;@]@]"
+    fprintf fmt "else NULL;@,end if;@]"
 
 
 let rec default_value fmt ty = 
