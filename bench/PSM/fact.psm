@@ -6,6 +6,6 @@ let rec fact(n) =
         aux(n - 1, n * x) 
     in
     aux(n,1)
-and k() = 
+and k(x) = 
 in 
 fact(42)

@@ -36,8 +36,11 @@ let parse filename =
         let vars = Typing_efsm.typ_prog efsm in
         Efsm2vhdl.c_prog vars Format.std_formatter efsm
     | PSM -> 
-        let _l = Parser.psm Lexer.token lexbuf in 
-        failwith "todo"
+        let l = Parser.psm Lexer.token lexbuf in 
+        let hsm = Psm2hsm.c_prog l in
+        let efsm = Hsm2efsm.c_prog hsm in
+        let vars = Typing_efsm.typ_prog efsm in
+        Efsm2vhdl.c_prog vars Format.std_formatter efsm
     | CSM -> 
         let _l = Parser.csm Lexer.token lexbuf in 
         failwith "todo"
