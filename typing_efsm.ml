@@ -146,23 +146,25 @@ let typ_transition env (_,ts) =
                unify env TBool (typ_atom env a); 
                typ_inst env s) ts
 
-let check_state_scope (EFSM.Automaton l) =
+let check_state_scope glob_states (EFSM.Automaton l) =
   let qs = List.fold_left (fun qs (q,_) -> Vs.add q qs) Vs.empty l in
   List.iter (fun (_,ts) -> 
     List.iter (fun (_,_,q) -> 
-                 if not (Vs.mem q qs) then failwith ("unbounded state " ^ q)
+                 if not (Vs.mem q qs) then 
+                 if not (List.mem q glob_states) then
+                 failwith ("typing_efsm: unbound state " ^ q)
      ) ts
   ) l
 
 
-let typ_automaton env ((EFSM.Automaton l) as a) =
-  check_state_scope a;
+let typ_automaton glob_states env ((EFSM.Automaton l) as a) =
+  check_state_scope glob_states a;
   List.iter (typ_transition env) l
 
 
-let typ_prog p =
+let typ_prog ?(glob_states=[]) p =
   let env = Tenv.create 10 in
-  List.iter (typ_automaton env) p;
+  List.iter (typ_automaton glob_states env) p;
   let (rvs,wvs,vl) = v_prog p in
   let f vs = 
     Vs.fold (fun x acc -> (x,Tenv.find env x)::acc) vs [] 

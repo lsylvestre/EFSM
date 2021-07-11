@@ -1,7 +1,14 @@
 open Ast
 
 let substitute theta x =
-  List.assoc x theta
+  match List.assoc_opt x theta with
+  | None -> failwith (Printf.sprintf "psm: unbound variable %s\n" x)
+  | Some y -> y
+
+let grab_args q env = 
+  match List.assoc_opt q env with
+  | None -> failwith (Printf.sprintf "psm: unbound state %s\n" q)
+  | Some xs -> xs
 
 let rec c_atom theta = function
   | Atom.Var x ->
@@ -31,7 +38,7 @@ let merge s s' =
 
 let rec c_automaton env theta = function
   | PSM.State (q,es) ->
-      let xs = List.assoc q env in
+      let xs = grab_args q env in
       let s = Inst.Assign (List.combine xs es) in
       (s,HSM.State q)
   | PSM.Seq(s,a) ->
@@ -55,9 +62,10 @@ and c_transition env theta (q,xs,ts) =
           (e,s',a')) ts in
       (q,ts')
 
-let c_prog p =
+let c_prog ?(env=[]) ?(glob_vars=[]) p =
+  let theta = List.combine glob_vars glob_vars in
   List.map (fun a ->
-      let s,a' = c_automaton [] [] a in
+      let s,a' = c_automaton env theta a in
       let q0 = Gensym.gensym "Q" in
       HSM.LetRec ([ (q0,[ (Atom.Prim(Bool true),s,a') ]) ],HSM.State q0)) p
 

@@ -120,7 +120,7 @@ let rec c_ty fmt ty =
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> pp_print_text fmt "integer"
   | TVar {contents=Ty t} -> c_ty fmt t
-  | _ -> assert false (* todo *)
+  | _ -> pp_print_text fmt "integer" (* assert false (* todo *) *)
 
 
 

@@ -1,8 +1,13 @@
 open Ast
 
+let substitute_state q theta = 
+  match List.assoc_opt q theta with
+  | None -> failwith (Printf.sprintf "psm: unbound state %s\n" q)
+  | Some xs -> xs
+
 let rec c_automaton theta = function
 | HSM.State q -> 
-    let q' = List.assoc q theta in 
+    let q' = substitute_state q theta in 
     ([],q')
 | HSM.LetRec (selects, a) -> 
   let theta' = 
@@ -15,7 +20,7 @@ let rec c_automaton theta = function
   aut@List.concat auts@selects', q0
 
 and c_transition theta (q,ss) = 
-  let q' = List.assoc q theta in
+  let q' = substitute_state q theta in
   match ss with
   | [] -> ([],(q',[]))
   | _ ->
@@ -24,9 +29,9 @@ and c_transition theta (q,ss) =
   let s = List.map2 (fun (e,s,a) q -> (e,s,q)) ss qs in
   (List.concat l, (q',s))
 
-let c_prog p = 
+let c_prog ?(theta=[]) p = 
   List.map (fun a -> 
-             let l,q = c_automaton [] a in
+             let l,q = c_automaton theta a in
              match l with
              | (q',_)::_ -> (* assert (q' = q);*) EFSM.Automaton l
              | [] -> assert false

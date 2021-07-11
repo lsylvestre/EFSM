@@ -12,10 +12,11 @@ all:
 	$(CC) -c efsm2vhdl.ml
 	$(CC) -c hsm2efsm.ml
 	$(CC) -c psm2hsm.ml
+	$(CC) -c csm2psm.ml
 	$(CC) -c main.ml
 	
 	$(CC) -o $(EXE) ast.cmo lexer.cmo \
-	 parser.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo psm2hsm.cmo main.cmo
+	 parser.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo psm2hsm.cmo csm2psm.cmo main.cmo
 
 FILE=
 DST=bench/dst/$(basename $(notdir $(FILE))).vhdl
