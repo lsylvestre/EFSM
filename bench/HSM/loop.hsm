@@ -1,0 +1,3 @@
+let rec f = if true then () := () ;f in 
+let rec q = if true then x := 42; f in
+q

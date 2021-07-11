@@ -1,0 +1,10 @@
+let rec fact(n) =
+  if true then
+    let rec aux(n,acc) =
+      if n <= 0 then return acc
+      if n > 0 then
+        aux(n - 1, n * acc) 
+    in
+    aux(n,1)
+in 
+fact(42)

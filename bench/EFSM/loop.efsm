@@ -1,0 +1,4 @@
+automaton
+| q -> if true then x := 42; f 
+| f -> if true then () := () ;f 
+end

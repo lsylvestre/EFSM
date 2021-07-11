@@ -1,0 +1,2 @@
+let rec f(x) = if true then f(x) in 
+f(42)
