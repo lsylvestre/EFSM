@@ -13,6 +13,7 @@ end entity;
 architecture RTL of Main is
   signal x : integer;
   signal n : integer;
+  
   type state_3_T is (LEVEL_2AUX, LEVEL_1FACT, LEVEL_1K);
   signal state_3 : state_3_T;
 begin

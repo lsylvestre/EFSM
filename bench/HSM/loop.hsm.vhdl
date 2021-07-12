@@ -10,6 +10,7 @@ entity Main is
        signal x : out integer);
 end entity;
 architecture RTL of Main is
+  
   type state_3_T is (LEVEL_2Q, LEVEL_1F);
   signal state_3 : state_3_T;
 begin

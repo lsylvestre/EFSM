@@ -11,10 +11,10 @@ let accum f l =
 let rec rv_atom = function
 | Atom.Var x -> Vs.singleton x
 | Atom.Prim c -> 
-  match c with
-  | Bool _ | Int _ -> Vs.empty
-  | Binop (_,a1,a2) -> Vs.union (rv_atom a1) (rv_atom a2)
-  | Unop (_,a) -> rv_atom a
+    match c with
+    | Std_logic _ | Bool _ | Int _ -> Vs.empty
+    | Binop (_,a1,a2) -> Vs.union (rv_atom a1) (rv_atom a2)
+    | Unop (_,a) -> rv_atom a
 
 let rv_inst = function
 | Inst.Assign bs -> 
@@ -62,7 +62,7 @@ let v_prog p =
 
 (* typage *)
 
-type ty = TBool | TInt | TVar of tvar ref
+type ty = TStd_logic | TBool | TInt | TVar of tvar ref
 and tvar = V of int | Ty of ty
 
 module Tenv = Hashtbl;;
@@ -70,6 +70,7 @@ module Tenv = Hashtbl;;
 let rec print_ty fmt ty = 
   let open Format in 
   match ty with
+  | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "bool"
   | TInt -> pp_print_text fmt "int"
   | TVar{contents=V n} -> fprintf fmt "'a%d" n
@@ -83,7 +84,7 @@ let newvar =
   fun () -> TVar (ref (V (!c)))
 
 let rec unify env t1 t2 = match t1,t2 with
-| TBool, TBool | TInt,TInt -> ()
+| TStd_logic, TStd_logic | TBool, TBool | TInt,TInt -> ()
 | TVar {contents=V n},TVar ({contents=V m} as v) -> v := V n
 | TVar {contents=Ty ty},TVar ({contents=V n} as v) 
 | TVar ({contents=V n} as v),TVar {contents=Ty ty} -> v := Ty ty
@@ -102,6 +103,7 @@ let rec typ_atom env = function
   )
 | Atom.Prim c -> 
   match c with
+  | Std_logic _ -> TStd_logic
   | Bool _ -> TBool 
   | Int _ -> TInt 
   | Binop (Add,a1,a2)
@@ -130,6 +132,9 @@ let rec typ_atom env = function
   | Unop (Uminus,a) ->
       unify env (typ_atom env a) TInt;
       TInt
+  | Unop (Bool_of_std_logic,a) ->
+      unify env (typ_atom env a) TStd_logic;
+      TBool
 
 
 let typ_inst env = function

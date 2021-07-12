@@ -38,6 +38,9 @@ rule token = parse
 | "="               { EQ }
 | "<>"              { NEQ }
 | "&&"              { LAND }
+| "'0'"             { ZERO }
+| "'1'"             { ONE }
+| "#"               { BOOL_OF_STD_LOGIC }
 | ident as lxm      { IDENT lxm }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }
 | [' ' '\t']        { token lexbuf }

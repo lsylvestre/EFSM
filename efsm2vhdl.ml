@@ -30,28 +30,48 @@ let c_unop fmt p =
   match p with
   | Not -> "not"
   | Uminus -> "-"
+  | Bool_of_std_logic -> assert false
 
 let c_state fmt q = 
   pp_print_text fmt (String.uppercase_ascii q)
+
+let pp_std_logic fmt v = 
+  let open Atom in
+  pp_print_text fmt @@
+  match v with
+  | U -> "'U'"
+  | X -> "'X'"
+  | Zero -> "'0'"
+  | One -> "'1'"
+  | Z -> "'Z'"
+  | W -> "'W'"
+  | L -> "'L'"
+  | H -> "'H'"
+  | Whatever -> "'-'"
+
 
 let rec c_atom fmt = function
 | Atom.Var x -> 
     pp_print_text fmt x
 | Atom.Prim c -> 
-  (match c with
-   | Bool b -> 
-      fprintf fmt "%b" b
-   | Int n -> 
-      fprintf fmt "%d" n
-   | (Binop(p,a1,a2)) -> 
-      fprintf fmt "%a %a %a"
-        c_atom a1
-        c_binop p
-        c_atom a2
-   | (Unop(p,a)) -> 
-      fprintf fmt "%a %a"
-        c_unop p
-        c_atom a)
+    (match c with
+     | Std_logic v -> 
+         pp_std_logic fmt v
+     | Bool b -> 
+        fprintf fmt "%b" b
+     | Int n -> 
+        fprintf fmt "%d" n
+     | Binop(p,a1,a2) -> 
+        fprintf fmt "%a %a %a"
+          c_atom a1
+          c_binop p
+          c_atom a2
+     | Unop(Bool_of_std_logic,a) -> 
+         c_atom fmt a
+     | Unop(p,a) -> 
+        fprintf fmt "%a %a"
+          c_unop p
+          c_atom a)
 
 let c_next_state state_var fmt q = 
   fprintf fmt "%s <= %a;" state_var c_state q
@@ -86,6 +106,7 @@ let c_transitions state_var fmt (q,ts) =
 let rec default_value fmt ty = 
   let open Typing_efsm in
   match ty with
+  | TStd_logic -> pp_print_text fmt "-"
   | TBool -> pp_print_text fmt "false"
   | TInt -> pp_print_text fmt "0"
   | TVar {contents=Ty t} -> default_value fmt t
@@ -117,10 +138,11 @@ let c_automaton state_var locals fmt (EFSM.Automaton l) =
 let rec c_ty fmt ty = 
   let open Typing_efsm in
   match ty with
+  | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> pp_print_text fmt "integer"
   | TVar {contents=Ty t} -> c_ty fmt t
-  | _ -> pp_print_text fmt "integer" (* assert false (* todo *) *)
+  | _ -> assert false (* todo *)
 
 
 

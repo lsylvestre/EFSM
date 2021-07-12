@@ -1,4 +1,4 @@
--- ./compile -csm bench/PSM/fact.psm
+-- ./compile -psm bench/PSM/fact.psm
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -8,48 +8,46 @@ entity Main is
   port(signal clock : in std_logic;
        signal reset : in std_logic;
        signal x : in integer;
-       signal params_3x : out integer);
+       signal params_2x : out integer);
 end entity;
 architecture RTL of Main is
-  signal params_4n : integer;
-  signal params_4acc : integer;
-  signal params_2n : integer;
+  signal params_3n : integer;
+  signal params_3acc : integer;
+  signal params_1n : integer;
   
-  type state_10_T is (LEVEL_9AUX, LEVEL_8FACT, LEVEL_8K, 
-                      LEVEL_7CONTROL_SINK, LEVEL_6Q_5);
-  signal state_10 : state_10_T;
+  type state_8_T is (LEVEL_7AUX, LEVEL_6FACT, LEVEL_6K, LEVEL_5Q_4);
+  signal state_8 : state_8_T;
 begin
   process(reset,clock) begin
     if reset = '1' then
-      state_10 <= LEVEL_9AUX;
-        params_4n <= 0;
-        params_4acc <= 0;
-        params_2n <= 0;
+      state_8 <= LEVEL_7AUX;
+        params_3n <= 0;
+        params_3acc <= 0;
+        params_1n <= 0;
     elsif rising_edge(clock) then
-      case state_10 is
-        when LEVEL_9AUX =>
-          if params_4n <= 0 then
-            params_3x <= params_4acc;
-            state_10 <= LEVEL_8K;
-          elsif params_4n > 0 then
-            params_4n <= params_4n - 1;
-            params_4acc <= params_4n * x;
-            state_10 <= LEVEL_8K;
+      case state_8 is
+        when LEVEL_7AUX =>
+          if params_3n <= 0 then
+            params_2x <= params_3acc;
+            state_8 <= LEVEL_6K;
+          elsif params_3n > 0 then
+            params_3n <= params_3n - 1;
+            params_3acc <= params_3n * x;
+            state_8 <= LEVEL_6K;
           else NULL;
           end if;
-        when LEVEL_8FACT =>
+        when LEVEL_6FACT =>
           if true then
-            params_4n <= params_2n;
-            params_4acc <= 1;
-            state_10 <= LEVEL_9AUX;
+            params_3n <= params_1n;
+            params_3acc <= 1;
+            state_8 <= LEVEL_7AUX;
           else NULL;
           end if;
-        when LEVEL_8K => NULL;
-        when LEVEL_7CONTROL_SINK => NULL;
-        when LEVEL_6Q_5 =>
+        when LEVEL_6K => NULL;
+        when LEVEL_5Q_4 =>
           if true then
-            params_2n <= 42;
-            state_10 <= LEVEL_8FACT;
+            params_1n <= 42;
+            state_8 <= LEVEL_6FACT;
           else NULL;
           end if;
       end case;

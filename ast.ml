@@ -9,21 +9,36 @@ module Atom = struct
 
   type ident = string
 
-  type atom = 
-  | Var of ident 
-  | Prim of const
-  and const = 
-  | Bool of bool 
-  | Int of int
-  | Binop of binop * atom * atom
-  | Unop of unop * atom
-  and binop = 
+  type std_logic =  (* pas exposé dans le parser *)
+  | U
+  | X
+  | Zero
+  | One
+  | Z
+  | W
+  | L
+  | H
+  | Whatever
+
+  type binop = 
   | Add | Sub | Mul 
   | Le | Ge | Lt | Gt 
   | Eq | Neq 
   | And | Or
-  and unop = 
-  | Not | Uminus
+
+  type unop = 
+  | Not | Uminus | Bool_of_std_logic
+
+  type atom = 
+  | Var of ident 
+  | Prim of const
+  and const = 
+  | Std_logic of std_logic
+  | Bool of bool 
+  | Int of int
+  | Binop of binop * atom * atom
+  | Unop of unop * atom
+
 
 end 
 

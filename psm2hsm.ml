@@ -17,7 +17,7 @@ let rec c_atom theta = function
   | Atom.Prim c ->
     let c' =
       match c with
-      | Bool _ | Int _ -> c
+      | Std_logic _ | Bool _ | Int _ -> c
       | Binop(op,a1,a2) ->
           Binop(op,c_atom theta a1,c_atom theta a2)
       | Unop(op,a) ->

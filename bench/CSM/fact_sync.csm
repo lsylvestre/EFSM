@@ -7,9 +7,12 @@ let rec fact(n) =
     in
     aux(n,1)
 in
-rdy := true;
+rdy := '1';
 let rec main(n) =
-  if start then rdy := false; fact(n)
-  if not start then main (n) 
+  (* [#] est la fonction de conversion de std_logic vers bool *)
+  if #start then
+    rdy := '0'; 
+    fact(n)
+  if not (#start) then main (n) 
 in
 main (dataa)

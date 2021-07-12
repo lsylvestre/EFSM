@@ -2,6 +2,7 @@
 (* The type of tokens. *)
 
 type token = 
+  | ZERO
   | UMINUS
   | TIMES
   | THEN
@@ -12,6 +13,7 @@ type token =
   | PLUS
   | PIPE_PIPE
   | PIPE
+  | ONE
   | NOT
   | NEQ
   | MINUS
@@ -32,6 +34,7 @@ type token =
   | END
   | COMMA
   | COLONEQ
+  | BOOL_OF_STD_LOGIC
   | BOOL_LIT of (bool)
   | AUTOMATON
   | AND

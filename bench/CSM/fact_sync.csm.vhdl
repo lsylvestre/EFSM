@@ -7,10 +7,10 @@ use ieee.numeric_std.all;
 entity Main is
   port(signal clock : in std_logic;
        signal reset : in std_logic;
-       signal start : in boolean;
+       signal start : in std_logic;
        signal dataa : in integer;
        signal result : out integer;
-       signal rdy : out boolean);
+       signal rdy : out std_logic);
 end entity;
 architecture RTL of Main is
   signal params_4n : integer;
@@ -33,7 +33,7 @@ begin
       case state_11 is
         when LEVEL_10MAIN =>
           if start then
-            rdy <= false;
+            rdy <= '0';
             params_2n <= params_3n;
             state_11 <= LEVEL_8FACT;
           elsif not start then
@@ -61,7 +61,7 @@ begin
         when LEVEL_7CONTROL_SINK => NULL;
         when LEVEL_6Q_5 =>
           if true then
-            rdy <= true;
+            rdy <= '1';
             params_3n <= dataa;
             state_11 <= LEVEL_10MAIN;
           else NULL;
