@@ -39,27 +39,33 @@ let merge s s' =
 let rec c_automaton env theta = function
   | PSM.State (q,es) ->
       let xs = grab_args q env in
-      let s = Inst.Assign (List.combine xs es) in
+      let s = Inst.Assign (List.map2 (fun x e -> 
+                             (substitute theta x, c_atom theta e)) xs es) in
       (s,HSM.State q)
   | PSM.Seq(s,a) ->
       let s1 = c_inst theta s in
       let (s2,a') = c_automaton env theta a in
       ((merge s1 s2),a')
-  | PSM.LetRec (selects, a) ->
-      let env' = List.map (fun (q,xs,_) -> (q,xs)) selects @ env in
+  | PSM.LetRec (selects, a) -> (* revoir le schéma papier *)
+      let l_theta = List.map (fun (_,xs,_) -> 
+                       let fresh = Gensym.gensym "params" in
+                       (List.map (fun x -> (x,fresh^x)) xs) @ theta) selects 
+      in
+      let env' = (List.map2 (fun (q,xs,_) theta -> 
+        (q,List.map (substitute theta) xs)) selects l_theta) @ env 
+      in
       let (s,a') = c_automaton env' theta a in
-      (s,HSM.LetRec (List.map (c_transition env' theta) selects, a'))
+      let selects' = List.map2 (fun theta psi -> c_transition env' theta psi) l_theta selects in
+      (s,HSM.LetRec (selects', a'))
 
 and c_transition env theta (q,xs,ts) =
   match ts with
   | [] -> (q,[])
   | _ ->
-      let theta' =
-        let fresh = Gensym.gensym "params" in
-        (List.map (fun x -> (x,fresh^x)) xs) @ theta in
       let ts' = List.map (fun (e,a) ->
-          let (s',a') = c_automaton env theta' a in
-          (e,s',a')) ts in
+          let e' = c_atom theta e in
+          let (s',a') = c_automaton env theta a in
+          (e',s',a')) ts in
       (q,ts')
 
 let c_prog ?(env=[]) p =

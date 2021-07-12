@@ -111,7 +111,7 @@ let c_automaton state_var locals fmt (EFSM.Automaton l) =
   List.iter (c_transitions state_var fmt) l;
   fprintf fmt "@]@,end case;@]@,";
   fprintf fmt "@]end if;@,";
-  fprintf fmt "@]end process;@,"
+  fprintf fmt "@]end process;@," (* fix indent *)
 
 
 let rec c_ty fmt ty = 

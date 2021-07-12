@@ -1,0 +1,15 @@
+let rec fact(n) =
+  if true then
+    let rec aux(n,acc) =
+      if n <= 0 then return acc
+      if n > 0 then
+        aux(n - 1, n * acc) 
+    in
+    aux(n,1)
+in
+rdy := true;
+let rec main(n) =
+  if start then rdy := false; fact(n)
+  if not start then main (n) 
+in
+main (dataa)

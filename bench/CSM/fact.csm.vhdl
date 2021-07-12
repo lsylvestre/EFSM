@@ -7,43 +7,47 @@ use ieee.numeric_std.all;
 entity Main is
   port(signal clock : in std_logic;
        signal reset : in std_logic;
-       signal params_2acc : in integer;
        signal result : out integer);
 end entity;
 architecture RTL of Main is
-  signal n : integer;
-  signal acc : integer;
-  type state_7_T is (LEVEL_6AUX, LEVEL_5FACT, LEVEL_4Q_3);
-  signal state_7 : state_7_T;
+  signal params_3n : integer;
+  signal params_3acc : integer;
+  signal params_2n : integer;
+  
+  type state_9_T is (LEVEL_8AUX, LEVEL_7FACT, LEVEL_6CONTROL_SINK, 
+                     LEVEL_5Q_4);
+  signal state_9 : state_9_T;
 begin
   process(reset,clock) begin
     if reset = '1' then
-      state_7 <= LEVEL_6AUX;
-        n <= 0;
-        acc <= 0;
+      state_9 <= LEVEL_8AUX;
+        params_3n <= 0;
+        params_3acc <= 0;
+        params_2n <= 0;
     elsif rising_edge(clock) then
-      case state_7 is
-        when LEVEL_6AUX =>
-          if n <= 0 then
-            result <= params_2acc;
-            state_7 <= CONTROL_SINK;
-          elsif n > 0 then
-            n <= n - 1;
-            acc <= n * acc;
-            state_7 <= CONTROL_SINK;
+      case state_9 is
+        when LEVEL_8AUX =>
+          if params_3n <= 0 then
+            result <= params_3acc;
+            state_9 <= LEVEL_6CONTROL_SINK;
+          elsif params_3n > 0 then
+            params_3n <= params_3n - 1;
+            params_3acc <= params_3n * params_3acc;
+            state_9 <= LEVEL_6CONTROL_SINK;
           else NULL;
           end if;
-        when LEVEL_5FACT =>
+        when LEVEL_7FACT =>
           if true then
-            n <= n;
-            acc <= 1;
-            state_7 <= LEVEL_6AUX;
+            params_3n <= params_2n;
+            params_3acc <= 1;
+            state_9 <= LEVEL_8AUX;
           else NULL;
           end if;
-        when LEVEL_4Q_3 =>
+        when LEVEL_6CONTROL_SINK => NULL;
+        when LEVEL_5Q_4 =>
           if true then
-            n <= 42;
-            state_7 <= LEVEL_5FACT;
+            params_2n <= 42;
+            state_9 <= LEVEL_7FACT;
           else NULL;
           end if;
       end case;
