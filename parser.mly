@@ -93,6 +93,7 @@ state:
 | x=IDENT { x }
 
 atom:
+| LPAREN a=atom RPAREN     { a }
 | x=IDENT                  { Atom.Var x }
 | b=BOOL_LIT               { Atom.Prim(Bool b) }
 | n=INT_LIT                { Atom.Prim(Int n) }

@@ -1,0 +1,2 @@
+let x = return 1 and y = return 2 in
+return (x+y)

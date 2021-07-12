@@ -19,9 +19,14 @@ all:
 	 parser.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo psm2hsm.cmo csm2psm.cmo main.cmo
 
 FILE=
+OPT=
 DST=bench/dst/$(basename $(notdir $(FILE))).vhdl
 test:
 	./compile $(FILE) > $(DST) ; ghdl -a $(DST)
+
+run:
+	echo "-- ./compile $(OPT) $(FILE)\n" > $(FILE).vhdl
+	./compile $(OPT) $(FILE) >> $(FILE).vhdl
 
 clean:
 	rm -f `find . -name "*.cmo"`

@@ -32,7 +32,7 @@ let c_unop fmt p =
   | Uminus -> "-"
 
 let c_state fmt q = 
-  pp_print_text fmt q
+  pp_print_text fmt (String.uppercase_ascii q)
 
 let rec c_atom fmt = function
 | Atom.Var x -> 
@@ -99,14 +99,14 @@ let c_automaton state_var locals fmt (EFSM.Automaton l) =
     | [] -> assert false (* les FSM doivent être non vide *)
     | (q0,_)::_ -> q0 
   in
-  fprintf fmt "@[<v 2>process(RESET,CLOCK) begin@,";
-  fprintf fmt "@[<v 2>if RESET = '1' then@,";
+  fprintf fmt "@[<v 2>process(reset,clock) begin@,";
+  fprintf fmt "@[<v 2>if reset = '1' then@,";
   fprintf fmt "@[<v 2>%s <= %a;" state_var c_state q0;
   List.iter (fun (x,ty) -> 
               fprintf fmt "@,%s <= %a;" x default_value ty) 
            locals;
   fprintf fmt "@]@]@,";
-  fprintf fmt "@[<v 2>elsif rising_edge(CLOCK) then@,";
+  fprintf fmt "@[<v 2>elsif rising_edge(clock) then@,";
   fprintf fmt "@[<v 2>case %s is" state_var;
   List.iter (c_transitions state_var fmt) l;
   fprintf fmt "@]@,end case;@]@,";
@@ -129,8 +129,8 @@ let c_prog ?(entity_name="Main") (envi,envo,l_locals) fmt automata =
   fprintf fmt "use ieee.std_logic_1164.all;@,";
   fprintf fmt "use ieee.numeric_std.all;@,@,";
   fprintf fmt "@[<v 2>entity %s is@," entity_name;
-  fprintf fmt "port(@[< v 0>signal CLOCK : in std_logic;@,";
-  fprintf fmt "signal RESET : in std_logic";
+  fprintf fmt "port(@[< v 0>signal clock : in std_logic;@,";
+  fprintf fmt "signal reset : in std_logic";
   
   List.iter (fun (x,ty) ->
       fprintf fmt ";@,signal %s : in %a" x 
@@ -152,13 +152,13 @@ let c_prog ?(entity_name="Main") (envi,envo,l_locals) fmt automata =
   let state_vars = List.map (fun _ -> Gensym.gensym "state") automata in
   List.iter2 (fun sv (EFSM.Automaton l) ->
     let qs = List.map fst l in
-    fprintf fmt "@[<h>type %s_T is (" sv;
-    pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt ",@,") c_state fmt qs;
+    fprintf fmt "@,type %s_T is (@[<hov>" sv;
+    pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt ", @,") c_state fmt qs;
     fprintf fmt ");@]@,";
-    fprintf fmt "signal %s : %s_T;@]@," sv sv;
+    fprintf fmt "signal %s : %s_T;" sv sv;
   )
     state_vars automata;
-
+  fprintf fmt "@]@,";
   fprintf fmt "@[<v 2>begin@,";
 
   list_iter3 (fun st_reg locals a -> 

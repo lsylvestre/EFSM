@@ -2,7 +2,7 @@ open Ast
 
 let substitute theta x =
   match List.assoc_opt x theta with
-  | None -> failwith (Printf.sprintf "psm: unbound variable %s\n" x)
+  | None -> x (* failwith (Printf.sprintf "psm: unbound variable %s\n" x) *)
   | Some y -> y
 
 let grab_args q env = 
@@ -62,8 +62,8 @@ and c_transition env theta (q,xs,ts) =
           (e,s',a')) ts in
       (q,ts')
 
-let c_prog ?(env=[]) ?(glob_vars=[]) p =
-  let theta = List.combine glob_vars glob_vars in
+let c_prog ?(env=[]) p =
+  let theta = [] in
   List.map (fun a ->
       let s,a' = c_automaton env theta a in
       let q0 = Gensym.gensym "Q" in
