@@ -9,10 +9,9 @@ let rec fact(n) =
 in
 rdy := '1';
 let rec main(n) =
-  (* [#] est la fonction de conversion de std_logic vers bool *)
-  if #start then
+  if start = '1' then
     rdy := '0'; 
     fact(n)
-  if not (#start) then main (n) 
+  if not (start = '1') then main (n) 
 in
 main (dataa)

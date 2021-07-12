@@ -34,7 +34,6 @@ type token =
   | END
   | COMMA
   | COLONEQ
-  | BOOL_OF_STD_LOGIC
   | BOOL_LIT of (bool)
   | AUTOMATON
   | AND

@@ -30,7 +30,6 @@ let c_unop fmt p =
   match p with
   | Not -> "not"
   | Uminus -> "-"
-  | Bool_of_std_logic -> assert false
 
 let c_state fmt q = 
   pp_print_text fmt (String.uppercase_ascii q)
@@ -73,9 +72,6 @@ let c_atom fmt a =
                 (pp_atom ~paren:true) a1
                 c_binop p
                 (pp_atom ~paren:true) a2
-         | Unop(Bool_of_std_logic,a) -> 
-            parenthesized ~paren fmt @@ fun () ->
-              fprintf fmt "%a = '1'" (pp_atom ~paren:true) a
          | Unop(p,a) -> 
             parenthesized ~paren fmt @@ fun () ->
               fprintf fmt "%a %a"

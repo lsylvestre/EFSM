@@ -115,12 +115,16 @@ let rec typ_atom env = function
   | Binop (Lt,a1,a2)
   | Binop (Le,a1,a2)
   | Binop (Gt,a1,a2)
-  | Binop (Ge,a1,a2)
-  | Binop (Eq,a1,a2)
-  | Binop (Neq,a1,a2) -> 
+  | Binop (Ge,a1,a2) ->
       unify env (typ_atom env a1) TInt;
       unify env (typ_atom env a2) TInt;
       TBool  
+  | Binop (Eq,a1,a2)
+  | Binop (Neq,a1,a2) -> 
+      let t1 = typ_atom env a1 in
+      let t2 = typ_atom env a2 in
+      unify env t1 t2;
+      TBool
   | Binop (And,a1,a2)
   | Binop (Or,a1,a2) -> 
       unify env (typ_atom env a1) TBool;
@@ -132,9 +136,6 @@ let rec typ_atom env = function
   | Unop (Uminus,a) ->
       unify env (typ_atom env a) TInt;
       TInt
-  | Unop (Bool_of_std_logic,a) ->
-      unify env (typ_atom env a) TStd_logic;
-      TBool
 
 
 let typ_inst env = function

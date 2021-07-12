@@ -12,7 +12,6 @@
 %token PLUS MINUS TIMES LT LE GT GE NEQ LAND NOT
 %token UMINUS
 %token ZERO ONE /* std_logic values */
-%token BOOL_OF_STD_LOGIC
 
 %left PIPE_PIPE
 %left LAND
@@ -20,7 +19,6 @@
 %left PLUS MINUS
 %left TIMES
 %nonassoc NOT UMINUS
-%nonassoc BOOL_OF_STD_LOGIC
 
 
 %start <Ast.EFSM.prog> efsm
@@ -107,7 +105,6 @@ atom:
 | a1=atom c=binop a2=atom  { Atom.Prim(Binop(c,a1,a2)) }
 | NOT a=atom { Atom.Prim(Unop(Not,a)) }
 | MINUS a=atom %prec UMINUS { Atom.Prim(Unop(Uminus,a)) }
-| BOOL_OF_STD_LOGIC a=atom  { Atom.Prim(Unop(Bool_of_std_logic,a)) }
 std_logic:
 | ZERO { Atom.Zero }
 | ONE  { Atom.One }

@@ -27,7 +27,7 @@ module Atom = struct
   | And | Or
 
   type unop = 
-  | Not | Uminus | Bool_of_std_logic
+  | Not | Uminus
 
   type atom = 
   | Var of ident 
