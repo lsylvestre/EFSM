@@ -32,11 +32,11 @@ begin
     elsif rising_edge(clock) then
       case state_11 is
         when LEVEL_10MAIN =>
-          if start then
+          if start = '1' then
             rdy <= '0';
             params_2n <= params_3n;
             state_11 <= LEVEL_8FACT;
-          elsif not start then
+          elsif not (start = '1') then
             params_3n <= params_3n;
             state_11 <= LEVEL_8FACT;
           else NULL;

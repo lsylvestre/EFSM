@@ -49,29 +49,40 @@ let pp_std_logic fmt v =
   | H -> "'H'"
   | Whatever -> "'-'"
 
+let parenthesized ~paren fmt cb = 
+  if paren then fprintf fmt "("; 
+  cb (); 
+  if paren then fprintf fmt ")" 
 
-let rec c_atom fmt = function
-| Atom.Var x -> 
-    pp_print_text fmt x
-| Atom.Prim c -> 
-    (match c with
-     | Std_logic v -> 
-         pp_std_logic fmt v
-     | Bool b -> 
-        fprintf fmt "%b" b
-     | Int n -> 
-        fprintf fmt "%d" n
-     | Binop(p,a1,a2) -> 
-        fprintf fmt "%a %a %a"
-          c_atom a1
-          c_binop p
-          c_atom a2
-     | Unop(Bool_of_std_logic,a) -> 
-         c_atom fmt a
-     | Unop(p,a) -> 
-        fprintf fmt "%a %a"
-          c_unop p
-          c_atom a)
+let c_atom fmt a = 
+  let rec pp_atom ~paren fmt a =
+    match a with 
+    | Atom.Var x -> 
+        pp_print_text fmt x
+    | Atom.Prim c -> 
+        (match c with
+         | Std_logic v -> 
+             pp_std_logic fmt v
+         | Bool b -> 
+            fprintf fmt "%b" b
+         | Int n -> 
+            fprintf fmt "%d" n
+         | Binop(p,a1,a2) ->
+            parenthesized ~paren fmt @@ fun () ->
+              fprintf fmt "%a %a %a"
+                (pp_atom ~paren:true) a1
+                c_binop p
+                (pp_atom ~paren:true) a2
+         | Unop(Bool_of_std_logic,a) -> 
+            parenthesized ~paren fmt @@ fun () ->
+              fprintf fmt "%a = '1'" (pp_atom ~paren:true) a
+         | Unop(p,a) -> 
+            parenthesized ~paren fmt @@ fun () ->
+              fprintf fmt "%a %a"
+                c_unop p
+                (pp_atom ~paren:true) a)
+  in
+  pp_atom ~paren:false fmt a
 
 let c_next_state state_var fmt q = 
   fprintf fmt "%s <= %a;" state_var c_state q
