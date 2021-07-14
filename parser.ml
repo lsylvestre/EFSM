@@ -67,42 +67,42 @@ type _menhir_env = {
 }
 
 and _menhir_state = 
-  | MenhirState174
-  | MenhirState168
-  | MenhirState165
-  | MenhirState161
-  | MenhirState158
-  | MenhirState154
-  | MenhirState152
+  | MenhirState175
+  | MenhirState169
+  | MenhirState166
+  | MenhirState162
+  | MenhirState159
+  | MenhirState155
+  | MenhirState153
+  | MenhirState151
   | MenhirState150
-  | MenhirState149
-  | MenhirState146
-  | MenhirState144
-  | MenhirState142
-  | MenhirState140
-  | MenhirState134
-  | MenhirState131
-  | MenhirState127
-  | MenhirState124
-  | MenhirState122
+  | MenhirState147
+  | MenhirState145
+  | MenhirState143
+  | MenhirState141
+  | MenhirState135
+  | MenhirState132
+  | MenhirState128
+  | MenhirState125
+  | MenhirState123
+  | MenhirState121
   | MenhirState120
-  | MenhirState119
-  | MenhirState117
-  | MenhirState115
-  | MenhirState113
-  | MenhirState107
-  | MenhirState101
-  | MenhirState99
-  | MenhirState96
+  | MenhirState118
+  | MenhirState116
+  | MenhirState114
+  | MenhirState108
+  | MenhirState102
+  | MenhirState100
+  | MenhirState97
+  | MenhirState95
   | MenhirState94
-  | MenhirState93
-  | MenhirState91
-  | MenhirState88
-  | MenhirState83
-  | MenhirState80
-  | MenhirState77
-  | MenhirState74
-  | MenhirState71
+  | MenhirState92
+  | MenhirState89
+  | MenhirState84
+  | MenhirState81
+  | MenhirState78
+  | MenhirState75
+  | MenhirState72
   | MenhirState67
   | MenhirState64
   | MenhirState60
@@ -134,40 +134,40 @@ let rec _menhir_goto_separated_nonempty_list_AND_psi_psm_ : _menhir_env -> 'ttv_
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState144 ->
+    | MenhirState145 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv685 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv687 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : (('freshtv681 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : (('freshtv683 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
             ((let _menhir_env = _menhir_discard _menhir_env in
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState165 _v
+                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState166 _v
             | LET ->
-                _menhir_run143 _menhir_env (Obj.magic _menhir_stack) MenhirState165
+                _menhir_run144 _menhir_env (Obj.magic _menhir_stack) MenhirState166
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState165
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState166
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState165) : 'freshtv682)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState166) : 'freshtv684)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : (('freshtv683 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : (('freshtv685 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv684)) : 'freshtv686)
-    | MenhirState168 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv686)) : 'freshtv688)
+    | MenhirState169 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv689 * _menhir_state * 'tv_psi_psm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv691 * _menhir_state * 'tv_psi_psm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv687 * _menhir_state * 'tv_psi_psm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv689 * _menhir_state * 'tv_psi_psm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s, (x : 'tv_psi_psm)), _, (xs : 'tv_separated_nonempty_list_AND_psi_psm_)) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_separated_nonempty_list_AND_psi_psm_ = 
@@ -175,7 +175,7 @@ let rec _menhir_goto_separated_nonempty_list_AND_psi_psm_ : _menhir_env -> 'ttv_
     ( x :: xs )
 # 177 "parser.ml"
          in
-        _menhir_goto_separated_nonempty_list_AND_psi_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv688)) : 'freshtv690)
+        _menhir_goto_separated_nonempty_list_AND_psi_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv690)) : 'freshtv692)
     | _ ->
         _menhir_fail ()
 
@@ -185,40 +185,40 @@ and _menhir_goto_separated_nonempty_list_AND_psi_csm_ : _menhir_env -> 'ttv_tail
     match _menhir_s with
     | MenhirState46 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv675 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv677 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : (('freshtv671 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : (('freshtv673 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
             ((let _menhir_env = _menhir_discard _menhir_env in
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState71 _v
+                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState72 _v
             | LET ->
-                _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState71
+                _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState72
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState71
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState72
             | RETURN ->
-                _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState71
+                _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState72
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState71) : 'freshtv672)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState72) : 'freshtv674)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : (('freshtv673 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : (('freshtv675 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv674)) : 'freshtv676)
-    | MenhirState74 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv676)) : 'freshtv678)
+    | MenhirState75 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv679 * _menhir_state * 'tv_psi_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv681 * _menhir_state * 'tv_psi_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv677 * _menhir_state * 'tv_psi_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv679 * _menhir_state * 'tv_psi_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s, (x : 'tv_psi_csm)), _, (xs : 'tv_separated_nonempty_list_AND_psi_csm_)) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_separated_nonempty_list_AND_psi_csm_ = 
@@ -226,7 +226,7 @@ and _menhir_goto_separated_nonempty_list_AND_psi_csm_ : _menhir_env -> 'ttv_tail
     ( x :: xs )
 # 228 "parser.ml"
          in
-        _menhir_goto_separated_nonempty_list_AND_psi_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv678)) : 'freshtv680)
+        _menhir_goto_separated_nonempty_list_AND_psi_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv680)) : 'freshtv682)
     | _ ->
         _menhir_fail ()
 
@@ -234,17 +234,17 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ : _menhir_env
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState88 ->
+    | MenhirState89 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : 'freshtv665 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : 'freshtv667 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | EOF ->
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv661 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv663 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv659 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv661 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, (p : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_)) = _menhir_stack in
             let _2 = () in
             let _v : (
@@ -257,7 +257,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ : _menhir_env
 # 258 "parser.ml"
              in
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv657) = _menhir_stack in
+            let (_menhir_stack : 'freshtv659) = _menhir_stack in
             let (_menhir_s : _menhir_state) = _menhir_s in
             let (_v : (
 # 24 "parser.mly"
@@ -265,7 +265,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ : _menhir_env
 # 266 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv655) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv657) = Obj.magic _menhir_stack in
             let (_menhir_s : _menhir_state) = _menhir_s in
             let (_v : (
 # 24 "parser.mly"
@@ -273,7 +273,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ : _menhir_env
 # 274 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv653) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv655) = Obj.magic _menhir_stack in
             let (_menhir_s : _menhir_state) = _menhir_s in
             let ((_1 : (
 # 24 "parser.mly"
@@ -284,19 +284,19 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ : _menhir_env
        (Ast.EFSM.prog)
 # 286 "parser.ml"
             )) = _v in
-            (Obj.magic _1 : 'freshtv654)) : 'freshtv656)) : 'freshtv658)) : 'freshtv660)) : 'freshtv662)
+            (Obj.magic _1 : 'freshtv656)) : 'freshtv658)) : 'freshtv660)) : 'freshtv662)) : 'freshtv664)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv663 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv665 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv664)) : 'freshtv666)
-    | MenhirState113 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv666)) : 'freshtv668)
+    | MenhirState114 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv669 * _menhir_state * 'tv_automaton_efsm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv671 * _menhir_state * 'tv_automaton_efsm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv667 * _menhir_state * 'tv_automaton_efsm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv669 * _menhir_state * 'tv_automaton_efsm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s, (x : 'tv_automaton_efsm)), _, (xs : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_)) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ = 
@@ -304,7 +304,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ : _menhir_env
     ( x :: xs )
 # 306 "parser.ml"
          in
-        _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv668)) : 'freshtv670)
+        _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv670)) : 'freshtv672)
     | _ ->
         _menhir_fail ()
 
@@ -312,17 +312,17 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ : _menhir_env 
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState142 ->
+    | MenhirState143 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : 'freshtv647 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : 'freshtv649 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | EOF ->
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv643 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv645 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv641 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv643 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, (p : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_)) = _menhir_stack in
             let _2 = () in
             let _v : (
@@ -335,7 +335,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ : _menhir_env 
 # 336 "parser.ml"
              in
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv639) = _menhir_stack in
+            let (_menhir_stack : 'freshtv641) = _menhir_stack in
             let (_menhir_s : _menhir_state) = _menhir_s in
             let (_v : (
 # 26 "parser.mly"
@@ -343,7 +343,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ : _menhir_env 
 # 344 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv637) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv639) = Obj.magic _menhir_stack in
             let (_menhir_s : _menhir_state) = _menhir_s in
             let (_v : (
 # 26 "parser.mly"
@@ -351,7 +351,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ : _menhir_env 
 # 352 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv635) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv637) = Obj.magic _menhir_stack in
             let (_menhir_s : _menhir_state) = _menhir_s in
             let ((_1 : (
 # 26 "parser.mly"
@@ -362,19 +362,19 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ : _menhir_env 
        (Ast.PSM.prog)
 # 364 "parser.ml"
             )) = _v in
-            (Obj.magic _1 : 'freshtv636)) : 'freshtv638)) : 'freshtv640)) : 'freshtv642)) : 'freshtv644)
+            (Obj.magic _1 : 'freshtv638)) : 'freshtv640)) : 'freshtv642)) : 'freshtv644)) : 'freshtv646)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : 'freshtv645 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : 'freshtv647 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv646)) : 'freshtv648)
-    | MenhirState174 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv648)) : 'freshtv650)
+    | MenhirState175 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv651 * _menhir_state * 'tv_automaton_psm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv653 * _menhir_state * 'tv_automaton_psm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv649 * _menhir_state * 'tv_automaton_psm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv651 * _menhir_state * 'tv_automaton_psm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s, (x : 'tv_automaton_psm)), _, (xs : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_)) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_ = 
@@ -382,7 +382,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ : _menhir_env 
     ( x :: xs )
 # 384 "parser.ml"
          in
-        _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv650)) : 'freshtv652)
+        _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv652)) : 'freshtv654)
     | _ ->
         _menhir_fail ()
 
@@ -392,40 +392,40 @@ and _menhir_goto_separated_nonempty_list_AND_binding_csm_ : _menhir_env -> 'ttv_
     match _menhir_s with
     | MenhirState45 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : ('freshtv629 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : ('freshtv631 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : ('freshtv625 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : ('freshtv627 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
             ((let _menhir_env = _menhir_discard _menhir_env in
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState80 _v
+                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState81 _v
             | LET ->
-                _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState80
+                _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState81
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState80
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState81
             | RETURN ->
-                _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState80
+                _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState81
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState80) : 'freshtv626)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState81) : 'freshtv628)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
             let (_menhir_env : _menhir_env) = _menhir_env in
-            let (_menhir_stack : ('freshtv627 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
+            let (_menhir_stack : ('freshtv629 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv628)) : 'freshtv630)
-    | MenhirState83 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv630)) : 'freshtv632)
+    | MenhirState84 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv633 * _menhir_state * 'tv_binding_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv635 * _menhir_state * 'tv_binding_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : (('freshtv631 * _menhir_state * 'tv_binding_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
+        let (_menhir_stack : (('freshtv633 * _menhir_state * 'tv_binding_csm)) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s, (x : 'tv_binding_csm)), _, (xs : 'tv_separated_nonempty_list_AND_binding_csm_)) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_separated_nonempty_list_AND_binding_csm_ = 
@@ -433,9 +433,34 @@ and _menhir_goto_separated_nonempty_list_AND_binding_csm_ : _menhir_env -> 'ttv_
     ( x :: xs )
 # 435 "parser.ml"
          in
-        _menhir_goto_separated_nonempty_list_AND_binding_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv632)) : 'freshtv634)
+        _menhir_goto_separated_nonempty_list_AND_binding_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv634)) : 'freshtv636)
     | _ ->
         _menhir_fail ()
+
+and _menhir_goto_transition_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_transition_csm -> 'ttv_return =
+  fun _menhir_env _menhir_stack _menhir_s _v ->
+    let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
+    let (_menhir_env : _menhir_env) = _menhir_env in
+    let (_menhir_stack : 'freshtv625 * _menhir_state * 'tv_transition_csm) = Obj.magic _menhir_stack in
+    ((assert (not _menhir_env._menhir_error);
+    let _tok = _menhir_env._menhir_token in
+    match _tok with
+    | IDENT _v ->
+        _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState67 _v
+    | IF ->
+        _menhir_run53 _menhir_env (Obj.magic _menhir_stack) MenhirState67
+    | LET ->
+        _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState67
+    | LPAREN ->
+        _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState67
+    | RETURN ->
+        _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState67
+    | AND | IN ->
+        _menhir_reduce35 _menhir_env (Obj.magic _menhir_stack) MenhirState67
+    | _ ->
+        assert (not _menhir_env._menhir_error);
+        _menhir_env._menhir_error <- true;
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState67) : 'freshtv626)
 
 and _menhir_goto_binop : _menhir_env -> 'ttv_tail -> 'tv_binop -> 'ttv_return =
   fun _menhir_env _menhir_stack _v ->
@@ -469,7 +494,7 @@ and _menhir_goto_binop : _menhir_env -> 'ttv_tail -> 'tv_binop -> 'ttv_return =
 and _menhir_goto_list_transition_psm_ : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_list_transition_psm_ -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     match _menhir_s with
-    | MenhirState161 ->
+    | MenhirState162 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv607 * _menhir_state * 'tv_transition_psm) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -482,10 +507,10 @@ and _menhir_goto_list_transition_psm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
         let _v : 'tv_list_transition_psm_ = 
 # 213 "<standard.mly>"
     ( x :: xs )
-# 486 "parser.ml"
+# 511 "parser.ml"
          in
         _menhir_goto_list_transition_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv606)) : 'freshtv608)
-    | MenhirState149 ->
+    | MenhirState150 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv621 * _menhir_state * 'tv_state)) * _menhir_state * 'tv_loption_separated_nonempty_list_COMMA_IDENT__))) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -501,12 +526,12 @@ and _menhir_goto_list_transition_psm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
         let _v : 'tv_psi_psm = let xs = 
 # 232 "<standard.mly>"
     ( xs )
-# 505 "parser.ml"
+# 530 "parser.ml"
          in
         
 # 68 "parser.mly"
                                                                              ( (q,xs,ts) )
-# 510 "parser.ml"
+# 535 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv617) = _menhir_stack in
@@ -525,11 +550,11 @@ and _menhir_goto_list_transition_psm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState168 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState169 _v
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState168) : 'freshtv610)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState169) : 'freshtv610)
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv611 * _menhir_state * 'tv_psi_psm) = Obj.magic _menhir_stack in
@@ -537,7 +562,7 @@ and _menhir_goto_list_transition_psm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
             let _v : 'tv_separated_nonempty_list_AND_psi_psm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 541 "parser.ml"
+# 566 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_AND_psi_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv612)
         | _ ->
@@ -566,7 +591,7 @@ and _menhir_goto_list_transition_csm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
         let _v : 'tv_list_transition_csm_ = 
 # 213 "<standard.mly>"
     ( x :: xs )
-# 570 "parser.ml"
+# 595 "parser.ml"
          in
         _menhir_goto_list_transition_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv588)) : 'freshtv590)
     | MenhirState52 ->
@@ -585,12 +610,12 @@ and _menhir_goto_list_transition_csm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
         let _v : 'tv_psi_csm = let xs = 
 # 232 "<standard.mly>"
     ( xs )
-# 589 "parser.ml"
+# 614 "parser.ml"
          in
         
 # 86 "parser.mly"
                                                                              ( (q,xs,ts) )
-# 594 "parser.ml"
+# 619 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv599) = _menhir_stack in
@@ -609,11 +634,11 @@ and _menhir_goto_list_transition_csm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState74 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState75 _v
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState74) : 'freshtv592)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState75) : 'freshtv592)
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv593 * _menhir_state * 'tv_psi_csm) = Obj.magic _menhir_stack in
@@ -621,7 +646,7 @@ and _menhir_goto_list_transition_csm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
             let _v : 'tv_separated_nonempty_list_AND_psi_csm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 625 "parser.ml"
+# 650 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_AND_psi_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv594)
         | _ ->
@@ -638,7 +663,7 @@ and _menhir_goto_separated_nonempty_list_AND_psi_hsm_ : _menhir_env -> 'ttv_tail
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState117 ->
+    | MenhirState118 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv581 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_hsm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -651,13 +676,13 @@ and _menhir_goto_separated_nonempty_list_AND_psi_hsm_ : _menhir_env -> 'ttv_tail
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState131 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState132 _v
             | LET ->
-                _menhir_run116 _menhir_env (Obj.magic _menhir_stack) MenhirState131
+                _menhir_run117 _menhir_env (Obj.magic _menhir_stack) MenhirState132
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState131) : 'freshtv578)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState132) : 'freshtv578)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -665,7 +690,7 @@ and _menhir_goto_separated_nonempty_list_AND_psi_hsm_ : _menhir_env -> 'ttv_tail
             let (_menhir_stack : (('freshtv579 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_hsm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv580)) : 'freshtv582)
-    | MenhirState134 ->
+    | MenhirState135 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv585 * _menhir_state * 'tv_psi_hsm)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_hsm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -675,7 +700,7 @@ and _menhir_goto_separated_nonempty_list_AND_psi_hsm_ : _menhir_env -> 'ttv_tail
         let _v : 'tv_separated_nonempty_list_AND_psi_hsm_ = 
 # 243 "<standard.mly>"
     ( x :: xs )
-# 679 "parser.ml"
+# 704 "parser.ml"
          in
         _menhir_goto_separated_nonempty_list_AND_psi_hsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv584)) : 'freshtv586)
     | _ ->
@@ -685,7 +710,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ : _menhir_env -> 'ttv_ta
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState91 ->
+    | MenhirState92 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv571 * _menhir_state) * 'tv_option_PIPE_) * _menhir_state * 'tv_separated_nonempty_list_PIPE_psi_efsm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -703,7 +728,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ : _menhir_env -> 'ttv_ta
             let _v : 'tv_automaton_efsm = 
 # 34 "parser.mly"
                                                                ( EFSM.Automaton l )
-# 707 "parser.ml"
+# 732 "parser.ml"
              in
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv563) = _menhir_stack in
@@ -722,11 +747,11 @@ and _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ : _menhir_env -> 'ttv_ta
                 let _tok = _menhir_env._menhir_token in
                 match _tok with
                 | AUTOMATON ->
-                    _menhir_run89 _menhir_env (Obj.magic _menhir_stack) MenhirState113
+                    _menhir_run90 _menhir_env (Obj.magic _menhir_stack) MenhirState114
                 | _ ->
                     assert (not _menhir_env._menhir_error);
                     _menhir_env._menhir_error <- true;
-                    _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState113) : 'freshtv556)
+                    _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState114) : 'freshtv556)
             | EOF ->
                 let (_menhir_env : _menhir_env) = _menhir_env in
                 let (_menhir_stack : 'freshtv557 * _menhir_state * 'tv_automaton_efsm) = Obj.magic _menhir_stack in
@@ -734,7 +759,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ : _menhir_env -> 'ttv_ta
                 let _v : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 738 "parser.ml"
+# 763 "parser.ml"
                  in
                 _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_efsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv558)
             | _ ->
@@ -751,7 +776,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ : _menhir_env -> 'ttv_ta
             let (_menhir_stack : (('freshtv569 * _menhir_state) * 'tv_option_PIPE_) * _menhir_state * 'tv_separated_nonempty_list_PIPE_psi_efsm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv570)) : 'freshtv572)
-    | MenhirState107 ->
+    | MenhirState108 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv575 * _menhir_state * 'tv_psi_efsm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_psi_efsm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -761,7 +786,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ : _menhir_env -> 'ttv_ta
         let _v : 'tv_separated_nonempty_list_PIPE_psi_efsm_ = 
 # 243 "<standard.mly>"
     ( x :: xs )
-# 765 "parser.ml"
+# 790 "parser.ml"
          in
         _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv574)) : 'freshtv576)
     | _ ->
@@ -771,7 +796,7 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState158 ->
+    | MenhirState159 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv533 * _menhir_state * 'tv_inst)) * _menhir_state * 'tv_automaton_psm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -781,10 +806,10 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_automaton_psm = 
 # 64 "parser.mly"
                                  ( PSM.Seq(s,a) )
-# 785 "parser.ml"
+# 810 "parser.ml"
          in
         _menhir_goto_automaton_psm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv532)) : 'freshtv534)
-    | MenhirState152 ->
+    | MenhirState153 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv541 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_automaton_psm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -795,7 +820,7 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_transition_psm = 
 # 71 "parser.mly"
                                  ( (g,a) )
-# 799 "parser.ml"
+# 824 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv537) = _menhir_stack in
@@ -808,14 +833,14 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IF ->
-            _menhir_run150 _menhir_env (Obj.magic _menhir_stack) MenhirState161
+            _menhir_run151 _menhir_env (Obj.magic _menhir_stack) MenhirState162
         | AND | IN ->
-            _menhir_reduce41 _menhir_env (Obj.magic _menhir_stack) MenhirState161
+            _menhir_reduce41 _menhir_env (Obj.magic _menhir_stack) MenhirState162
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState161) : 'freshtv536)) : 'freshtv538)) : 'freshtv540)) : 'freshtv542)
-    | MenhirState165 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState162) : 'freshtv536)) : 'freshtv538)) : 'freshtv540)) : 'freshtv542)
+    | MenhirState166 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv545 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_)) * _menhir_state * 'tv_automaton_psm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -827,10 +852,10 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_automaton_psm = 
 # 65 "parser.mly"
                                                                      ( PSM.LetRec (bs,a) )
-# 831 "parser.ml"
+# 856 "parser.ml"
          in
         _menhir_goto_automaton_psm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv544)) : 'freshtv546)
-    | MenhirState174 | MenhirState142 ->
+    | MenhirState175 | MenhirState143 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv553 * _menhir_state * 'tv_automaton_psm) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -843,15 +868,15 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState174 _v
+                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState175 _v
             | LET ->
-                _menhir_run143 _menhir_env (Obj.magic _menhir_stack) MenhirState174
+                _menhir_run144 _menhir_env (Obj.magic _menhir_stack) MenhirState175
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState174
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState175
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState174) : 'freshtv548)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState175) : 'freshtv548)
         | EOF ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv549 * _menhir_state * 'tv_automaton_psm) = Obj.magic _menhir_stack in
@@ -859,7 +884,7 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _v : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_psm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 863 "parser.ml"
+# 888 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_psm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv550)
         | _ ->
@@ -872,10 +897,10 @@ and _menhir_goto_automaton_psm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
     | _ ->
         _menhir_fail ()
 
-and _menhir_run97 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
+and _menhir_run98 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 9 "parser.mly"
        (string)
-# 879 "parser.ml"
+# 904 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
@@ -891,7 +916,7 @@ and _menhir_run97 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv529 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 895 "parser.ml"
+# 920 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv530)
@@ -900,7 +925,7 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState0 | MenhirState80 | MenhirState77 | MenhirState71 | MenhirState64 | MenhirState55 ->
+    | MenhirState0 | MenhirState81 | MenhirState78 | MenhirState72 | MenhirState52 | MenhirState67 | MenhirState64 | MenhirState55 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv509 * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -931,7 +956,7 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
             let (_menhir_stack : 'freshtv507 * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv508)) : 'freshtv510)
-    | MenhirState96 ->
+    | MenhirState97 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv515 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -944,11 +969,11 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState99 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState100 _v
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState99) : 'freshtv512)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState100) : 'freshtv512)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -956,7 +981,7 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
             let (_menhir_stack : ((('freshtv513 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv514)) : 'freshtv516)
-    | MenhirState122 ->
+    | MenhirState123 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv521 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -969,13 +994,13 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState124 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState125 _v
             | LET ->
-                _menhir_run116 _menhir_env (Obj.magic _menhir_stack) MenhirState124
+                _menhir_run117 _menhir_env (Obj.magic _menhir_stack) MenhirState125
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState124) : 'freshtv518)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState125) : 'freshtv518)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -983,7 +1008,7 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
             let (_menhir_stack : ((('freshtv519 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv520)) : 'freshtv522)
-    | MenhirState174 | MenhirState142 | MenhirState165 | MenhirState158 | MenhirState152 ->
+    | MenhirState175 | MenhirState143 | MenhirState166 | MenhirState159 | MenhirState153 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv527 * _menhir_state * 'tv_inst) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -996,15 +1021,15 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState158 _v
+                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState159 _v
             | LET ->
-                _menhir_run143 _menhir_env (Obj.magic _menhir_stack) MenhirState158
+                _menhir_run144 _menhir_env (Obj.magic _menhir_stack) MenhirState159
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState158
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState159
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState158) : 'freshtv524)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState159) : 'freshtv524)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -1018,7 +1043,7 @@ and _menhir_goto_inst : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_inst ->
 and _menhir_goto_separated_nonempty_list_COMMA_atom_ : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_separated_nonempty_list_COMMA_atom_ -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     match _menhir_s with
-    | MenhirState154 | MenhirState60 | MenhirState38 ->
+    | MenhirState155 | MenhirState60 | MenhirState38 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv499) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -1030,7 +1055,7 @@ and _menhir_goto_separated_nonempty_list_COMMA_atom_ : _menhir_env -> 'ttv_tail 
         ((let _v : 'tv_loption_separated_nonempty_list_COMMA_atom__ = 
 # 144 "<standard.mly>"
     ( x )
-# 1034 "parser.ml"
+# 1059 "parser.ml"
          in
         _menhir_goto_loption_separated_nonempty_list_COMMA_atom__ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv498)) : 'freshtv500)
     | MenhirState43 ->
@@ -1047,7 +1072,7 @@ and _menhir_goto_separated_nonempty_list_COMMA_atom_ : _menhir_env -> 'ttv_tail 
         let _v : 'tv_separated_nonempty_list_COMMA_atom_ = 
 # 243 "<standard.mly>"
     ( x :: xs )
-# 1051 "parser.ml"
+# 1076 "parser.ml"
          in
         _menhir_goto_separated_nonempty_list_COMMA_atom_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv502)) : 'freshtv504)
     | _ ->
@@ -1067,41 +1092,36 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_automaton_csm = 
 # 80 "parser.mly"
                                  ( CSM.Seq(s,a) )
-# 1071 "parser.ml"
+# 1096 "parser.ml"
          in
         _menhir_goto_automaton_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv450)) : 'freshtv452)
     | MenhirState55 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : ((('freshtv459 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
+        let (_menhir_stack : ((('freshtv455 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : ((('freshtv457 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
-        ((let (((_menhir_stack, _menhir_s), _, (g : 'tv_atom)), _, (a : 'tv_automaton_csm)) = _menhir_stack in
+        let (_menhir_stack : ((('freshtv453 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
+        ((let (((_menhir_stack, _menhir_s), _, (e : 'tv_atom)), _, (a : 'tv_automaton_csm)) = _menhir_stack in
         let _3 = () in
         let _1 = () in
         let _v : 'tv_transition_csm = 
-# 89 "parser.mly"
-                                 ( (g,a) )
-# 1085 "parser.ml"
+# 90 "parser.mly"
+                                 ( (e,a) )
+# 1110 "parser.ml"
          in
+        _menhir_goto_transition_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv454)) : 'freshtv456)
+    | MenhirState52 | MenhirState67 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : 'freshtv455) = _menhir_stack in
-        let (_menhir_s : _menhir_state) = _menhir_s in
-        let (_v : 'tv_transition_csm) = _v in
-        ((let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
-        let (_menhir_env : _menhir_env) = _menhir_env in
-        let (_menhir_stack : 'freshtv453 * _menhir_state * 'tv_transition_csm) = Obj.magic _menhir_stack in
-        ((assert (not _menhir_env._menhir_error);
-        let _tok = _menhir_env._menhir_token in
-        match _tok with
-        | IF ->
-            _menhir_run53 _menhir_env (Obj.magic _menhir_stack) MenhirState67
-        | AND | IN ->
-            _menhir_reduce35 _menhir_env (Obj.magic _menhir_stack) MenhirState67
-        | _ ->
-            assert (not _menhir_env._menhir_error);
-            _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState67) : 'freshtv454)) : 'freshtv456)) : 'freshtv458)) : 'freshtv460)
-    | MenhirState71 ->
+        let (_menhir_stack : 'freshtv459 * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
+        ((let (_menhir_env : _menhir_env) = _menhir_env in
+        let (_menhir_stack : 'freshtv457 * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
+        ((let (_menhir_stack, _menhir_s, (a : 'tv_automaton_csm)) = _menhir_stack in
+        let _v : 'tv_transition_csm = 
+# 89 "parser.mly"
+                  ( (Atom.Prim(Bool true),a) )
+# 1122 "parser.ml"
+         in
+        _menhir_goto_transition_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv458)) : 'freshtv460)
+    | MenhirState72 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv463 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_)) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -1113,32 +1133,32 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_automaton_csm = 
 # 81 "parser.mly"
                                                                      ( CSM.LetRec (bs,a) )
-# 1117 "parser.ml"
+# 1137 "parser.ml"
          in
         _menhir_goto_automaton_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv462)) : 'freshtv464)
-    | MenhirState77 ->
+    | MenhirState78 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv477 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 1125 "parser.ml"
+# 1145 "parser.ml"
         ))) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv475 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 1131 "parser.ml"
+# 1151 "parser.ml"
         ))) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s, (x : (
 # 9 "parser.mly"
        (string)
-# 1136 "parser.ml"
+# 1156 "parser.ml"
         ))), _, (a : 'tv_automaton_csm)) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_binding_csm = 
-# 92 "parser.mly"
+# 93 "parser.mly"
                              ( (x,a) )
-# 1142 "parser.ml"
+# 1162 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv473) = _menhir_stack in
@@ -1157,11 +1177,11 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run76 _menhir_env (Obj.magic _menhir_stack) MenhirState83 _v
+                _menhir_run77 _menhir_env (Obj.magic _menhir_stack) MenhirState84 _v
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState83) : 'freshtv466)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState84) : 'freshtv466)
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv467 * _menhir_state * 'tv_binding_csm) = Obj.magic _menhir_stack in
@@ -1169,7 +1189,7 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _v : 'tv_separated_nonempty_list_AND_binding_csm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 1173 "parser.ml"
+# 1193 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_AND_binding_csm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv468)
         | _ ->
@@ -1179,7 +1199,7 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let (_menhir_stack : 'freshtv469 * _menhir_state * 'tv_binding_csm) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv470)) : 'freshtv472)) : 'freshtv474)) : 'freshtv476)) : 'freshtv478)
-    | MenhirState80 ->
+    | MenhirState81 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv481 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_)) * _menhir_state * 'tv_automaton_csm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -1190,7 +1210,7 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_automaton_csm = 
 # 83 "parser.mly"
                                                                      ( CSM.Let (bs,a) )
-# 1194 "parser.ml"
+# 1214 "parser.ml"
          in
         _menhir_goto_automaton_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv480)) : 'freshtv482)
     | MenhirState0 ->
@@ -1209,11 +1229,11 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _v : (
 # 27 "parser.mly"
        (Ast.CSM.prog)
-# 1213 "parser.ml"
+# 1233 "parser.ml"
             ) = 
 # 76 "parser.mly"
                       ( a )
-# 1217 "parser.ml"
+# 1237 "parser.ml"
              in
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv487) = _menhir_stack in
@@ -1221,7 +1241,7 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let (_v : (
 # 27 "parser.mly"
        (Ast.CSM.prog)
-# 1225 "parser.ml"
+# 1245 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv485) = Obj.magic _menhir_stack in
@@ -1229,7 +1249,7 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let (_v : (
 # 27 "parser.mly"
        (Ast.CSM.prog)
-# 1233 "parser.ml"
+# 1253 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv483) = Obj.magic _menhir_stack in
@@ -1237,11 +1257,11 @@ and _menhir_goto_automaton_csm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let ((_1 : (
 # 27 "parser.mly"
        (Ast.CSM.prog)
-# 1241 "parser.ml"
+# 1261 "parser.ml"
             )) : (
 # 27 "parser.mly"
        (Ast.CSM.prog)
-# 1245 "parser.ml"
+# 1265 "parser.ml"
             )) = _v in
             (Obj.magic _1 : 'freshtv484)) : 'freshtv486)) : 'freshtv488)) : 'freshtv490)) : 'freshtv492)
         | _ ->
@@ -1261,9 +1281,9 @@ and _menhir_run13 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv447) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 118 "parser.mly"
+# 119 "parser.mly"
         ( Atom.Mul )
-# 1267 "parser.ml"
+# 1287 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv448)
 
@@ -1274,9 +1294,9 @@ and _menhir_run15 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv445) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 116 "parser.mly"
+# 117 "parser.mly"
        ( Atom.Add )
-# 1280 "parser.ml"
+# 1300 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv446)
 
@@ -1287,9 +1307,9 @@ and _menhir_run16 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv443) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 126 "parser.mly"
+# 127 "parser.mly"
             ( Atom.Or )
-# 1293 "parser.ml"
+# 1313 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv444)
 
@@ -1300,9 +1320,9 @@ and _menhir_run17 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv441) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 124 "parser.mly"
+# 125 "parser.mly"
       ( Atom.Neq )
-# 1306 "parser.ml"
+# 1326 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv442)
 
@@ -1313,9 +1333,9 @@ and _menhir_run18 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv439) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 117 "parser.mly"
+# 118 "parser.mly"
         ( Atom.Sub )
-# 1319 "parser.ml"
+# 1339 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv440)
 
@@ -1326,9 +1346,9 @@ and _menhir_run19 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv437) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 119 "parser.mly"
+# 120 "parser.mly"
      ( Atom.Lt )
-# 1332 "parser.ml"
+# 1352 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv438)
 
@@ -1339,9 +1359,9 @@ and _menhir_run20 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv435) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 120 "parser.mly"
+# 121 "parser.mly"
      ( Atom.Le )
-# 1345 "parser.ml"
+# 1365 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv436)
 
@@ -1352,9 +1372,9 @@ and _menhir_run21 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv433) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 125 "parser.mly"
+# 126 "parser.mly"
        ( Atom.And )
-# 1358 "parser.ml"
+# 1378 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv434)
 
@@ -1365,9 +1385,9 @@ and _menhir_run22 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv431) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 121 "parser.mly"
+# 122 "parser.mly"
      ( Atom.Gt )
-# 1371 "parser.ml"
+# 1391 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv432)
 
@@ -1378,9 +1398,9 @@ and _menhir_run23 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv429) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 122 "parser.mly"
+# 123 "parser.mly"
      ( Atom.Ge )
-# 1384 "parser.ml"
+# 1404 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv430)
 
@@ -1391,9 +1411,9 @@ and _menhir_run24 : _menhir_env -> 'ttv_tail -> 'ttv_return =
     let (_menhir_stack : 'freshtv427) = Obj.magic _menhir_stack in
     ((let _1 = () in
     let _v : 'tv_binop = 
-# 123 "parser.mly"
+# 124 "parser.mly"
      ( Atom.Eq )
-# 1397 "parser.ml"
+# 1417 "parser.ml"
      in
     _menhir_goto_binop _menhir_env _menhir_stack _v) : 'freshtv428)
 
@@ -1402,43 +1422,43 @@ and _menhir_reduce41 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return 
     let _v : 'tv_list_transition_psm_ = 
 # 211 "<standard.mly>"
     ( [] )
-# 1406 "parser.ml"
+# 1426 "parser.ml"
      in
     _menhir_goto_list_transition_psm_ _menhir_env _menhir_stack _menhir_s _v
 
-and _menhir_run150 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
+and _menhir_run151 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _menhir_stack = (_menhir_stack, _menhir_s) in
     let _menhir_env = _menhir_discard _menhir_env in
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | BOOL_LIT _v ->
-        _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState150 _v
+        _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState151 _v
     | IDENT _v ->
-        _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState150 _v
+        _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState151 _v
     | INT_LIT _v ->
-        _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState150 _v
+        _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState151 _v
     | LPAREN ->
-        _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState150
+        _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState151
     | MINUS ->
-        _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState150
+        _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState151
     | NOT ->
-        _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState150
+        _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState151
     | ONE ->
-        _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState150
+        _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState151
     | ZERO ->
-        _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState150
+        _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState151
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState150
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState151
 
 and _menhir_reduce35 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _v : 'tv_list_transition_csm_ = 
 # 211 "<standard.mly>"
     ( [] )
-# 1442 "parser.ml"
+# 1462 "parser.ml"
      in
     _menhir_goto_list_transition_csm_ _menhir_env _menhir_stack _menhir_s _v
 
@@ -1473,7 +1493,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState115 ->
+    | MenhirState116 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv421 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_hsm_) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -1489,11 +1509,11 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
             let _v : (
 # 25 "parser.mly"
        (Ast.HSM.prog)
-# 1493 "parser.ml"
+# 1513 "parser.ml"
             ) = 
 # 45 "parser.mly"
                                                          ( p )
-# 1497 "parser.ml"
+# 1517 "parser.ml"
              in
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv413) = _menhir_stack in
@@ -1501,7 +1521,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
             let (_v : (
 # 25 "parser.mly"
        (Ast.HSM.prog)
-# 1505 "parser.ml"
+# 1525 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv411) = Obj.magic _menhir_stack in
@@ -1509,7 +1529,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
             let (_v : (
 # 25 "parser.mly"
        (Ast.HSM.prog)
-# 1513 "parser.ml"
+# 1533 "parser.ml"
             )) = _v in
             ((let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv409) = Obj.magic _menhir_stack in
@@ -1517,11 +1537,11 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
             let ((_1 : (
 # 25 "parser.mly"
        (Ast.HSM.prog)
-# 1521 "parser.ml"
+# 1541 "parser.ml"
             )) : (
 # 25 "parser.mly"
        (Ast.HSM.prog)
-# 1525 "parser.ml"
+# 1545 "parser.ml"
             )) = _v in
             (Obj.magic _1 : 'freshtv410)) : 'freshtv412)) : 'freshtv414)) : 'freshtv416)) : 'freshtv418)
         | _ ->
@@ -1531,7 +1551,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
             let (_menhir_stack : 'freshtv419 * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_hsm_) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv420)) : 'freshtv422)
-    | MenhirState140 ->
+    | MenhirState141 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv425 * _menhir_state * 'tv_automaton_hsm)) * _menhir_state * 'tv_separated_nonempty_list_PIPE_PIPE_automaton_hsm_) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -1541,7 +1561,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
         let _v : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ = 
 # 243 "<standard.mly>"
     ( x :: xs )
-# 1545 "parser.ml"
+# 1565 "parser.ml"
          in
         _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv424)) : 'freshtv426)
     | _ ->
@@ -1550,7 +1570,7 @@ and _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ : _menhir_env 
 and _menhir_goto_list_transition_hsm_ : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_list_transition_hsm_ -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     match _menhir_s with
-    | MenhirState127 ->
+    | MenhirState128 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv393 * _menhir_state * 'tv_transition_hsm) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -1563,10 +1583,10 @@ and _menhir_goto_list_transition_hsm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
         let _v : 'tv_list_transition_hsm_ = 
 # 213 "<standard.mly>"
     ( x :: xs )
-# 1567 "parser.ml"
+# 1587 "parser.ml"
          in
         _menhir_goto_list_transition_hsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv392)) : 'freshtv394)
-    | MenhirState119 ->
+    | MenhirState120 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv407 * _menhir_state * 'tv_state)) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -1580,7 +1600,7 @@ and _menhir_goto_list_transition_hsm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
         let _v : 'tv_psi_hsm = 
 # 52 "parser.mly"
                                 ( (q,ts) )
-# 1584 "parser.ml"
+# 1604 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv403) = _menhir_stack in
@@ -1599,11 +1619,11 @@ and _menhir_goto_list_transition_hsm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState134 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState135 _v
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState134) : 'freshtv396)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState135) : 'freshtv396)
         | IN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv397 * _menhir_state * 'tv_psi_hsm) = Obj.magic _menhir_stack in
@@ -1611,7 +1631,7 @@ and _menhir_goto_list_transition_hsm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
             let _v : 'tv_separated_nonempty_list_AND_psi_hsm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 1615 "parser.ml"
+# 1635 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_AND_psi_hsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv398)
         | _ ->
@@ -1627,7 +1647,7 @@ and _menhir_goto_list_transition_hsm_ : _menhir_env -> 'ttv_tail -> _menhir_stat
 and _menhir_goto_list_transition_efsm_ : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_list_transition_efsm_ -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     match _menhir_s with
-    | MenhirState101 ->
+    | MenhirState102 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv375 * _menhir_state * 'tv_transition_efsm) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -1640,10 +1660,10 @@ and _menhir_goto_list_transition_efsm_ : _menhir_env -> 'ttv_tail -> _menhir_sta
         let _v : 'tv_list_transition_efsm_ = 
 # 213 "<standard.mly>"
     ( x :: xs )
-# 1644 "parser.ml"
+# 1664 "parser.ml"
          in
         _menhir_goto_list_transition_efsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv374)) : 'freshtv376)
-    | MenhirState93 ->
+    | MenhirState94 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv389 * _menhir_state * 'tv_state)) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -1657,7 +1677,7 @@ and _menhir_goto_list_transition_efsm_ : _menhir_env -> 'ttv_tail -> _menhir_sta
         let _v : 'tv_psi_efsm = 
 # 37 "parser.mly"
                                          ( (q,ts) )
-# 1661 "parser.ml"
+# 1681 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv385) = _menhir_stack in
@@ -1676,11 +1696,11 @@ and _menhir_goto_list_transition_efsm_ : _menhir_env -> 'ttv_tail -> _menhir_sta
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState107 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState108 _v
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState107) : 'freshtv378)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState108) : 'freshtv378)
         | END ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv379 * _menhir_state * 'tv_psi_efsm) = Obj.magic _menhir_stack in
@@ -1688,7 +1708,7 @@ and _menhir_goto_list_transition_efsm_ : _menhir_env -> 'ttv_tail -> _menhir_sta
             let _v : 'tv_separated_nonempty_list_PIPE_psi_efsm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 1692 "parser.ml"
+# 1712 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_PIPE_psi_efsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv380)
         | _ ->
@@ -1728,18 +1748,18 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_atom__ : _menhir_env -> '
               
 # 232 "<standard.mly>"
     ( xs )
-# 1732 "parser.ml"
+# 1752 "parser.ml"
               
             in
             let xs = 
 # 232 "<standard.mly>"
     ( xs )
-# 1738 "parser.ml"
+# 1758 "parser.ml"
              in
             
-# 131 "parser.mly"
+# 132 "parser.mly"
                                                       ( Inst.Assign (List.combine xs es) )
-# 1743 "parser.ml"
+# 1763 "parser.ml"
              in
             _menhir_goto_inst _menhir_env _menhir_stack _menhir_s _v) : 'freshtv350)) : 'freshtv352)
         | _ ->
@@ -1767,12 +1787,12 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_atom__ : _menhir_env -> '
             let _v : 'tv_automaton_csm = let es = 
 # 232 "<standard.mly>"
     ( xs )
-# 1771 "parser.ml"
+# 1791 "parser.ml"
              in
             
 # 79 "parser.mly"
                                                       ( CSM.State (q,es) )
-# 1776 "parser.ml"
+# 1796 "parser.ml"
              in
             _menhir_goto_automaton_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv358)) : 'freshtv360)
         | _ ->
@@ -1782,7 +1802,7 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_atom__ : _menhir_env -> '
             let (_menhir_stack : (('freshtv361 * _menhir_state * 'tv_state)) * _menhir_state * 'tv_loption_separated_nonempty_list_COMMA_atom__) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv362)) : 'freshtv364)
-    | MenhirState154 ->
+    | MenhirState155 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv371 * _menhir_state * 'tv_state)) * _menhir_state * 'tv_loption_separated_nonempty_list_COMMA_atom__) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -1800,12 +1820,12 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_atom__ : _menhir_env -> '
             let _v : 'tv_automaton_psm = let es = 
 # 232 "<standard.mly>"
     ( xs )
-# 1804 "parser.ml"
+# 1824 "parser.ml"
              in
             
 # 63 "parser.mly"
                                                       ( PSM.State (q,es) )
-# 1809 "parser.ml"
+# 1829 "parser.ml"
              in
             _menhir_goto_automaton_psm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv366)) : 'freshtv368)
         | _ ->
@@ -1829,9 +1849,9 @@ and _menhir_goto_std_logic : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_st
     let (_menhir_s : _menhir_state) = _menhir_s in
     let ((v : 'tv_std_logic) : 'tv_std_logic) = _v in
     ((let _v : 'tv_prim = 
-# 101 "parser.mly"
+# 102 "parser.mly"
                            ( Atom.Std_logic v )
-# 1835 "parser.ml"
+# 1855 "parser.ml"
      in
     _menhir_goto_prim _menhir_env _menhir_stack _menhir_s _v) : 'freshtv346)) : 'freshtv348)
 
@@ -1875,9 +1895,9 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let _3 = () in
             let _1 = () in
             let _v : 'tv_atom = 
-# 113 "parser.mly"
+# 114 "parser.mly"
                          ( a )
-# 1881 "parser.ml"
+# 1901 "parser.ml"
              in
             _menhir_goto_atom _menhir_env _menhir_stack _menhir_s _v) : 'freshtv280)) : 'freshtv282)
         | TIMES ->
@@ -1917,14 +1937,14 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             _menhir_run15 _menhir_env (Obj.magic _menhir_stack)
         | TIMES ->
             _menhir_run13 _menhir_env (Obj.magic _menhir_stack)
-        | AND | COMMA | EOF | IF | IN | RPAREN | SEMICOL | THEN ->
+        | AND | COMMA | EOF | IDENT _ | IF | IN | LET | LPAREN | RETURN | RPAREN | SEMICOL | THEN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : (('freshtv287 * _menhir_state * 'tv_atom) * 'tv_binop) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let (((_menhir_stack, _menhir_s, (a1 : 'tv_atom)), (c : 'tv_binop)), _, (a2 : 'tv_atom)) = _menhir_stack in
             let _v : 'tv_prim = 
-# 103 "parser.mly"
+# 104 "parser.mly"
                            ( Atom.Binop(c,a1,a2) )
-# 1928 "parser.ml"
+# 1948 "parser.ml"
              in
             _menhir_goto_prim _menhir_env _menhir_stack _menhir_s _v) : 'freshtv288)
         | _ ->
@@ -1942,9 +1962,9 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
         ((let ((_menhir_stack, _menhir_s), _, (a : 'tv_atom)) = _menhir_stack in
         let _1 = () in
         let _v : 'tv_prim = 
-# 105 "parser.mly"
+# 106 "parser.mly"
                             ( Atom.Unop(Uminus,a) )
-# 1948 "parser.ml"
+# 1968 "parser.ml"
          in
         _menhir_goto_prim _menhir_env _menhir_stack _menhir_s _v) : 'freshtv294)) : 'freshtv296)
     | MenhirState4 ->
@@ -1955,9 +1975,9 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
         ((let ((_menhir_stack, _menhir_s), _, (a : 'tv_atom)) = _menhir_stack in
         let _1 = () in
         let _v : 'tv_prim = 
-# 104 "parser.mly"
+# 105 "parser.mly"
              ( Atom.Unop(Not,a) )
-# 1961 "parser.ml"
+# 1981 "parser.ml"
          in
         _menhir_goto_prim _menhir_env _menhir_stack _menhir_s _v) : 'freshtv298)) : 'freshtv300)
     | MenhirState1 ->
@@ -1988,7 +2008,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             _menhir_run15 _menhir_env (Obj.magic _menhir_stack)
         | TIMES ->
             _menhir_run13 _menhir_env (Obj.magic _menhir_stack)
-        | AND | EOF | IF | IN ->
+        | AND | EOF | IDENT _ | IF | IN | LET | LPAREN | RETURN ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : ('freshtv301 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let ((_menhir_stack, _menhir_s), _, (a : 'tv_atom)) = _menhir_stack in
@@ -1996,7 +2016,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let _v : 'tv_automaton_csm = 
 # 82 "parser.mly"
                 ( CSM.Return a )
-# 2000 "parser.ml"
+# 2020 "parser.ml"
              in
             _menhir_goto_automaton_csm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv302)
         | _ ->
@@ -2006,7 +2026,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let (_menhir_stack : ('freshtv303 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv304)) : 'freshtv306)
-    | MenhirState154 | MenhirState60 | MenhirState43 | MenhirState38 ->
+    | MenhirState155 | MenhirState60 | MenhirState43 | MenhirState38 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv313 * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -2067,7 +2087,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let _v : 'tv_separated_nonempty_list_COMMA_atom_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 2071 "parser.ml"
+# 2091 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_COMMA_atom_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv310)
         | _ ->
@@ -2135,7 +2155,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
         let (_menhir_stack : (('freshtv325 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2139 "parser.ml"
+# 2159 "parser.ml"
         ))) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
         let _tok = _menhir_env._menhir_token in
@@ -2167,18 +2187,18 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let (_menhir_stack : (('freshtv321 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2171 "parser.ml"
+# 2191 "parser.ml"
             ))) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let ((_menhir_stack, _menhir_s, (x : (
 # 9 "parser.mly"
        (string)
-# 2176 "parser.ml"
+# 2196 "parser.ml"
             ))), _, (a : 'tv_atom)) = _menhir_stack in
             let _2 = () in
             let _v : 'tv_inst = 
-# 129 "parser.mly"
+# 130 "parser.mly"
                          ( Inst.Assign [ (x,a) ] )
-# 2182 "parser.ml"
+# 2202 "parser.ml"
              in
             _menhir_goto_inst _menhir_env _menhir_stack _menhir_s _v) : 'freshtv322)
         | _ ->
@@ -2188,11 +2208,11 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let (_menhir_stack : (('freshtv323 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2192 "parser.ml"
+# 2212 "parser.ml"
             ))) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv324)) : 'freshtv326)
-    | MenhirState94 ->
+    | MenhirState95 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv331 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -2225,13 +2245,13 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run97 _menhir_env (Obj.magic _menhir_stack) MenhirState96 _v
+                _menhir_run98 _menhir_env (Obj.magic _menhir_stack) MenhirState97 _v
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState96
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState97
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState96) : 'freshtv328)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState97) : 'freshtv328)
         | TIMES ->
             _menhir_run13 _menhir_env (Obj.magic _menhir_stack)
         | _ ->
@@ -2241,7 +2261,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let (_menhir_stack : ('freshtv329 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv330)) : 'freshtv332)
-    | MenhirState120 ->
+    | MenhirState121 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv337 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -2274,13 +2294,13 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run97 _menhir_env (Obj.magic _menhir_stack) MenhirState122 _v
+                _menhir_run98 _menhir_env (Obj.magic _menhir_stack) MenhirState123 _v
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState122
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState123
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState122) : 'freshtv334)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState123) : 'freshtv334)
         | TIMES ->
             _menhir_run13 _menhir_env (Obj.magic _menhir_stack)
         | _ ->
@@ -2290,7 +2310,7 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let (_menhir_stack : ('freshtv335 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv336)) : 'freshtv338)
-    | MenhirState150 ->
+    | MenhirState151 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv343 * _menhir_state) * _menhir_state * 'tv_atom) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -2323,15 +2343,15 @@ and _menhir_goto_atom : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_atom ->
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState152 _v
+                _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState153 _v
             | LET ->
-                _menhir_run143 _menhir_env (Obj.magic _menhir_stack) MenhirState152
+                _menhir_run144 _menhir_env (Obj.magic _menhir_stack) MenhirState153
             | LPAREN ->
-                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState152
+                _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState153
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState152) : 'freshtv340)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState153) : 'freshtv340)
         | TIMES ->
             _menhir_run13 _menhir_env (Obj.magic _menhir_stack)
         | _ ->
@@ -2355,9 +2375,9 @@ and _menhir_goto_prim : _menhir_env -> 'ttv_tail -> _menhir_state -> 'tv_prim ->
     let (_menhir_s : _menhir_state) = _menhir_s in
     let ((p : 'tv_prim) : 'tv_prim) = _v in
     ((let _v : 'tv_atom = 
-# 112 "parser.mly"
+# 113 "parser.mly"
                          ( Atom.Prim p )
-# 2361 "parser.ml"
+# 2381 "parser.ml"
      in
     _menhir_goto_atom _menhir_env _menhir_stack _menhir_s _v) : 'freshtv276)) : 'freshtv278)
 
@@ -2450,8 +2470,16 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_IDENT__ : _menhir_env -> 
                 ((let _menhir_env = _menhir_discard _menhir_env in
                 let _tok = _menhir_env._menhir_token in
                 match _tok with
+                | IDENT _v ->
+                    _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState52 _v
                 | IF ->
                     _menhir_run53 _menhir_env (Obj.magic _menhir_stack) MenhirState52
+                | LET ->
+                    _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState52
+                | LPAREN ->
+                    _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState52
+                | RETURN ->
+                    _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState52
                 | AND | IN ->
                     _menhir_reduce35 _menhir_env (Obj.magic _menhir_stack) MenhirState52
                 | _ ->
@@ -2472,7 +2500,7 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_IDENT__ : _menhir_env -> 
             let (_menhir_stack : (('freshtv261 * _menhir_state * 'tv_state)) * _menhir_state * 'tv_loption_separated_nonempty_list_COMMA_IDENT__) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv262)) : 'freshtv264)
-    | MenhirState146 ->
+    | MenhirState147 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv273 * _menhir_state * 'tv_state)) * _menhir_state * 'tv_loption_separated_nonempty_list_COMMA_IDENT__) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -2491,13 +2519,13 @@ and _menhir_goto_loption_separated_nonempty_list_COMMA_IDENT__ : _menhir_env -> 
                 let _tok = _menhir_env._menhir_token in
                 match _tok with
                 | IF ->
-                    _menhir_run150 _menhir_env (Obj.magic _menhir_stack) MenhirState149
+                    _menhir_run151 _menhir_env (Obj.magic _menhir_stack) MenhirState150
                 | AND | IN ->
-                    _menhir_reduce41 _menhir_env (Obj.magic _menhir_stack) MenhirState149
+                    _menhir_reduce41 _menhir_env (Obj.magic _menhir_stack) MenhirState150
                 | _ ->
                     assert (not _menhir_env._menhir_error);
                     _menhir_env._menhir_error <- true;
-                    _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState149) : 'freshtv266)
+                    _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState150) : 'freshtv266)
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
@@ -2523,7 +2551,7 @@ and _menhir_goto_separated_nonempty_list_COMMA_IDENT_ : _menhir_env -> 'ttv_tail
         let (_menhir_stack : ('freshtv235 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2527 "parser.ml"
+# 2555 "parser.ml"
         ))) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
         let (_v : 'tv_separated_nonempty_list_COMMA_IDENT_) = _v in
@@ -2531,23 +2559,23 @@ and _menhir_goto_separated_nonempty_list_COMMA_IDENT_ : _menhir_env -> 'ttv_tail
         let (_menhir_stack : ('freshtv233 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2535 "parser.ml"
+# 2563 "parser.ml"
         ))) = Obj.magic _menhir_stack in
         let (_ : _menhir_state) = _menhir_s in
         let ((xs : 'tv_separated_nonempty_list_COMMA_IDENT_) : 'tv_separated_nonempty_list_COMMA_IDENT_) = _v in
         ((let (_menhir_stack, _menhir_s, (x : (
 # 9 "parser.mly"
        (string)
-# 2542 "parser.ml"
+# 2570 "parser.ml"
         ))) = _menhir_stack in
         let _2 = () in
         let _v : 'tv_separated_nonempty_list_COMMA_IDENT_ = 
 # 243 "<standard.mly>"
     ( x :: xs )
-# 2548 "parser.ml"
+# 2576 "parser.ml"
          in
         _menhir_goto_separated_nonempty_list_COMMA_IDENT_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv234)) : 'freshtv236)
-    | MenhirState146 | MenhirState49 | MenhirState30 ->
+    | MenhirState147 | MenhirState49 | MenhirState30 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv239) = Obj.magic _menhir_stack in
         let (_menhir_s : _menhir_state) = _menhir_s in
@@ -2559,7 +2587,7 @@ and _menhir_goto_separated_nonempty_list_COMMA_IDENT_ : _menhir_env -> 'ttv_tail
         ((let _v : 'tv_loption_separated_nonempty_list_COMMA_IDENT__ = 
 # 144 "<standard.mly>"
     ( x )
-# 2563 "parser.ml"
+# 2591 "parser.ml"
          in
         _menhir_goto_loption_separated_nonempty_list_COMMA_IDENT__ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv238)) : 'freshtv240)
     | _ ->
@@ -2574,7 +2602,7 @@ and _menhir_goto_automaton_hsm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState124 ->
+    | MenhirState125 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((((('freshtv219 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst)) * _menhir_state * 'tv_automaton_hsm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -2586,7 +2614,7 @@ and _menhir_goto_automaton_hsm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_transition_hsm = 
 # 55 "parser.mly"
                                                 ( (g,s,a) )
-# 2590 "parser.ml"
+# 2618 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv215) = _menhir_stack in
@@ -2599,14 +2627,14 @@ and _menhir_goto_automaton_hsm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IF ->
-            _menhir_run120 _menhir_env (Obj.magic _menhir_stack) MenhirState127
+            _menhir_run121 _menhir_env (Obj.magic _menhir_stack) MenhirState128
         | AND | IN ->
-            _menhir_reduce39 _menhir_env (Obj.magic _menhir_stack) MenhirState127
+            _menhir_reduce39 _menhir_env (Obj.magic _menhir_stack) MenhirState128
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState127) : 'freshtv214)) : 'freshtv216)) : 'freshtv218)) : 'freshtv220)
-    | MenhirState131 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState128) : 'freshtv214)) : 'freshtv216)) : 'freshtv218)) : 'freshtv220)
+    | MenhirState132 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv223 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_hsm_)) * _menhir_state * 'tv_automaton_hsm) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -2618,10 +2646,10 @@ and _menhir_goto_automaton_hsm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
         let _v : 'tv_automaton_hsm = 
 # 49 "parser.mly"
                                                                      ( HSM.LetRec (bs,a) )
-# 2622 "parser.ml"
+# 2650 "parser.ml"
          in
         _menhir_goto_automaton_hsm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv222)) : 'freshtv224)
-    | MenhirState140 | MenhirState115 ->
+    | MenhirState141 | MenhirState116 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv231 * _menhir_state * 'tv_automaton_hsm) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -2634,13 +2662,13 @@ and _menhir_goto_automaton_hsm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState140 _v
+                _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState141 _v
             | LET ->
-                _menhir_run116 _menhir_env (Obj.magic _menhir_stack) MenhirState140
+                _menhir_run117 _menhir_env (Obj.magic _menhir_stack) MenhirState141
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState140) : 'freshtv226)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState141) : 'freshtv226)
         | EOF ->
             let (_menhir_env : _menhir_env) = _menhir_env in
             let (_menhir_stack : 'freshtv227 * _menhir_state * 'tv_automaton_hsm) = Obj.magic _menhir_stack in
@@ -2648,7 +2676,7 @@ and _menhir_goto_automaton_hsm : _menhir_env -> 'ttv_tail -> _menhir_state -> 't
             let _v : 'tv_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 2652 "parser.ml"
+# 2680 "parser.ml"
              in
             _menhir_goto_separated_nonempty_list_PIPE_PIPE_automaton_hsm_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv228)
         | _ ->
@@ -2666,79 +2694,79 @@ and _menhir_reduce39 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return 
     let _v : 'tv_list_transition_hsm_ = 
 # 211 "<standard.mly>"
     ( [] )
-# 2670 "parser.ml"
+# 2698 "parser.ml"
      in
     _menhir_goto_list_transition_hsm_ _menhir_env _menhir_stack _menhir_s _v
 
-and _menhir_run120 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
+and _menhir_run121 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _menhir_stack = (_menhir_stack, _menhir_s) in
     let _menhir_env = _menhir_discard _menhir_env in
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | BOOL_LIT _v ->
-        _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState120 _v
+        _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState121 _v
     | IDENT _v ->
-        _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState120 _v
+        _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState121 _v
     | INT_LIT _v ->
-        _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState120 _v
+        _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState121 _v
     | LPAREN ->
-        _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState120
+        _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState121
     | MINUS ->
-        _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState120
+        _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState121
     | NOT ->
-        _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState120
+        _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState121
     | ONE ->
-        _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState120
+        _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState121
     | ZERO ->
-        _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState120
+        _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState121
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState120
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState121
 
 and _menhir_reduce37 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _v : 'tv_list_transition_efsm_ = 
 # 211 "<standard.mly>"
     ( [] )
-# 2706 "parser.ml"
+# 2734 "parser.ml"
      in
     _menhir_goto_list_transition_efsm_ _menhir_env _menhir_stack _menhir_s _v
 
-and _menhir_run94 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
+and _menhir_run95 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _menhir_stack = (_menhir_stack, _menhir_s) in
     let _menhir_env = _menhir_discard _menhir_env in
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | BOOL_LIT _v ->
-        _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState94 _v
+        _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState95 _v
     | IDENT _v ->
-        _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState94 _v
+        _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState95 _v
     | INT_LIT _v ->
-        _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState94 _v
+        _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState95 _v
     | LPAREN ->
-        _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState94
+        _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState95
     | MINUS ->
-        _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState94
+        _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState95
     | NOT ->
-        _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState94
+        _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState95
     | ONE ->
-        _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState94
+        _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState95
     | ZERO ->
-        _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState94
+        _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState95
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState94
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState95
 
 and _menhir_reduce45 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _v : 'tv_loption_separated_nonempty_list_COMMA_atom__ = 
 # 142 "<standard.mly>"
     ( [] )
-# 2742 "parser.ml"
+# 2770 "parser.ml"
      in
     _menhir_goto_loption_separated_nonempty_list_COMMA_atom__ _menhir_env _menhir_stack _menhir_s _v
 
@@ -2750,9 +2778,9 @@ and _menhir_run2 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
     let (_menhir_s : _menhir_state) = _menhir_s in
     ((let _1 = () in
     let _v : 'tv_std_logic = 
-# 107 "parser.mly"
+# 108 "parser.mly"
        ( Atom.Zero )
-# 2756 "parser.ml"
+# 2784 "parser.ml"
      in
     _menhir_goto_std_logic _menhir_env _menhir_stack _menhir_s _v) : 'freshtv212)
 
@@ -2764,9 +2792,9 @@ and _menhir_run3 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
     let (_menhir_s : _menhir_state) = _menhir_s in
     ((let _1 = () in
     let _v : 'tv_std_logic = 
-# 108 "parser.mly"
+# 109 "parser.mly"
        ( Atom.One )
-# 2770 "parser.ml"
+# 2798 "parser.ml"
      in
     _menhir_goto_std_logic _menhir_env _menhir_stack _menhir_s _v) : 'freshtv210)
 
@@ -2854,7 +2882,7 @@ and _menhir_run6 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
 and _menhir_run7 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 11 "parser.mly"
        (int)
-# 2858 "parser.ml"
+# 2886 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_env = _menhir_discard _menhir_env in
@@ -2864,23 +2892,23 @@ and _menhir_run7 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
     let ((n : (
 # 11 "parser.mly"
        (int)
-# 2868 "parser.ml"
+# 2896 "parser.ml"
     )) : (
 # 11 "parser.mly"
        (int)
-# 2872 "parser.ml"
+# 2900 "parser.ml"
     )) = _v in
     ((let _v : 'tv_prim = 
-# 102 "parser.mly"
+# 103 "parser.mly"
                            ( Atom.Int n )
-# 2877 "parser.ml"
+# 2905 "parser.ml"
      in
     _menhir_goto_prim _menhir_env _menhir_stack _menhir_s _v) : 'freshtv208)
 
 and _menhir_run8 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 9 "parser.mly"
        (string)
-# 2884 "parser.ml"
+# 2912 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_env = _menhir_discard _menhir_env in
@@ -2890,23 +2918,23 @@ and _menhir_run8 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
     let ((x : (
 # 9 "parser.mly"
        (string)
-# 2894 "parser.ml"
+# 2922 "parser.ml"
     )) : (
 # 9 "parser.mly"
        (string)
-# 2898 "parser.ml"
+# 2926 "parser.ml"
     )) = _v in
     ((let _v : 'tv_atom = 
-# 111 "parser.mly"
+# 112 "parser.mly"
                          ( Atom.Var x )
-# 2903 "parser.ml"
+# 2931 "parser.ml"
      in
     _menhir_goto_atom _menhir_env _menhir_stack _menhir_s _v) : 'freshtv206)
 
 and _menhir_run9 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 10 "parser.mly"
        (bool)
-# 2910 "parser.ml"
+# 2938 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_env = _menhir_discard _menhir_env in
@@ -2916,23 +2944,23 @@ and _menhir_run9 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
     let ((b : (
 # 10 "parser.mly"
        (bool)
-# 2920 "parser.ml"
+# 2948 "parser.ml"
     )) : (
 # 10 "parser.mly"
        (bool)
-# 2924 "parser.ml"
+# 2952 "parser.ml"
     )) = _v in
     ((let _v : 'tv_prim = 
-# 100 "parser.mly"
+# 101 "parser.mly"
                            ( Atom.Bool b )
-# 2929 "parser.ml"
+# 2957 "parser.ml"
      in
     _menhir_goto_prim _menhir_env _menhir_stack _menhir_s _v) : 'freshtv204)
 
-and _menhir_run76 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
+and _menhir_run77 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 9 "parser.mly"
        (string)
-# 2936 "parser.ml"
+# 2964 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
@@ -2944,23 +2972,23 @@ and _menhir_run76 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv199 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2948 "parser.ml"
+# 2976 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let _menhir_env = _menhir_discard _menhir_env in
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IDENT _v ->
-            _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState77 _v
+            _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState78 _v
         | LET ->
-            _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState77
+            _menhir_run45 _menhir_env (Obj.magic _menhir_stack) MenhirState78
         | LPAREN ->
-            _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState77
+            _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState78
         | RETURN ->
-            _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState77
+            _menhir_run1 _menhir_env (Obj.magic _menhir_stack) MenhirState78
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState77) : 'freshtv200)
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState78) : 'freshtv200)
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
@@ -2968,7 +2996,7 @@ and _menhir_run76 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv201 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 2972 "parser.ml"
+# 3000 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv202)
@@ -2982,25 +3010,25 @@ and _menhir_goto_option_PIPE_ : _menhir_env -> 'ttv_tail -> 'tv_option_PIPE_ -> 
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | IDENT _v ->
-        _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState91 _v
+        _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState92 _v
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState91) : 'freshtv198)
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState92) : 'freshtv198)
 
 and _menhir_reduce43 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _v : 'tv_loption_separated_nonempty_list_COMMA_IDENT__ = 
 # 142 "<standard.mly>"
     ( [] )
-# 2997 "parser.ml"
+# 3025 "parser.ml"
      in
     _menhir_goto_loption_separated_nonempty_list_COMMA_IDENT__ _menhir_env _menhir_stack _menhir_s _v
 
 and _menhir_run31 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 9 "parser.mly"
        (string)
-# 3004 "parser.ml"
+# 3032 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
@@ -3012,7 +3040,7 @@ and _menhir_run31 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv191 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3016 "parser.ml"
+# 3044 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let _menhir_env = _menhir_discard _menhir_env in
         let _tok = _menhir_env._menhir_token in
@@ -3028,17 +3056,17 @@ and _menhir_run31 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv193 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3032 "parser.ml"
+# 3060 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, (x : (
 # 9 "parser.mly"
        (string)
-# 3037 "parser.ml"
+# 3065 "parser.ml"
         ))) = _menhir_stack in
         let _v : 'tv_separated_nonempty_list_COMMA_IDENT_ = 
 # 241 "<standard.mly>"
     ( [ x ] )
-# 3042 "parser.ml"
+# 3070 "parser.ml"
          in
         _menhir_goto_separated_nonempty_list_COMMA_IDENT_ _menhir_env _menhir_stack _menhir_s _v) : 'freshtv194)
     | _ ->
@@ -3048,7 +3076,7 @@ and _menhir_run31 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv195 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3052 "parser.ml"
+# 3080 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv196)
@@ -3056,18 +3084,18 @@ and _menhir_run31 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3060 "parser.ml"
+# 3088 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack ->
     let (_menhir_stack, _menhir_s, (x : (
 # 9 "parser.mly"
        (string)
-# 3066 "parser.ml"
+# 3094 "parser.ml"
     ))) = _menhir_stack in
     let _v : 'tv_state = 
-# 97 "parser.mly"
+# 98 "parser.mly"
           ( x )
-# 3071 "parser.ml"
+# 3099 "parser.ml"
      in
     let (_menhir_env : _menhir_env) = _menhir_env in
     let (_menhir_stack : 'freshtv189) = _menhir_stack in
@@ -3075,7 +3103,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
     let (_v : 'tv_state) = _v in
     ((let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
     match _menhir_s with
-    | MenhirState74 | MenhirState46 ->
+    | MenhirState75 | MenhirState46 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv145 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -3102,7 +3130,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let (_menhir_stack : 'freshtv143 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv144)) : 'freshtv146)
-    | MenhirState0 | MenhirState80 | MenhirState77 | MenhirState71 | MenhirState64 | MenhirState55 ->
+    | MenhirState0 | MenhirState81 | MenhirState78 | MenhirState72 | MenhirState52 | MenhirState67 | MenhirState64 | MenhirState55 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv151 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -3143,7 +3171,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let (_menhir_stack : 'freshtv149 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv150)) : 'freshtv152)
-    | MenhirState107 | MenhirState91 ->
+    | MenhirState108 | MenhirState92 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv157 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -3156,13 +3184,13 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IF ->
-                _menhir_run94 _menhir_env (Obj.magic _menhir_stack) MenhirState93
+                _menhir_run95 _menhir_env (Obj.magic _menhir_stack) MenhirState94
             | END | PIPE ->
-                _menhir_reduce37 _menhir_env (Obj.magic _menhir_stack) MenhirState93
+                _menhir_reduce37 _menhir_env (Obj.magic _menhir_stack) MenhirState94
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState93) : 'freshtv154)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState94) : 'freshtv154)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -3170,7 +3198,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let (_menhir_stack : 'freshtv155 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv156)) : 'freshtv158)
-    | MenhirState99 ->
+    | MenhirState100 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((((('freshtv165 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst)) * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -3182,7 +3210,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
         let _v : 'tv_transition_efsm = 
 # 40 "parser.mly"
                                         ( (g,s,q) )
-# 3186 "parser.ml"
+# 3214 "parser.ml"
          in
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv161) = _menhir_stack in
@@ -3195,14 +3223,14 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IF ->
-            _menhir_run94 _menhir_env (Obj.magic _menhir_stack) MenhirState101
+            _menhir_run95 _menhir_env (Obj.magic _menhir_stack) MenhirState102
         | END | PIPE ->
-            _menhir_reduce37 _menhir_env (Obj.magic _menhir_stack) MenhirState101
+            _menhir_reduce37 _menhir_env (Obj.magic _menhir_stack) MenhirState102
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState101) : 'freshtv160)) : 'freshtv162)) : 'freshtv164)) : 'freshtv166)
-    | MenhirState134 | MenhirState117 ->
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState102) : 'freshtv160)) : 'freshtv162)) : 'freshtv164)) : 'freshtv166)
+    | MenhirState135 | MenhirState118 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv171 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -3215,13 +3243,13 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IF ->
-                _menhir_run120 _menhir_env (Obj.magic _menhir_stack) MenhirState119
+                _menhir_run121 _menhir_env (Obj.magic _menhir_stack) MenhirState120
             | AND | IN ->
-                _menhir_reduce39 _menhir_env (Obj.magic _menhir_stack) MenhirState119
+                _menhir_reduce39 _menhir_env (Obj.magic _menhir_stack) MenhirState120
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState119) : 'freshtv168)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState120) : 'freshtv168)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -3229,7 +3257,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let (_menhir_stack : 'freshtv169 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv170)) : 'freshtv172)
-    | MenhirState140 | MenhirState115 | MenhirState131 | MenhirState124 ->
+    | MenhirState141 | MenhirState116 | MenhirState132 | MenhirState125 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv175 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((let (_menhir_env : _menhir_env) = _menhir_env in
@@ -3238,10 +3266,10 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
         let _v : 'tv_automaton_hsm = 
 # 48 "parser.mly"
           ( HSM.State q )
-# 3242 "parser.ml"
+# 3270 "parser.ml"
          in
         _menhir_goto_automaton_hsm _menhir_env _menhir_stack _menhir_s _v) : 'freshtv174)) : 'freshtv176)
-    | MenhirState168 | MenhirState144 ->
+    | MenhirState169 | MenhirState145 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv181 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -3254,13 +3282,13 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | IDENT _v ->
-                _menhir_run31 _menhir_env (Obj.magic _menhir_stack) MenhirState146 _v
+                _menhir_run31 _menhir_env (Obj.magic _menhir_stack) MenhirState147 _v
             | RPAREN ->
-                _menhir_reduce43 _menhir_env (Obj.magic _menhir_stack) MenhirState146
+                _menhir_reduce43 _menhir_env (Obj.magic _menhir_stack) MenhirState147
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState146) : 'freshtv178)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState147) : 'freshtv178)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -3268,7 +3296,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let (_menhir_stack : 'freshtv179 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
             ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
             _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv180)) : 'freshtv182)
-    | MenhirState174 | MenhirState142 | MenhirState165 | MenhirState158 | MenhirState152 ->
+    | MenhirState175 | MenhirState143 | MenhirState166 | MenhirState159 | MenhirState153 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv187 * _menhir_state * 'tv_state) = Obj.magic _menhir_stack in
         ((assert (not _menhir_env._menhir_error);
@@ -3281,27 +3309,27 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
             let _tok = _menhir_env._menhir_token in
             match _tok with
             | BOOL_LIT _v ->
-                _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState154 _v
+                _menhir_run9 _menhir_env (Obj.magic _menhir_stack) MenhirState155 _v
             | IDENT _v ->
-                _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState154 _v
+                _menhir_run8 _menhir_env (Obj.magic _menhir_stack) MenhirState155 _v
             | INT_LIT _v ->
-                _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState154 _v
+                _menhir_run7 _menhir_env (Obj.magic _menhir_stack) MenhirState155 _v
             | LPAREN ->
-                _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState154
+                _menhir_run6 _menhir_env (Obj.magic _menhir_stack) MenhirState155
             | MINUS ->
-                _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState154
+                _menhir_run5 _menhir_env (Obj.magic _menhir_stack) MenhirState155
             | NOT ->
-                _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState154
+                _menhir_run4 _menhir_env (Obj.magic _menhir_stack) MenhirState155
             | ONE ->
-                _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState154
+                _menhir_run3 _menhir_env (Obj.magic _menhir_stack) MenhirState155
             | ZERO ->
-                _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState154
+                _menhir_run2 _menhir_env (Obj.magic _menhir_stack) MenhirState155
             | RPAREN ->
-                _menhir_reduce45 _menhir_env (Obj.magic _menhir_stack) MenhirState154
+                _menhir_reduce45 _menhir_env (Obj.magic _menhir_stack) MenhirState155
             | _ ->
                 assert (not _menhir_env._menhir_error);
                 _menhir_env._menhir_error <- true;
-                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState154) : 'freshtv184)
+                _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState155) : 'freshtv184)
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
@@ -3315,7 +3343,7 @@ and _menhir_reduce80 : _menhir_env -> 'ttv_tail * _menhir_state * (
 and _menhir_run57 : _menhir_env -> 'ttv_tail * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3319 "parser.ml"
+# 3347 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack ->
     let _menhir_env = _menhir_discard _menhir_env in
@@ -3376,7 +3404,7 @@ and _menhir_run45 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | IDENT _v ->
-        _menhir_run76 _menhir_env (Obj.magic _menhir_stack) MenhirState45 _v
+        _menhir_run77 _menhir_env (Obj.magic _menhir_stack) MenhirState45 _v
     | REC ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv139 * _menhir_state) = Obj.magic _menhir_stack in
@@ -3396,7 +3424,7 @@ and _menhir_run45 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         _menhir_env._menhir_error <- true;
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState45
 
-and _menhir_run89 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
+and _menhir_run90 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _menhir_stack = (_menhir_stack, _menhir_s) in
     let _menhir_env = _menhir_discard _menhir_env in
@@ -3412,7 +3440,7 @@ and _menhir_run89 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         let _v : 'tv_option_PIPE_ = 
 # 116 "<standard.mly>"
     ( Some x )
-# 3416 "parser.ml"
+# 3444 "parser.ml"
          in
         _menhir_goto_option_PIPE_ _menhir_env _menhir_stack _v) : 'freshtv132)) : 'freshtv134)
     | IDENT _ ->
@@ -3421,7 +3449,7 @@ and _menhir_run89 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         ((let _v : 'tv_option_PIPE_ = 
 # 114 "<standard.mly>"
     ( None )
-# 3425 "parser.ml"
+# 3453 "parser.ml"
          in
         _menhir_goto_option_PIPE_ _menhir_env _menhir_stack _v) : 'freshtv136)
     | _ ->
@@ -3432,7 +3460,7 @@ and _menhir_run89 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         ((let (_menhir_stack, _menhir_s) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv138)
 
-and _menhir_run116 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
+and _menhir_run117 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _menhir_stack = (_menhir_stack, _menhir_s) in
     let _menhir_env = _menhir_discard _menhir_env in
@@ -3445,11 +3473,11 @@ and _menhir_run116 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IDENT _v ->
-            _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState117 _v
+            _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState118 _v
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState117) : 'freshtv128)
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState118) : 'freshtv128)
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
@@ -3461,7 +3489,7 @@ and _menhir_run116 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
 and _menhir_run47 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 9 "parser.mly"
        (string)
-# 3465 "parser.ml"
+# 3493 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
@@ -3471,183 +3499,183 @@ and _menhir_run47 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 and _menhir_errorcase : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     match _menhir_s with
-    | MenhirState174 ->
+    | MenhirState175 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv15 * _menhir_state * 'tv_automaton_psm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv16)
-    | MenhirState168 ->
+    | MenhirState169 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv17 * _menhir_state * 'tv_psi_psm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv18)
-    | MenhirState165 ->
+    | MenhirState166 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv19 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_psm_)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv20)
-    | MenhirState161 ->
+    | MenhirState162 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv21 * _menhir_state * 'tv_transition_psm) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv22)
-    | MenhirState158 ->
+    | MenhirState159 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv23 * _menhir_state * 'tv_inst)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv24)
-    | MenhirState154 ->
+    | MenhirState155 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv25 * _menhir_state * 'tv_state)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv26)
-    | MenhirState152 ->
+    | MenhirState153 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv27 * _menhir_state) * _menhir_state * 'tv_atom)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv28)
-    | MenhirState150 ->
+    | MenhirState151 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv29 * _menhir_state) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv30)
-    | MenhirState149 ->
+    | MenhirState150 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv31 * _menhir_state * 'tv_state)) * _menhir_state * 'tv_loption_separated_nonempty_list_COMMA_IDENT__))) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv32)
-    | MenhirState146 ->
+    | MenhirState147 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv33 * _menhir_state * 'tv_state)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv34)
-    | MenhirState144 ->
+    | MenhirState145 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv35 * _menhir_state)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv36)
-    | MenhirState142 ->
+    | MenhirState143 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv37) = Obj.magic _menhir_stack in
         (raise _eRR : 'freshtv38)
-    | MenhirState140 ->
+    | MenhirState141 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv39 * _menhir_state * 'tv_automaton_hsm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv40)
-    | MenhirState134 ->
+    | MenhirState135 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv41 * _menhir_state * 'tv_psi_hsm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv42)
-    | MenhirState131 ->
+    | MenhirState132 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv43 * _menhir_state)) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_hsm_)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv44)
-    | MenhirState127 ->
+    | MenhirState128 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv45 * _menhir_state * 'tv_transition_hsm) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv46)
-    | MenhirState124 ->
+    | MenhirState125 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv47 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv48)
-    | MenhirState122 ->
+    | MenhirState123 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv49 * _menhir_state) * _menhir_state * 'tv_atom)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv50)
-    | MenhirState120 ->
+    | MenhirState121 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv51 * _menhir_state) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv52)
-    | MenhirState119 ->
+    | MenhirState120 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv53 * _menhir_state * 'tv_state)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv54)
-    | MenhirState117 ->
+    | MenhirState118 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv55 * _menhir_state)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv56)
-    | MenhirState115 ->
+    | MenhirState116 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv57) = Obj.magic _menhir_stack in
         (raise _eRR : 'freshtv58)
-    | MenhirState113 ->
+    | MenhirState114 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv59 * _menhir_state * 'tv_automaton_efsm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv60)
-    | MenhirState107 ->
+    | MenhirState108 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv61 * _menhir_state * 'tv_psi_efsm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv62)
-    | MenhirState101 ->
+    | MenhirState102 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv63 * _menhir_state * 'tv_transition_efsm) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv64)
-    | MenhirState99 ->
+    | MenhirState100 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (((('freshtv65 * _menhir_state) * _menhir_state * 'tv_atom)) * _menhir_state * 'tv_inst)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv66)
-    | MenhirState96 ->
+    | MenhirState97 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv67 * _menhir_state) * _menhir_state * 'tv_atom)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv68)
-    | MenhirState94 ->
+    | MenhirState95 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv69 * _menhir_state) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv70)
-    | MenhirState93 ->
+    | MenhirState94 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv71 * _menhir_state * 'tv_state)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv72)
-    | MenhirState91 ->
+    | MenhirState92 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv73 * _menhir_state) * 'tv_option_PIPE_) = Obj.magic _menhir_stack in
         ((let ((_menhir_stack, _menhir_s), _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv74)
-    | MenhirState88 ->
+    | MenhirState89 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : 'freshtv75) = Obj.magic _menhir_stack in
         (raise _eRR : 'freshtv76)
-    | MenhirState83 ->
+    | MenhirState84 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv77 * _menhir_state * 'tv_binding_csm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv78)
-    | MenhirState80 ->
+    | MenhirState81 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : (('freshtv79 * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_binding_csm_)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv80)
-    | MenhirState77 ->
+    | MenhirState78 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv81 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3642 "parser.ml"
+# 3670 "parser.ml"
         ))) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv82)
-    | MenhirState74 ->
+    | MenhirState75 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ('freshtv83 * _menhir_state * 'tv_psi_csm)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv84)
-    | MenhirState71 ->
+    | MenhirState72 ->
         let (_menhir_env : _menhir_env) = _menhir_env in
         let (_menhir_stack : ((('freshtv85 * _menhir_state) * _menhir_state) * _menhir_state * 'tv_separated_nonempty_list_AND_psi_csm_)) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
@@ -3672,7 +3700,7 @@ and _menhir_errorcase : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return
         let (_menhir_stack : ('freshtv93 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3676 "parser.ml"
+# 3704 "parser.ml"
         ))) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv94)
@@ -3721,7 +3749,7 @@ and _menhir_errorcase : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return
         let (_menhir_stack : ('freshtv111 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3725 "parser.ml"
+# 3753 "parser.ml"
         ))) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv112)
@@ -3775,7 +3803,7 @@ and _menhir_run30 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         _menhir_env._menhir_error <- true;
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState30
 
-and _menhir_run143 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
+and _menhir_run144 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s ->
     let _menhir_stack = (_menhir_stack, _menhir_s) in
     let _menhir_env = _menhir_discard _menhir_env in
@@ -3788,11 +3816,11 @@ and _menhir_run143 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
         let _tok = _menhir_env._menhir_token in
         match _tok with
         | IDENT _v ->
-            _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState144 _v
+            _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState145 _v
         | _ ->
             assert (not _menhir_env._menhir_error);
             _menhir_env._menhir_error <- true;
-            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState144) : 'freshtv12)
+            _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState145) : 'freshtv12)
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
@@ -3804,7 +3832,7 @@ and _menhir_run143 : _menhir_env -> 'ttv_tail -> _menhir_state -> 'ttv_return =
 and _menhir_run56 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
 # 9 "parser.mly"
        (string)
-# 3808 "parser.ml"
+# 3836 "parser.ml"
 ) -> 'ttv_return =
   fun _menhir_env _menhir_stack _menhir_s _v ->
     let _menhir_stack = (_menhir_stack, _menhir_s, _v) in
@@ -3822,7 +3850,7 @@ and _menhir_run56 : _menhir_env -> 'ttv_tail -> _menhir_state -> (
         let (_menhir_stack : 'freshtv9 * _menhir_state * (
 # 9 "parser.mly"
        (string)
-# 3826 "parser.ml"
+# 3854 "parser.ml"
         )) = Obj.magic _menhir_stack in
         ((let (_menhir_stack, _menhir_s, _) = _menhir_stack in
         _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) _menhir_s) : 'freshtv10)
@@ -3842,7 +3870,7 @@ and _menhir_discard : _menhir_env -> _menhir_env =
 and csm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
 # 27 "parser.mly"
        (Ast.CSM.prog)
-# 3846 "parser.ml"
+# 3874 "parser.ml"
 ) =
   fun lexer lexbuf ->
     let _menhir_env = {
@@ -3872,7 +3900,7 @@ and csm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
 and efsm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
 # 24 "parser.mly"
        (Ast.EFSM.prog)
-# 3876 "parser.ml"
+# 3904 "parser.ml"
 ) =
   fun lexer lexbuf ->
     let _menhir_env = {
@@ -3887,16 +3915,16 @@ and efsm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | AUTOMATON ->
-        _menhir_run89 _menhir_env (Obj.magic _menhir_stack) MenhirState88
+        _menhir_run90 _menhir_env (Obj.magic _menhir_stack) MenhirState89
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState88) : 'freshtv6))
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState89) : 'freshtv6))
 
 and hsm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
 # 25 "parser.mly"
        (Ast.HSM.prog)
-# 3900 "parser.ml"
+# 3928 "parser.ml"
 ) =
   fun lexer lexbuf ->
     let _menhir_env = {
@@ -3911,18 +3939,18 @@ and hsm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | IDENT _v ->
-        _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState115 _v
+        _menhir_run47 _menhir_env (Obj.magic _menhir_stack) MenhirState116 _v
     | LET ->
-        _menhir_run116 _menhir_env (Obj.magic _menhir_stack) MenhirState115
+        _menhir_run117 _menhir_env (Obj.magic _menhir_stack) MenhirState116
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState115) : 'freshtv4))
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState116) : 'freshtv4))
 
 and psm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
 # 26 "parser.mly"
        (Ast.PSM.prog)
-# 3926 "parser.ml"
+# 3954 "parser.ml"
 ) =
   fun lexer lexbuf ->
     let _menhir_env = {
@@ -3937,17 +3965,17 @@ and psm : (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (
     let _tok = _menhir_env._menhir_token in
     match _tok with
     | IDENT _v ->
-        _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState142 _v
+        _menhir_run56 _menhir_env (Obj.magic _menhir_stack) MenhirState143 _v
     | LET ->
-        _menhir_run143 _menhir_env (Obj.magic _menhir_stack) MenhirState142
+        _menhir_run144 _menhir_env (Obj.magic _menhir_stack) MenhirState143
     | LPAREN ->
-        _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState142
+        _menhir_run30 _menhir_env (Obj.magic _menhir_stack) MenhirState143
     | _ ->
         assert (not _menhir_env._menhir_error);
         _menhir_env._menhir_error <- true;
-        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState142) : 'freshtv2))
+        _menhir_errorcase _menhir_env (Obj.magic _menhir_stack) MenhirState143) : 'freshtv2))
 
 # 269 "<standard.mly>"
   
 
-# 3954 "parser.ml"
+# 3982 "parser.ml"

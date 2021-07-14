@@ -86,7 +86,8 @@ psi_csm:
 | q=state LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ ts=transition_csm* { (q,xs,ts) }
 
 transition_csm:
-| IF g=atom THEN a=automaton_csm { (g,a) }
+| a=automaton_csm { (Atom.Prim(Bool true),a) }
+| IF e=atom THEN a=automaton_csm { (e,a) }
 
 binding_csm:
 | x=IDENT EQ a=automaton_csm { (x,a) }
