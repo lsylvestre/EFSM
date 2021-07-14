@@ -96,18 +96,21 @@ binding_csm:
 state:
 | x=IDENT { x }
 
-atom:
-| LPAREN a=atom RPAREN     { a }
-| x=IDENT                  { Atom.Var x }
-| b=BOOL_LIT               { Atom.Prim(Bool b) }
-| v=std_logic              { Atom.Prim(Std_logic v) }
-| n=INT_LIT                { Atom.Prim(Int n) }       
-| a1=atom c=binop a2=atom  { Atom.Prim(Binop(c,a1,a2)) }
-| NOT a=atom { Atom.Prim(Unop(Not,a)) }
-| MINUS a=atom %prec UMINUS { Atom.Prim(Unop(Uminus,a)) }
+prim:
+| b=BOOL_LIT               { Atom.Bool b }
+| v=std_logic              { Atom.Std_logic v }
+| n=INT_LIT                { Atom.Int n }       
+| a1=atom c=binop a2=atom  { Atom.Binop(c,a1,a2) }
+| NOT a=atom { Atom.Unop(Not,a) }
+| MINUS a=atom %prec UMINUS { Atom.Unop(Uminus,a) }
 std_logic:
 | ZERO { Atom.Zero }
 | ONE  { Atom.One }
+
+atom:
+| x=IDENT                { Atom.Var x }
+| p=prim                 { Atom.Prim p }
+| LPAREN a=atom RPAREN   { a }
 
 binop:
 | PLUS { Atom.Add }

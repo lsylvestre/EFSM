@@ -44,9 +44,10 @@ let parse filename =
     | CSM -> 
         let a = Parser.csm Lexer.token lexbuf in 
         let psm = Csm2psm.c_prog a in
-        let hsm = Psm2hsm.c_prog ~env:[("control_sink",[])] psm in
-        let efsm = Hsm2efsm.c_prog ~theta:[("control_sink","control_sink")] hsm in
-        let vars = Typing_efsm.typ_prog ~glob_states:["control_sink"]  efsm in
+        let hsm = Psm2hsm.c_prog psm in
+        let efsm = Hsm2efsm.c_prog hsm in
+        (* Pprint_ast.PP_EFSM.pp_prog Format.std_formatter efsm; *)
+        let vars = Typing_efsm.typ_prog efsm in
         Efsm2vhdl.c_prog vars Format.std_formatter efsm
     | DSL -> failwith "todo"
   );

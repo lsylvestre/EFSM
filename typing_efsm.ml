@@ -148,7 +148,7 @@ let typ_inst env = function
                   | Some ty -> unify env ty t) bs
 
 let typ_transition env (_,ts) = 
-  List.iter (fun (a,s,_) -> 
+  List.iter (fun (a,s,_) ->
                unify env TBool (typ_atom env a); 
                typ_inst env s) ts
 
@@ -168,9 +168,9 @@ let typ_automaton glob_states env ((EFSM.Automaton l) as a) =
   List.iter (typ_transition env) l
 
 
-let typ_prog ?(glob_states=[]) p =
+let typ_prog p =
   let env = Tenv.create 10 in
-  List.iter (typ_automaton glob_states env) p;
+  List.iter (typ_automaton [] env) p;
   let (rvs,wvs,vl) = v_prog p in
   let f vs = 
     Vs.fold (fun x acc -> (x,Tenv.find env x)::acc) vs [] 

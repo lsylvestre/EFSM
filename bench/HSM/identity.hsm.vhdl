@@ -9,6 +9,7 @@ entity Main is
        signal reset : in std_logic);
 end entity;
 architecture RTL of Main is
+  
   type state_2_T is (LEVEL_1Q);
   signal state_2 : state_2_T;
 begin

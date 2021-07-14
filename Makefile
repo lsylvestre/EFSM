@@ -3,6 +3,7 @@ EXE=compile
 
 all:
 	$(CC) -c ast.ml
+	$(CC) -c pprint_ast.ml
 	menhir parser.mly
 	$(CC) -c parser.mli
 	$(CC) -c parser.ml
@@ -15,7 +16,7 @@ all:
 	$(CC) -c csm2psm.ml
 	$(CC) -c main.ml
 	
-	$(CC) -o $(EXE) ast.cmo lexer.cmo \
+	$(CC) -o $(EXE) ast.cmo pprint_ast.cmo lexer.cmo \
 	 parser.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo psm2hsm.cmo csm2psm.cmo main.cmo
 
 FILE=

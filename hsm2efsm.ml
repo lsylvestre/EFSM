@@ -17,7 +17,7 @@ let rec c_automaton theta = function
   let ps = List.map (c_transition theta') selects in
   let auts,selects' = List.split ps in
   let aut,q0 = c_automaton theta' a in
-  aut@List.concat auts@selects', q0
+  aut@selects'@List.concat auts, q0
 
 and c_transition theta (q,ss) = 
   let q' = substitute_state q theta in
@@ -33,6 +33,6 @@ let c_prog ?(theta=[]) p =
   List.map (fun a -> 
              let l,q = c_automaton theta a in
              match l with
-             | (q',_)::_ -> (* assert (q' = q);*) EFSM.Automaton l
+             | (q',_)::_ -> (* assert (q' = q);  ?*) EFSM.Automaton l
              | [] -> assert false
            ) p

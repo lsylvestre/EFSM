@@ -1,0 +1,8 @@
+-- revoir Figure 23 – Traduction de PSM vers HSM
+~> étendre theta en theta' dans C_A[let rec ...] plutôt que dans C_t[...]
+   (cf. psm2hsm.ml)
+
+-- csm2psm.ml : gérer les variables libres dans [let and in ...]
+
+-- revoir dans le rapport la règle de traduction c_prog de CSM vers HSM
+   avec rdy/start implicite. (telle qu'implémenté par la fonction c_prog dans csm2psm.ml)

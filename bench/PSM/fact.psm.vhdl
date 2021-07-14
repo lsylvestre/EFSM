@@ -15,25 +15,21 @@ architecture RTL of Main is
   signal params_3acc : integer;
   signal params_1n : integer;
   
-  type state_8_T is (LEVEL_7AUX, LEVEL_6FACT, LEVEL_6K, LEVEL_5Q_4);
+  type state_8_T is (LEVEL_5Q_4, LEVEL_6FACT, LEVEL_6K, LEVEL_7AUX);
   signal state_8 : state_8_T;
 begin
   process(reset,clock) begin
     if reset = '1' then
-      state_8 <= LEVEL_7AUX;
+      state_8 <= LEVEL_5Q_4;
         params_3n <= 0;
         params_3acc <= 0;
         params_1n <= 0;
     elsif rising_edge(clock) then
       case state_8 is
-        when LEVEL_7AUX =>
-          if params_3n <= 0 then
-            params_2x <= params_3acc;
-            state_8 <= LEVEL_6K;
-          elsif params_3n > 0 then
-            params_3n <= params_3n - 1;
-            params_3acc <= params_3n * x;
-            state_8 <= LEVEL_6K;
+        when LEVEL_5Q_4 =>
+          if true then
+            params_1n <= 42;
+            state_8 <= LEVEL_6FACT;
           else NULL;
           end if;
         when LEVEL_6FACT =>
@@ -44,10 +40,14 @@ begin
           else NULL;
           end if;
         when LEVEL_6K => NULL;
-        when LEVEL_5Q_4 =>
-          if true then
-            params_1n <= 42;
-            state_8 <= LEVEL_6FACT;
+        when LEVEL_7AUX =>
+          if params_3n <= 0 then
+            params_2x <= params_3acc;
+            state_8 <= LEVEL_6K;
+          elsif params_3n > 0 then
+            params_3n <= params_3n - 1;
+            params_3acc <= params_3n * x;
+            state_8 <= LEVEL_7AUX;
           else NULL;
           end if;
       end case;

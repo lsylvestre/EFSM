@@ -7,4 +7,4 @@ let rec fact(n) =
     in
     aux(n,1)
 in 
-fact(42)
+fact(dataa)

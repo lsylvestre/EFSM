@@ -28,6 +28,11 @@ let c_inst theta = function
 let bool b = 
   Atom.Prim (Atom.Bool b)
 
+let std_logic v = 
+  Atom.Prim (Atom.Std_logic v)
+
+let (=/=) a1 a2 = Atom.Prim(Binop(Neq,a1,a2))
+let (===) a1 a2 = Atom.Prim(Binop(Eq,a1,a2))
 let (&&&) a1 a2 = Atom.Prim(Binop(And,a1,a2))
 let (!!) x = Atom.Var x
 let (<:=) x e = Inst.Assign([(x,e)])
@@ -116,9 +121,13 @@ and c_transition q' d (q,xs,ts) =
 
 
 let c_prog a =
-  let q' = "control_sink" in
+  let idle = "control_sink" in
+  let start = "start" in
+  let rdy = "rdy" in
   let d = "result" in
-  let p,a' = c_automaton q' d a in
-  let a'' = PSM.LetRec([q',[],[]],a') in
+  let p,a' = c_automaton idle d a in
+  let a'' = PSM.LetRec([(idle,[],[(!! start =/= std_logic One, 
+                  PSM.Seq(rdy <:= std_logic One, PSM.State(idle,[])));
+                  (!! start === std_logic One, 
+                  PSM.Seq(rdy <:= std_logic Zero, a'))])],PSM.State(idle,[])) in
   p@[a'']
-
