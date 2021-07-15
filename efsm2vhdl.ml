@@ -449,7 +449,7 @@ let rec t_ML ty =
   | TBool -> "bool"
   | TInt -> "int"
   | TVar {contents=Ty t} -> 
-      t_val t
+      t_ML t
   | _ -> assert false (* todo *)
 
 
