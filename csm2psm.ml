@@ -121,7 +121,7 @@ and c_transition q' d (q,xs,ts) =
 
 
 let c_prog a =
-  let idle = "control_sink" in
+  let idle = "idle" in
   let start = "start" in
   let rdy = "rdy" in
   let d = "result" in

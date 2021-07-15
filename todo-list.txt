@@ -29,3 +29,11 @@ entity Main is
        signal r_61 : out integer;
        signal r_60 : out integer);
 ===========================================================
+
+-- avoir des annotations de types disponibles comme primitives
+
+-- pprint_ast à finir/corriger et intégrer des options dans main.ml pour l'appeler.
+
+-- syntaxe alternative pour les automates (à la place des let-rec)
+
+-- priorité de >= sur &&. Par exemple : (x3 >= x1 && x3 >= x2) 
