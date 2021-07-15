@@ -62,7 +62,11 @@ let v_prog p =
 
 (* typage *)
 
-type ty = TStd_logic | TBool | TInt | TVar of tvar ref
+type ty = 
+| TStd_logic 
+| TBool 
+| TInt 
+| TVar of tvar ref
 and tvar = V of int | Ty of ty
 
 module Tenv = Hashtbl;;
@@ -85,22 +89,27 @@ let newvar =
 
 let rec unify env t1 t2 = match t1,t2 with
 | TStd_logic, TStd_logic | TBool, TBool | TInt,TInt -> ()
-| TVar {contents=V n},TVar ({contents=V m} as v) -> v := V n
+| TVar {contents=V n},TVar ({contents=V m} as v) -> 
+v := V n
 | TVar {contents=Ty ty},TVar ({contents=V n} as v) 
 | TVar ({contents=V n} as v),TVar {contents=Ty ty} -> v := Ty ty
 | TVar {contents=Ty t1'},TVar {contents=Ty t2'} -> unify env t1' t2'
 | TVar {contents=Ty t},t' | t,TVar {contents=Ty t'} -> unify env t t' 
 | TVar ({contents=V n} as v),t | t,TVar ({contents=V n} as v) -> v := Ty t
 | _ -> print_env Format.std_formatter env;
-       Format.fprintf Format.std_formatter "\ncannot unify types %a and %a\n" print_ty t1 print_ty t2;
+       Format.fprintf Format.std_formatter "\ncannot unify types %a and %a\n" 
+         print_ty t1 
+         print_ty t2;
        failwith "unify"
 
-let rec typ_atom env = function
+let rec typ_atom env = function 
 | Atom.Var x -> 
   (match Tenv.find_opt env x with
-   | None -> let v = newvar() in Tenv.add env x v; v
-   | Some ty -> ty              
-  )
+   | None ->
+      let v = newvar() in
+      Tenv.add env x v; v
+   | Some ty -> 
+      ty)
 | Atom.Prim c -> 
   match c with
   | Std_logic _ -> TStd_logic
@@ -137,15 +146,14 @@ let rec typ_atom env = function
       unify env (typ_atom env a) TInt;
       TInt
 
-
 let typ_inst env = function
 | Inst.Assign bs -> 
     List.iter (fun (x,a) -> 
-                  let t = typ_atom env a in 
-                  match Tenv.find_opt env x with
-                  | None -> 
-                      Tenv.add env x t 
-                  | Some ty -> unify env ty t) bs
+                 let t = typ_atom env a in 
+                   match Tenv.find_opt env x with
+                   | None -> 
+                       Tenv.add env x t 
+                   | Some ty -> unify env ty t) bs
 
 let typ_transition env (_,ts) = 
   List.iter (fun (a,s,_) ->
@@ -167,12 +175,25 @@ let typ_automaton glob_states env ((EFSM.Automaton l) as a) =
   check_state_scope glob_states a;
   List.iter (typ_transition env) l
 
+let rec canon t = 
+  (* Si des variables de types ne peuvent pas être instantiées,
+     une exception est lancée *)
+  match t with 
+  | TVar{contents=Ty t} -> 
+      canon t
+  | TVar{contents=V n} -> 
+      failwith "Typing_efsm.canon: uninstantiated type variable"
+  | t -> t
 
 let typ_prog p =
   let env = Tenv.create 10 in
   List.iter (typ_automaton [] env) p;
   let (rvs,wvs,vl) = v_prog p in
   let f vs = 
-    Vs.fold (fun x acc -> (x,Tenv.find env x)::acc) vs [] 
+    Vs.fold (fun x acc ->
+               let ty = canon @@ Tenv.find env x in
+               (* [ty] est un type en forme normale. *)
+              (x,ty)::acc)
+      vs [] 
   in
   (f rvs, f wvs, List.map f vl) 

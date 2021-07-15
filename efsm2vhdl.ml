@@ -110,15 +110,13 @@ let c_transitions state_var fmt (q,ts) =
     fprintf fmt "else NULL;@,end if;@]"
 
 
-let rec default_value fmt ty = 
+let default_value fmt ty = 
   let open Typing_efsm in
   match ty with
   | TStd_logic -> pp_print_text fmt "-"
   | TBool -> pp_print_text fmt "false"
   | TInt -> pp_print_text fmt "0"
-  | TVar {contents=Ty t} -> default_value fmt t
-  | _ -> assert false (* todo *)
-  
+  | TVar _ -> assert false
 
 
 let c_automaton ~reset ~clock state_var locals fmt (EFSM.Automaton l) =
@@ -142,18 +140,17 @@ let c_automaton ~reset ~clock state_var locals fmt (EFSM.Automaton l) =
   fprintf fmt "@]end process;@," (* fix indent *)
 
 
-let rec c_ty fmt ty = 
+let c_ty fmt ty = 
   let open Typing_efsm in
   match ty with
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> pp_print_text fmt "integer"
-  | TVar {contents=Ty t} -> c_ty fmt t
-  | _ -> assert false (* todo *)
+  | TVar _ -> assert false
 
 
-
-let c_prog ?(reset="reset") ?(clock="clk") ?(entity_name="Main") (envi,envo,l_locals) fmt automata = 
+let c_prog ?(reset="reset") ?(clock="clk") 
+           ?(entity_name="Main") (envi,envo,l_locals) fmt automata = 
   fprintf fmt "@[<v>library ieee;@,";
   fprintf fmt "use ieee.std_logic_1164.all;@,";
   fprintf fmt "use ieee.numeric_std.all;@,@,";
@@ -215,7 +212,7 @@ let bin_of_int ?(pad=4) d =
   aux d (pad-1);
   to_string b
 
-let rec conversion_from_vect ty fmt data =
+let conversion_from_vect ty fmt data =
   let open Typing_efsm in
   match ty with
   | TStd_logic -> 
@@ -224,11 +221,9 @@ let rec conversion_from_vect ty fmt data =
       fprintf fmt "(%s(0)) = '1'" data
   | TInt -> 
       fprintf fmt "to_integer(unsigned(%s))" data
-  | TVar {contents=Ty t} -> 
-      conversion_from_vect t fmt data
-  | _ -> assert false (* todo *)
+  | TVar _ -> assert false
 
-let rec set_result dst ty fmt data =
+let set_result dst ty fmt data =
   let open Typing_efsm in
   match ty with
   | TStd_logic -> 
@@ -239,9 +234,7 @@ let rec set_result dst ty fmt data =
       fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@," dst;
   | TInt -> 
       fprintf fmt "%s <= std_logic_vector(to_unsigned(%s,%s'length))" dst data dst
-  | TVar {contents=Ty t} -> 
-      set_result dst t fmt data
-  | _ -> assert false (* todo *)
+  | TVar _ -> assert false
 
 
 
@@ -343,15 +336,13 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "end process;@]@,";
   fprintf fmt "end architecture;@]@,"
 
-let rec t_val ty =
+let t_val ty =
  let open Typing_efsm in
   match ty with
   | TStd_logic
   | TBool -> "Bool_val" 
   | TInt -> "Int_val"
-  | TVar {contents=Ty t} -> 
-      t_val t
-  | _ -> assert false (* todo *)
+  | TVar _ -> assert false
 
 let mk_platform_bindings fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
@@ -371,15 +362,13 @@ let mk_platform_bindings fmt (envi,envo,_) name =
   fprintf fmt "@]@,}@,@]"
 
 
-let rec t_C ty =
+let t_C ty =
  let open Typing_efsm in
   match ty with
   | TStd_logic
   | TBool
   | TInt -> "int"
-  | TVar {contents=Ty t} -> 
-      t_C t
-  | _ -> assert false (* todo *)
+  | TVar _ -> assert false
 
 let up = String.uppercase_ascii
 let low = String.lowercase_ascii
@@ -442,15 +431,13 @@ let mk_simul_c fmt (envi,envo,_) name =
 
 let mk_simul_h = mk_platform_h
 
-let rec t_ML ty =
+let t_ML ty =
  let open Typing_efsm in
   match ty with
   | TStd_logic
   | TBool -> "bool"
   | TInt -> "int"
-  | TVar {contents=Ty t} -> 
-      t_ML t
-  | _ -> assert false (* todo *)
+  | TVar _ -> assert false
 
 
 let mk_platform_ml fmt (envi,envo,_) name = 
