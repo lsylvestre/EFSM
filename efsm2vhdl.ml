@@ -458,7 +458,7 @@ let mk_platform_ml fmt (envi,envo,_) name =
   let tres = List.assoc "result" envo in
   fprintf fmt "@[<v>@[<v 2>module %s = struct@," (String.capitalize_ascii name);
   fprintf fmt "@[<hov>external %s : " (low name);
-  List.iter (fun (_,t) -> fprintf fmt "%s -> " (t_ML t)) envi;
+  List.iter (fun (x,t) -> fprintf fmt "%s:%s -> " (low x) (t_ML t)) envi;
   fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres)  (low name) "[@@noalloc]";
   fprintf fmt "@]@,end@,@]"
 
@@ -467,7 +467,7 @@ let mk_platform_mli fmt (envi,envo,_) name =
   let tres = List.assoc "result" envo in
   fprintf fmt "@[<v>@[<v 2>module %s : sig@," (String.capitalize_ascii name);
   fprintf fmt "@[<hov>external %s : " (low name);
-  List.iter (fun (_,t) -> fprintf fmt "%s -> " (t_ML t)) envi;
+  List.iter (fun (x,t) -> fprintf fmt "%s:%s -> " (low x)  (t_ML t)) envi;
   fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres)  (low name) "[@@noalloc]";
   fprintf fmt "@]@,end@,@]"
 
