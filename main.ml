@@ -7,7 +7,7 @@ let flag_print_ast = ref false
 type lang = EFSM | HSM | PSM | CSM | DSL
 
 let flag_lang = ref EFSM
-
+let flag_gen_cc = ref false
 
 
 let () =
@@ -18,8 +18,21 @@ let () =
       ("-efsm", set_lang EFSM,"EFSM");
       ("-hsm",  set_lang HSM,"HSM");
       ("-psm",  set_lang PSM,"PSM");
-      ("-csm",  set_lang CSM,"PSM")] add_file "Usage:\n  ./compile files" 
+      ("-csm",  set_lang CSM,"PSM");
+      ("-gen-cc", Arg.Set flag_gen_cc,
+       "generates source files needed to extend an O2B platform")] 
+      add_file "Usage:\n  ./compile files" 
 
+let mk_vhdl ?(with_cc=false) filename efsm =
+  let vars = Typing_efsm.typ_prog efsm in
+  let entity_name = Filename.(remove_extension @@ basename filename) in
+  let open Efsm2vhdl in
+  match !flag_gen_cc,!flag_lang with 
+  | false,_ -> c_prog ~entity_name vars Format.std_formatter efsm
+  | true,CSM -> Gen_platform.mk_vhdl_with_cc vars entity_name efsm 
+  | true,_ -> 
+     Printf.printf "*** warning: platform generation ignored.\n";
+     Printf.printf "To generate a platform, please give a CSM description"
 
 let parse filename = 
   let ic = open_in filename in
@@ -27,28 +40,23 @@ let parse filename =
     let lexbuf = Lexing.from_channel ic in
     (match !flag_lang with
     | EFSM ->
-        let efsm = Parser.efsm Lexer.token lexbuf in
-        let vars = Typing_efsm.typ_prog efsm in
-        Efsm2vhdl.c_prog vars Format.std_formatter efsm
+        Parser.efsm Lexer.token lexbuf
+        |> (mk_vhdl filename)
     | HSM -> 
-        let l = Parser.hsm Lexer.token lexbuf in 
-        let efsm = Hsm2efsm.c_prog l in
-        let vars = Typing_efsm.typ_prog efsm in
-        Efsm2vhdl.c_prog vars Format.std_formatter efsm
-    | PSM -> 
-        let l = Parser.psm Lexer.token lexbuf in 
-        let hsm = Psm2hsm.c_prog l in
-        let efsm = Hsm2efsm.c_prog hsm in
-        let vars = Typing_efsm.typ_prog efsm in
-        Efsm2vhdl.c_prog vars Format.std_formatter efsm
+        Parser.hsm Lexer.token lexbuf
+        |> Hsm2efsm.c_prog
+        |> (mk_vhdl filename)
+    | PSM ->  
+        Parser.psm Lexer.token lexbuf
+        |> Psm2hsm.c_prog
+        |> Hsm2efsm.c_prog
+        |> (mk_vhdl filename)
     | CSM -> 
-        let a = Parser.csm Lexer.token lexbuf in 
-        let psm = Csm2psm.c_prog a in
-        let hsm = Psm2hsm.c_prog psm in
-        let efsm = Hsm2efsm.c_prog hsm in
-        (* Pprint_ast.PP_EFSM.pp_prog Format.std_formatter efsm; *)
-        let vars = Typing_efsm.typ_prog efsm in
-        Efsm2vhdl.c_prog vars Format.std_formatter efsm
+        Parser.csm Lexer.token lexbuf
+        |> Csm2psm.c_prog
+        |> Psm2hsm.c_prog
+        |> Hsm2efsm.c_prog
+        |> (mk_vhdl filename)
     | DSL -> failwith "todo"
   );
      close_in ic

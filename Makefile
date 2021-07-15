@@ -14,10 +14,12 @@ all:
 	$(CC) -c hsm2efsm.ml
 	$(CC) -c psm2hsm.ml
 	$(CC) -c csm2psm.ml
+	$(CC) -c gen_platform.ml
 	$(CC) -c main.ml
 	
 	$(CC) -o $(EXE) ast.cmo pprint_ast.cmo lexer.cmo \
-	 parser.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo psm2hsm.cmo csm2psm.cmo main.cmo
+	 parser.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo \
+	 psm2hsm.cmo csm2psm.cmo gen_platform.cmo main.cmo
 
 FILE=
 OPT=
@@ -32,4 +34,5 @@ run:
 clean:
 	rm -f `find . -name "*.cmo"`
 	rm -f `find . -name "*.cmi"`
-	rm -f $(EXE) compile
+	rm -f $(EXE)
+	rm gen/*.vhdl gen/*.c gen/*.h gen/*.ml gen/*.mli
