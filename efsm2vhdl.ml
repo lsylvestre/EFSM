@@ -148,14 +148,8 @@ let c_ty fmt ty =
   | TInt -> pp_print_text fmt "integer"
   | TVar _ -> assert false
 
-
-(* todo: initialiser les signaux locaux [locals_shared]
-   dans les process qui les écrivent effectivement.
-   cela peut se faire en amont en ajoutant [locals_shared]
-   à la bonne place dans la liste d'associations [l_locals] *)
-
 let c_prog ?(reset="reset") ?(clock="clk") 
-           ?(entity_name="Main") (envi,envo,l_locals,locals_shared) fmt automata = 
+           ?(entity_name="Main") (envi,envo,l_locals) fmt automata = 
   fprintf fmt "@[<v>library ieee;@,";
   fprintf fmt "use ieee.std_logic_1164.all;@,";
   fprintf fmt "use ieee.numeric_std.all;@,@,";
@@ -178,7 +172,7 @@ let c_prog ?(reset="reset") ?(clock="clk")
   List.iter (fun l ->
     List.iter (fun (x,ty) ->
       fprintf fmt "signal %s : %a;@," x 
-        c_ty ty) l) (locals_shared :: l_locals);
+        c_ty ty) l) l_locals;
 
   let state_vars = List.map (fun _ -> Gensym.gensym "state") automata in
   List.iter2 (fun sv (EFSM.Automaton l) ->
@@ -243,7 +237,7 @@ let set_result dst ty fmt data =
 
 
 
-let gen_cc fmt (envi,envo,_,_) name =
+let gen_cc fmt (envi,envo,_) name =
   (* assume : ("start",_) in envi && ("rdy",_) in envo *)
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let envo = List.filter (fun (x,_) -> x <> "rdy") envo in
@@ -349,7 +343,7 @@ let t_val ty =
   | TInt -> "Int_val"
   | TVar _ -> assert false
 
-let mk_platform_bindings fmt (envi,envo,_,_) name = 
+let mk_platform_bindings fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   (* ne gère pas les sorties multiples *)
   fprintf fmt "@[<v>@[<v 2>value caml_nios_%s_cc(" name;
@@ -378,7 +372,7 @@ let t_C ty =
 let up = String.uppercase_ascii
 let low = String.lowercase_ascii
 
-let mk_platform_c fmt (envi,envo,_,_) name = 
+let mk_platform_c fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let envo = List.filter (fun (x,_) -> x <> "rdy") envo in
   (* rdy : Control/status register for the custom component *)
@@ -407,7 +401,7 @@ let mk_platform_c fmt (envi,envo,_,_) name =
   fprintf fmt "return r;@]";
   fprintf fmt "@]@,}@,@]"
 
-let mk_platform_h fmt (envi,envo,_,_) name = 
+let mk_platform_h fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   fprintf fmt "@[<hov>int nios_%s_cc(" (low name);
   fprintf fmt "@[<hov>";
@@ -416,7 +410,7 @@ let mk_platform_h fmt (envi,envo,_,_) name =
         (fun fmt (x,t) -> fprintf fmt "%s %s" (t_C t) (low x)) fmt envi;
   fprintf fmt "@]);@]@,"
 
-let mk_simul_c fmt (envi,envo,_,_) name = 
+let mk_simul_c fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   fprintf fmt "@[<v>@[<v 2>int nios_%s_cc(" (low name);
   fprintf fmt "@[<hov>";
@@ -451,7 +445,7 @@ let t_ML ty =
    S'il n'y a aucune entrée, l'externals est de type [unit -> t],
    i.e. on rajoute un argument unit pour obtenir un type effectivement fonctionnel. *)
 
-let mk_platform_ml fmt (envi,envo,_,_) name = 
+let mk_platform_ml fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let tres = List.assoc "result" envo in
   fprintf fmt "@[<v>@[<v 2>module %s = struct@," (String.capitalize_ascii name);
@@ -461,7 +455,7 @@ let mk_platform_ml fmt (envi,envo,_,_) name =
   fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres)  (low name) "[@@noalloc]";
   fprintf fmt "@]@,end@,@]"
 
-let mk_platform_mli fmt (envi,envo,_,_) name = 
+let mk_platform_mli fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let tres = List.assoc "result" envo in
   fprintf fmt "@[<v>@[<v 2>module %s : sig@," (String.capitalize_ascii name);

@@ -46,6 +46,22 @@ let localv_automaton a =
 let v_prog p =
   let rl = List.map rv_automaton p in
   let wl = List.map wv_automaton p in
+  let rs = List.fold_left Vs.union Vs.empty rl in
+  let ws = List.fold_left Vs.union Vs.empty wl in
+  let vl = List.map (Vs.inter rs) wl in
+  let vs = List.fold_left (fun acc vs -> 
+              if (Vs.disjoint vs acc) 
+              then Vs.union acc vs
+              else failwith "Typing_efsl: driving signal from different processes"
+              ) Vs.empty vl in
+  let rs = Vs.diff rs vs in
+  let ws = Vs.diff ws vs in
+  (rs,ws,vl)
+
+(*
+let v_prog p =
+  let rl = List.map rv_automaton p in
+  let wl = List.map wv_automaton p in
   let vl = List.map2 Vs.inter rl wl in
   let vs = let rec check acc = function
            | [] -> acc
@@ -54,15 +70,13 @@ let v_prog p =
            in 
            check Vs.empty vl
   in
-  let r = List.fold_left Vs.union Vs.empty rl in
-  let w = List.fold_left Vs.union Vs.empty wl in
-  let rvs = Vs.diff (accum (fun x -> x) rl) (Vs.union vs w) in  
-  let wvs = Vs.diff (accum (fun x -> x) wl) (Vs.union vs r) in
-  let locals_shared =  Vs.diff 
-                          (Vs.inter (accum (fun x -> x) rl)
-                                    (accum (fun x -> x) wl)) vs in
-  (rvs,wvs,vl, locals_shared)
-
+  let rs = List.fold_left Vs.union Vs.empty rl in
+  let ws = List.fold_left Vs.union Vs.empty wl in
+  let rs' = Vs.diff rs (Vs.union vs ws) in  
+  let ws' = Vs.diff ws (Vs.union vs rs) in
+  let locals_shared = Vs.diff (Vs.inter rs ws) vs in
+  (rs',ws',vl, locals_shared)
+*)
 (* typage *)
 
 type ty = 
@@ -191,7 +205,7 @@ let rec canon t =
 let typ_prog p =
   let env = Tenv.create 10 in
   List.iter (typ_automaton [] env) p;
-  let (rvs,wvs,vl,v_local_shared) = v_prog p in
+  let (rvs,wvs,vl) = v_prog p in
   let f vs = 
     Vs.fold (fun x acc ->
                let ty = canon @@ Tenv.find env x in
@@ -199,4 +213,4 @@ let typ_prog p =
               (x,ty)::acc)
       vs [] 
   in
-  (f rvs, f wvs, List.map f vl,f v_local_shared) 
+  (f rvs, f wvs, List.map f vl) 
