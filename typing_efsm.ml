@@ -54,11 +54,14 @@ let v_prog p =
            in 
            check Vs.empty vl
   in
-
-  (* check à compléter *)
-  let rvs = Vs.diff (accum (fun x -> x) rl) vs in
-  let wvs = Vs.diff (accum (fun x -> x) wl) vs in
-  (rvs,wvs,vl)
+  let r = List.fold_left Vs.union Vs.empty rl in
+  let w = List.fold_left Vs.union Vs.empty wl in
+  let rvs = Vs.diff (accum (fun x -> x) rl) (Vs.union vs w) in  
+  let wvs = Vs.diff (accum (fun x -> x) wl) (Vs.union vs r) in
+  let locals_shared =  Vs.diff 
+                          (Vs.inter (accum (fun x -> x) rl)
+                                    (accum (fun x -> x) wl)) vs in
+  (rvs,wvs,vl, locals_shared)
 
 (* typage *)
 
@@ -188,7 +191,7 @@ let rec canon t =
 let typ_prog p =
   let env = Tenv.create 10 in
   List.iter (typ_automaton [] env) p;
-  let (rvs,wvs,vl) = v_prog p in
+  let (rvs,wvs,vl,v_local_shared) = v_prog p in
   let f vs = 
     Vs.fold (fun x acc ->
                let ty = canon @@ Tenv.find env x in
@@ -196,4 +199,4 @@ let typ_prog p =
               (x,ty)::acc)
       vs [] 
   in
-  (f rvs, f wvs, List.map f vl) 
+  (f rvs, f wvs, List.map f vl,f v_local_shared) 

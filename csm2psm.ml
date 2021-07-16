@@ -80,12 +80,12 @@ let rec c_automaton q' d = function
                   (wait,[],[
                       (let rec aux acc = function
                           | 0 -> acc
-                          | n -> aux (!!(rdy^string_of_int n) &&& acc) (n - 1)
+                          | n -> aux (!!(rdy^string_of_int (n-1)) &&& acc) (n - 1)
                        in aux (bool true) len,
                           PSM.Seq
                             (Inst.Assign (List.mapi
                                             (fun i x ->
-                                               x,!!(r^string_of_int(i+1))) xs),
+                                               x,!!(r^string_of_int i)) xs),
                              a'))])],
                  PSM.State(top,[])))
     in
