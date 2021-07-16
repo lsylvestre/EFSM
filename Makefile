@@ -35,4 +35,4 @@ clean:
 	rm -f `find . -name "*.cmo"`
 	rm -f `find . -name "*.cmi"`
 	rm -f $(EXE)
-	rm gen/*.vhdl gen/*.c gen/*.h gen/*.ml gen/*.mli
+	rm -f gen/*.vhdl gen/*.c gen/*.h gen/*.ml gen/*.mli

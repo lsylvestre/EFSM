@@ -15,7 +15,7 @@
 
 %left PIPE_PIPE
 %left LAND
-%nonassoc LT LE GT GE NEQ EQ
+%left LT LE GT GE NEQ EQ
 %left PLUS MINUS
 %left TIMES
 %nonassoc NOT UMINUS
@@ -113,7 +113,7 @@ atom:
 | p=prim                 { Atom.Prim p }
 | LPAREN a=atom RPAREN   { a }
 
-binop:
+%inline binop:
 | PLUS { Atom.Add }
 | MINUS { Atom.Sub }
 | TIMES { Atom.Mul }

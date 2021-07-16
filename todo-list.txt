@@ -7,33 +7,8 @@
 -- revoir dans le rapport la règle de traduction c_prog de CSM vers HSM
    avec rdy/start implicite. (telle qu'implémenté par la fonction c_prog dans csm2psm.ml)
 
-
--- les signaux de synchro locaux de CSM ne doivent pas apparaître dans les entités 
-  exemple :
-  ==============================================================
-   -- ./compile -csm bench/CSM/let_and/let_and2.csm
-entity Main is
-  port(signal clock : in std_logic;
-       signal reset : in std_logic;
-       signal start_2 : in boolean;
-       signal start : in std_logic;
-       signal rdy_52 : in boolean;
-       signal rdy_51 : in boolean;
-       signal r_62 : in integer;
-       signal r_61 : in integer;
-       signal start_2 : out boolean;
-       signal result : out integer;
-       signal rdy_51 : out boolean;
-       signal rdy_50 : out boolean;
-       signal rdy : out std_logic;
-       signal r_61 : out integer;
-       signal r_60 : out integer);
-===========================================================
-
 -- avoir des annotations de types disponibles comme primitives
 
 -- pprint_ast à finir/corriger et intégrer des options dans main.ml pour l'appeler.
 
 -- syntaxe alternative pour les automates (à la place des let-rec)
-
--- priorité de >= sur &&. Par exemple : (x3 >= x1 && x3 >= x2) 
