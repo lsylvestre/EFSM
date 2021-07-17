@@ -1,5 +1,66 @@
 open Ast
 
+module Vs = Set.Make(String);;
+
+module FreeVariables = struct
+  open Variables 
+  
+  let vars_atom ?(fv=Vs.empty) ?(bv=Vs.empty) e = 
+    let rec aux acc = function
+    | Atom.Var x -> 
+        if Vs.mem x bv then acc 
+        else Vs.add x acc
+    | Atom.Prim c ->
+      match c with
+      | Std_logic _ 
+      | Bool _ 
+      | Int _ -> acc
+      | Binop (_,e1,e2) -> 
+         let acc' = aux acc e1 in
+         aux acc' e2
+      | Unop (_,e) -> 
+         aux acc e
+    in
+    aux fv e
+
+  let vars_inst ?(fv=Vs.empty) ?(bv=Vs.empty) s =
+    match s with
+    | Inst.Assign bs ->  
+    List.fold_left 
+      (fun fv (x,e) -> 
+         if Vs.mem x bv then failwith "cannot assign a local variable"
+         else vars_atom ~fv ~bv e) fv bs
+
+  let rec vars_automaton ?(fv=Vs.empty) ?(bv=Vs.empty) a =
+    let open PSM in
+    match a with
+    | State (_,es) -> 
+       List.fold_left 
+        (fun fv e -> vars_atom ~fv ~bv e) fv es
+    | Seq(s,a) -> 
+       let fv = vars_inst ~fv ~bv s in
+       vars_automaton ~fv ~bv a 
+    (*| Return e -> vars_atom ~fv ~bv e *)
+    | LetRec (selects, a) ->
+        List.fold_left 
+         (fun fv select -> 
+            vars_select ~fv ~bv select) fv selects
+    (*| Let (bindings,a) -> 
+        let fv = List.fold_left 
+                   (fun fv (_,a) -> 
+                    vars_automaton ~fv ~bv a) fv bindings in
+        let bv = vs_of_list ~acc:bv (List.map (fun (x,_) -> x) bindings) in
+        vars_automaton ~fv ~bv a*)
+
+  and vars_select ?(fv=Vs.empty) ?(bv=Vs.empty) (_,xs,ts) =
+    let bv = vs_of_list ~acc:bv xs in
+    List.fold_left (fun fv t -> vars_transition ~fv ~bv t) fv ts
+  and vars_transition ?(fv=Vs.empty) ?(bv=Vs.empty) (e,a) =
+    let fv = vars_atom ~fv ~bv e in
+    vars_automaton ~fv ~bv a
+
+end
+
 let substitute theta x =
   List.assoc x theta
 
@@ -99,10 +160,13 @@ let rec c_automaton q' d = function
                                          PSM.State(wait_i,[])))]);
                     (wait_i,[],[(!!start,
                                  PSM.Seq(rdy_i <:= bool false,
+                                         let fv = FreeVariables.vars_automaton ai' in 
+                                         let params = Vs.elements fv in
+                                         (* y a t'il vraiment besoin de passer des copies des variables libres comme ici ? *)
                                          PSM.LetRec
-                                           ([(q_i,[(* variables libres *)],
+                                           ([(q_i,params,
                                               [(bool true,ai')])],
-                                            PSM.State(q_i,[(* variables libres *)]))))])],
+                                            PSM.State(q_i,List.map (!!) params))))])],
                    PSM.State(idle_i,[]))) aa'
     in
     let pi'' = p @ List.concat ps @ aa'' in

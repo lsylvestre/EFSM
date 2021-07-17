@@ -1,24 +1,7 @@
 open Ast
-
-
-module Vs = Set.Make(String);;
-
-let accum f l = 
-  List.fold_left (fun acc x -> Vs.union acc (f x)) Vs.empty l
+open Variables
 
 (* variables lues *)
-
-let rec rv_atom = function
-| Atom.Var x -> Vs.singleton x
-| Atom.Prim c -> 
-    match c with
-    | Std_logic _ | Bool _ | Int _ -> Vs.empty
-    | Binop (_,a1,a2) -> Vs.union (rv_atom a1) (rv_atom a2)
-    | Unop (_,a) -> rv_atom a
-
-let rv_inst = function
-| Inst.Assign bs -> 
-    accum (fun (_,e) -> rv_atom e) bs
 
 let rv_transition (_,ts) = 
   accum (fun (a,s,_) -> Vs.union (rv_atom a) (rv_inst s)) ts
@@ -27,10 +10,6 @@ let rv_automaton (EFSM.Automaton l) =
   accum rv_transition l
 
 (* variables écrites *)
-
-let wv_inst = function
-| Inst.Assign bs -> 
-    accum (fun (x,_) -> Vs.singleton x) bs
 
 let wv_transition (_,ts) = 
   accum (fun (_,s,_) -> wv_inst s) ts
@@ -58,51 +37,9 @@ let v_prog p =
   let ws = Vs.diff ws vs in
   (rs,ws,vl)
 
-(*
-let v_prog p =
-  let rl = List.map rv_automaton p in
-  let wl = List.map wv_automaton p in
-  let vl = List.map2 Vs.inter rl wl in
-  let vs = let rec check acc = function
-           | [] -> acc
-           | vs::l -> if Vs.disjoint vs acc then check (Vs.union vs acc) l
-                      else assert false 
-           in 
-           check Vs.empty vl
-  in
-  let rs = List.fold_left Vs.union Vs.empty rl in
-  let ws = List.fold_left Vs.union Vs.empty wl in
-  let rs' = Vs.diff rs (Vs.union vs ws) in  
-  let ws' = Vs.diff ws (Vs.union vs rs) in
-  let locals_shared = Vs.diff (Vs.inter rs ws) vs in
-  (rs',ws',vl, locals_shared)
-*)
 (* typage *)
 
-type ty = 
-| TStd_logic 
-| TBool 
-| TInt 
-| TVar of tvar ref
-and tvar = V of int | Ty of ty
-
-module Tenv = Hashtbl;;
-
-let rec print_ty fmt ty = 
-  let open Format in 
-  match ty with
-  | TStd_logic -> pp_print_text fmt "std_logic"
-  | TBool -> pp_print_text fmt "bool"
-  | TInt -> pp_print_text fmt "int"
-  | TVar{contents=V n} -> fprintf fmt "'a%d" n
-  | TVar{contents=Ty t} -> print_ty fmt t
-
-let print_env fmt env = 
-  Tenv.iter (fun x t -> Format.fprintf fmt "(%s, %a);" x print_ty t) env
-
-let newvar = 
-  let c = ref 0 in
-  fun () -> TVar (ref (V (!c)))
+open Types_efsm
 
 let rec unify env t1 t2 = match t1,t2 with
 | TStd_logic, TStd_logic | TBool, TBool | TInt,TInt -> ()
