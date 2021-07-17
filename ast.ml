@@ -106,7 +106,7 @@ module CSM = struct
   
 end
 
-module KER = struct
+module LI = struct
 
   type prog = exp
   and exp = 

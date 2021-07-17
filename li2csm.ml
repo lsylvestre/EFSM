@@ -1,5 +1,5 @@
 open Ast
-open KER
+open LI
 
 let rec is_atom = function
 | Var x -> true
@@ -65,7 +65,7 @@ let rec c_exp e =
       else 
         c_exp @@
         let x = Gensym.gensym "dsl_cond" in
-        (KER.Let([(x,e1)], If(Var x,e2,e3)))
+        (Let([(x,e1)], If(Var x,e2,e3)))
   | App(x,es) -> 
     if List.for_all is_atom es   
     (* on pourrait raffiner en partitionnant les atomes 

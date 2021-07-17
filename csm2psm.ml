@@ -40,17 +40,10 @@ module FreeVariables = struct
     | Seq(s,a) -> 
        let fv = vars_inst ~fv ~bv s in
        vars_automaton ~fv ~bv a 
-    (*| Return e -> vars_atom ~fv ~bv e *)
     | LetRec (selects, a) ->
         List.fold_left 
          (fun fv select -> 
             vars_select ~fv ~bv select) fv selects
-    (*| Let (bindings,a) -> 
-        let fv = List.fold_left 
-                   (fun fv (_,a) -> 
-                    vars_automaton ~fv ~bv a) fv bindings in
-        let bv = vs_of_list ~acc:bv (List.map (fun (x,_) -> x) bindings) in
-        vars_automaton ~fv ~bv a*)
 
   and vars_select ?(fv=Vs.empty) ?(bv=Vs.empty) (_,xs,ts) =
     let bv = vs_of_list ~acc:bv xs in
@@ -160,9 +153,10 @@ let rec c_automaton q' d = function
                                          PSM.State(wait_i,[])))]);
                     (wait_i,[],[(!!start,
                                  PSM.Seq(rdy_i <:= bool false,
-                                         let fv = FreeVariables.vars_automaton ai' in 
-                                         let params = Vs.elements fv in
-                                         (* y a t'il vraiment besoin de passer des copies des variables libres comme ici ? *)
+                                         (* let fv = FreeVariables.vars_automaton ai' in *)
+                                         let params = [] (* Vs.elements fv *) in
+                                         (* y a t'il vraiment besoin de passer des copies des variables libres comme ici ? 
+                                            Tout dépend de si on accepte les assignation (Seq) "sous" un [let and] *)
                                          PSM.LetRec
                                            ([(q_i,params,
                                               [(bool true,ai')])],

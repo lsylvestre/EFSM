@@ -1,4 +1,3 @@
-
 open Format
 open Ast
 
@@ -204,63 +203,53 @@ module PP_PSM = struct
     fprintf fmt "@]";
 end
 
-
-
-
-
-(*
-module HSM = struct
-
-  type prog = automaton list
-  and automaton = 
-  | State of state 
-  | LetRec of selector list * automaton
-  and selector = state * transition list
-  and transition = atom * inst * automaton
+module PP_LI = struct
   
-end
-
-
-module PSM = struct
-
-  type prog = automaton list
-  and automaton = 
-  | State of state * atom list
-  | Seq of inst * automaton
-  | LetRec of selector list * automaton
-  and selector = state * ident list * transition list
-  and transition = atom * automaton
+  open LI
   
+
+let rec print_exp fmt e = 
+  match e with
+  | Var x -> PP_atom.pp_ident fmt x
+  | Prim c -> 
+      (match c with
+      | Std_logic v -> PP_atom.pp_std_logic fmt v
+      | Bool b -> 
+        fprintf fmt "%b" b
+      | Int n -> 
+        fprintf fmt "%d" n
+      | Binop(p,e1,e2) ->
+          fprintf fmt "(%a %a @[<v>%a@])"
+            print_exp e1
+            PP_atom.pp_binop p
+            print_exp e2
+      | Unop(p,e) -> 
+          fprintf fmt "(%a %a)"
+            PP_atom.pp_unop p
+            print_exp e)
+  | Seq(Assign(s),e) -> failwith "todo pprint_ast seq"
+  | Let(bs,e) ->
+      fprintf fmt "@[<v>let ";
+      pp_print_list 
+          ~pp_sep:(fun fmt () -> fprintf fmt "and ") 
+           (fun fmt (x,e) -> 
+               fprintf fmt "%s = %a" x print_exp e) fmt bs;
+       fprintf fmt "@,@]@,in %a" print_exp e
+
+   | LetRec(bs,e) ->
+      fprintf fmt "@[<v 2>let rec ";
+      pp_print_list 
+        ~pp_sep:(fun fmt () -> fprintf fmt "and ") 
+        (fun fmt (x,xs,e) -> 
+           fprintf fmt "%s(%s) =@,%a" x (String.concat "," xs) print_exp e) fmt bs;
+       fprintf fmt "@,@]in %a" print_exp e
+  | App(x,es) -> fprintf fmt "%s (%a)" x
+                    (pp_print_list 
+                       ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
+                        print_exp) es
+  | If(e1,e2,e3) -> 
+     fprintf fmt "if %a@,then %a@,else %a@,"
+       print_exp e1
+       print_exp e2
+       print_exp e3
 end
-
-module CSM = struct
-
-  type prog = automaton
-  and automaton = 
-  | State of state * atom list
-  | Seq of inst * automaton
-  | LetRec of selector list * automaton
-  | Return of atom
-  | Let of (ident * automaton) list * automaton
-  and selector = state * ident list * transition list
-  and transition = atom * automaton
-  
-end
-
-module EDSL = struct
-
-  type prog = exp
-  and exp = 
-  | Var of ident
-  | Prim of prog list
-  | Let of (ident * prog) list * exp
-  | LetRec of (ident * ident list * exp) list * exp
-  | App of ident * prog list
-  | If of exp * exp * exp
-  | Case of exp * (const * exp) list
-  | Map of {x : ident ; trt : prog ; arr : prog}
-  | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog}
-  
-end
-
-*)

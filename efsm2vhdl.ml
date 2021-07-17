@@ -79,9 +79,14 @@ let c_next_state state_var fmt q =
 let c_assign fmt s = 
   match s with
   | Inst.Assign bs ->
+      let bs' = List.filter 
+                  (function 
+                   | (x,Atom.Var x') -> x <> x'
+                   | _ -> true) bs 
+      in
       pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt "@,") 
-        (fun fmt (x,a) -> fprintf fmt "%s <= %a;" x c_atom a) fmt bs
+        (fun fmt (x,a) -> fprintf fmt "%s <= %a;" x c_atom a) fmt bs'
 
 let c_transitions state_var fmt (q,ts) =
   match ts with 

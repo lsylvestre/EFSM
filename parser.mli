@@ -47,7 +47,7 @@ exception Error
 
 val psm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.PSM.prog)
 
-val ker: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.KER.prog)
+val li: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.LI.prog)
 
 val hsm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.HSM.prog)
 

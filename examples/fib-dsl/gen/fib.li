@@ -1,0 +1,9 @@
+let rec fib(n) =
+  let rec aux(n,a,b) =
+    if n <= 0 then a
+    else aux(n-1,b,a+b)
+  in
+    aux(n,1,1)
+in
+fib(x1) + fib(x2) + fib(x3) + fib(x4) +
+fib(x5) + fib(x6) + fib(x7) + fib(x8)

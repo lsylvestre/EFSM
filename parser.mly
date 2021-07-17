@@ -25,7 +25,7 @@
 %start <Ast.HSM.prog> hsm
 %start <Ast.PSM.prog> psm
 %start <Ast.CSM.prog> csm
-%start <Ast.KER.prog> ker
+%start <Ast.LI.prog> li
 %%
 
 efsm:
@@ -93,41 +93,41 @@ transition_csm:
 binding_csm:
 | x=IDENT EQ a=automaton_csm { (x,a) }
 
-/*  ******************* ker ******************* */
-ker:
-| e=exp_ker EOF { e }
+/*  ******************* LI ******************* */
+li:
+| e=exp_li EOF { e }
 
-exp_ker:
-| LPAREN e=exp_ker RPAREN   { e }
-| e=exp_ker_without_paren   { e }
+exp_li:
+| LPAREN e=exp_li RPAREN   { e }
+| e=exp_li_without_paren   { e }
 
-exp_ker_without_paren:
-| x=IDENT                   { KER.Var x }
-| p=prim(exp_ker)           { KER.Prim p }
-| x=IDENT COLONEQ e=exp_ker SEMICOL e2=exp_ker 
-  { KER.Seq(Inst.Assign [(x,e)],e2) }
-/*| s=inst(exp_ker) SEMICOL e=exp_ker  { KER.Seq(s,e) }*/
-| LET bs=separated_nonempty_list(AND,binding_ker) 
-  IN e=exp_ker              { KER.Let (bs,e) }
-| LET REC bs=separated_nonempty_list(AND,fun_binding_ker) 
-  IN e=exp_ker              { KER.LetRec (bs,e) }
+exp_li_without_paren:
+| x=IDENT                  { LI.Var x }
+| p=prim(exp_li)           { LI.Prim p }
+| x=IDENT COLONEQ e=exp_li SEMICOL e2=exp_li 
+                           { LI.Seq(Inst.Assign [(x,e)],e2) }
+/*| s=inst(exp_li) SEMICOL e=exp_li  { li.Seq(s,e) }*/
+| LET bs=separated_nonempty_list(AND,binding_li) 
+  IN e=exp_li              { LI.Let (bs,e) }
+| LET REC bs=separated_nonempty_list(AND,fun_binding_li) 
+  IN e=exp_li              { LI.LetRec (bs,e) }
 | x=IDENT LPAREN 
-  e1=exp_ker COMMA es=separated_nonempty_list(COMMA,exp_ker) RPAREN      
-                             { KER.App(x,e1::es) }
-| x=IDENT LPAREN e=exp_ker_without_paren RPAREN  
-                             { KER.App(x,[e]) }
-| x=IDENT LPAREN RPAREN     { KER.App(x,[]) }
-| IF e1=exp_ker
-  THEN e2=exp_ker
-  ELSE e3=exp_ker           { KER.If(e1,e2,e3) } 
+  e1=exp_li COMMA es=separated_nonempty_list(COMMA,exp_li) RPAREN      
+                             { LI.App(x,e1::es) }
+| x=IDENT LPAREN e=exp_li RPAREN 
+                             { LI.App(x,[e]) }
+| x=IDENT LPAREN RPAREN     { LI.App(x,[]) }
+| IF e1=exp_li
+  THEN e2=exp_li
+  ELSE e3=exp_li           { LI.If(e1,e2,e3) } 
 
 /* array, map, reduce */
 
-binding_ker:
-| x=IDENT EQ e=exp_ker      { (x,e) }
+binding_li:
+| x=IDENT EQ e=exp_li      { (x,e) }
 
-fun_binding_ker:
-| f=IDENT LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ e=exp_ker { (f,xs,e) }
+fun_binding_li:
+| f=IDENT LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ e=exp_li { (f,xs,e) }
 
 
 /*  ******************* Atoms and instructions ******************* */

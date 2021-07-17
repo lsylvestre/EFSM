@@ -5,4 +5,4 @@ let rec fact(n) =
   in
   aux(n,1)
 in 
-fact(dataa)
+fact(dataa) + fact(datab)
