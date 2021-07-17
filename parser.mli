@@ -32,6 +32,7 @@ type token =
   | EQ
   | EOF
   | END
+  | ELSE
   | COMMA
   | COLONEQ
   | BOOL_LIT of (bool)
@@ -45,6 +46,8 @@ exception Error
 (* The monolithic API. *)
 
 val psm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.PSM.prog)
+
+val ker: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.KER.prog)
 
 val hsm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.HSM.prog)
 

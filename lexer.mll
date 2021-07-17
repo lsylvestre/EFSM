@@ -23,6 +23,7 @@ rule token = parse
 | "in"              { IN }
 | "if"              { IF }
 | "then"            { THEN }
+| "else"            { ELSE }
 | "return"          { RETURN }
 | "true"            { BOOL_LIT true }
 | "false"           { BOOL_LIT false }

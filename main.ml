@@ -4,7 +4,7 @@ let add_file f = inputs := !inputs @ [f]
 
 let flag_print_ast = ref false
 
-type lang = EFSM | HSM | PSM | CSM | DSL
+type lang = EFSM | HSM | PSM | CSM | KER
 
 let flag_lang = ref EFSM
 let flag_gen_cc = ref false
@@ -19,6 +19,7 @@ let () =
       ("-hsm",  set_lang HSM,"HSM");
       ("-psm",  set_lang PSM,"PSM");
       ("-csm",  set_lang CSM,"PSM");
+      ("-ker",  set_lang KER,"KER");
       ("-gen-cc", Arg.Set flag_gen_cc,
        "generates source files needed to extend an O2B platform")] 
       add_file "Usage:\n  ./compile files" 
@@ -29,7 +30,8 @@ let mk_vhdl ?(with_cc=false) filename efsm =
   let open Efsm2vhdl in
   match !flag_gen_cc,!flag_lang with 
   | false,_ -> c_prog ~entity_name vars Format.std_formatter efsm
-  | true,CSM -> Gen_platform.mk_vhdl_with_cc vars entity_name efsm 
+  | true,(CSM|KER) -> 
+      Gen_platform.mk_vhdl_with_cc vars entity_name efsm
   | true,_ -> 
      Printf.printf "*** warning: platform generation ignored.\n";
      Printf.printf "To generate a platform, please give a CSM description"
@@ -57,7 +59,13 @@ let parse filename =
         |> Psm2hsm.c_prog
         |> Hsm2efsm.c_prog
         |> (mk_vhdl filename)
-    | DSL -> failwith "todo"
+    | KER -> 
+        Parser.ker Lexer.token lexbuf
+        |> Ker2csm.c_prog
+        |> Csm2psm.c_prog
+        |> Psm2hsm.c_prog
+        |> Hsm2efsm.c_prog
+        |> (mk_vhdl filename)
   );
      close_in ic
   with e -> 

@@ -1,13 +1,6 @@
 open Ast
 open Format
 
-let rec list_iter3 f l1 l2 l3 =
-  match (l1, l2,l3) with
-    ([], [],[]) -> ()
-  | (a1::l1, a2::l2, a3::l3) -> f a1 a2 a3; list_iter3 f l1 l2 l3
-  | (_, _, _) -> invalid_arg "list_iter3"
-
-
 let c_binop fmt p = 
   let open Atom in
   pp_print_text fmt @@
@@ -110,8 +103,8 @@ let c_transitions state_var fmt (q,ts) =
     fprintf fmt "else NULL;@,end if;@]"
 
 
-let default_value fmt ty = 
-  let open Typing_efsm in
+let default_value fmt ty =
+  let open Types_efsm in
   match ty with
   | TStd_logic -> pp_print_text fmt "-"
   | TBool -> pp_print_text fmt "false"
@@ -141,7 +134,7 @@ let c_automaton ~reset ~clock state_var locals fmt (EFSM.Automaton l) =
 
 
 let c_ty fmt ty = 
-  let open Typing_efsm in
+  let open Types_efsm in
   match ty with
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
@@ -186,13 +179,13 @@ let c_prog ?(reset="reset") ?(clock="clk")
   fprintf fmt "@]@,";
   fprintf fmt "@[<v 2>begin@,";
 
-  list_iter3 (fun st_reg locals a -> 
+  Misc.list_iter3 (fun st_reg locals a -> 
                c_automaton ~reset ~clock st_reg locals fmt a) 
     state_vars 
     l_locals 
     automata;
   
-  fprintf fmt "@]@,end architecture;@]@,"
+  fprintf fmt "@]@,end architecture;@]@."
 
 
   (* ***************************************** *)
@@ -212,7 +205,7 @@ let bin_of_int ?(pad=4) d =
   to_string b
 
 let conversion_from_vect ty fmt data =
-  let open Typing_efsm in
+  let open Types_efsm in
   match ty with
   | TStd_logic -> 
       fprintf fmt "%s(0)" data
@@ -223,7 +216,7 @@ let conversion_from_vect ty fmt data =
   | TVar _ -> assert false
 
 let set_result dst ty fmt data =
-  let open Typing_efsm in
+  let open Types_efsm in
   match ty with
   | TStd_logic -> 
       fprintf fmt "%s <= \"0000000000000000000000000000000\" & %s" dst data
@@ -336,7 +329,7 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "end architecture;@]@,"
 
 let t_val ty =
- let open Typing_efsm in
+ let open Types_efsm in
   match ty with
   | TStd_logic
   | TBool -> "Bool_val" 
@@ -362,7 +355,7 @@ let mk_platform_bindings fmt (envi,envo,_) name =
 
 
 let t_C ty =
- let open Typing_efsm in
+ let open Types_efsm in
   match ty with
   | TStd_logic
   | TBool
@@ -431,7 +424,7 @@ let mk_simul_c fmt (envi,envo,_) name =
 let mk_simul_h = mk_platform_h
 
 let t_ML ty =
- let open Typing_efsm in
+  let open Types_efsm in
   match ty with
   | TStd_logic
   | TBool -> "bool"

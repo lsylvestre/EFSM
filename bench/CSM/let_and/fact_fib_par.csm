@@ -1,0 +1,23 @@
+
+let a = 
+  let rec fact(n) =
+    if true then
+      let rec aux(n,acc) =
+        if n <= 0 then return acc
+        if n > 0 then
+          aux(n - 1, n * acc) 
+      in
+      aux(n,1)
+  in 
+  fact(10)
+and b = 
+  let rec fib(n) =
+    let rec aux(n,a,b) =
+      if n <= 0 then return a
+      if n > 0 then aux(n-1,b,a+b)
+    in
+      aux(n,1,1)
+  in 
+  fib(20) 
+in
+return a + b

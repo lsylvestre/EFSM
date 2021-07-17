@@ -31,13 +31,13 @@ module Atom = struct
 
   type atom = 
   | Var of ident 
-  | Prim of const
-  and const = 
+  | Prim of atom const
+  and 'a const = 
   | Std_logic of std_logic
   | Bool of bool 
   | Int of int
-  | Binop of binop * atom * atom
-  | Unop of unop * atom
+  | Binop of binop * 'a * 'a
+  | Unop of unop * 'a
 
 
 end 
@@ -45,7 +45,7 @@ end
 open Atom
 
 module Inst = struct
-  type inst = Assign of (ident * atom) list
+  type 'a inst = Assign of (ident * 'a) list
 end
 
 ;;
@@ -60,7 +60,7 @@ module EFSM = struct
   type prog = automaton list
   and automaton = Automaton of selector list
   and selector = state * transition list
-  and transition = atom * inst * state
+  and transition = atom * atom inst * state
 
   let init (Automaton l) = 
     match l with
@@ -75,7 +75,7 @@ module HSM = struct
   | State of state 
   | LetRec of selector list * automaton
   and selector = state * transition list
-  and transition = atom * inst * automaton
+  and transition = atom * atom inst * automaton
   
 end
 
@@ -85,7 +85,7 @@ module PSM = struct
   type prog = automaton list
   and automaton = 
   | State of state * atom list
-  | Seq of inst * automaton
+  | Seq of atom inst * automaton
   | LetRec of selector list * automaton
   and selector = state * ident list * transition list
   and transition = atom * automaton
@@ -97,7 +97,7 @@ module CSM = struct
   type prog = automaton
   and automaton = 
   | State of state * atom list
-  | Seq of inst * automaton
+  | Seq of atom inst * automaton
   | LetRec of selector list * automaton
   | Return of atom
   | Let of (ident * automaton) list * automaton
@@ -106,18 +106,19 @@ module CSM = struct
   
 end
 
-module EDSL = struct
+module KER = struct
 
   type prog = exp
   and exp = 
   | Var of ident
-  | Prim of prog list
+  | Prim of prog const
+  | Seq of exp inst * exp
   | Let of (ident * prog) list * exp
   | LetRec of (ident * ident list * exp) list * exp
   | App of ident * prog list
   | If of exp * exp * exp
-  | Case of exp * (const * exp) list
+  (* | Case of exp * (const * exp) list
   | Map of {x : ident ; trt : prog ; arr : prog}
-  | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog}
+  | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog} *)
   
 end

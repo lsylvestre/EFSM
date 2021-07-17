@@ -12,3 +12,13 @@
 -- pprint_ast à finir/corriger et intégrer des options dans main.ml pour l'appeler.
 
 -- syntaxe alternative pour les automates (à la place des let-rec)
+
+
+-- schéma dsl2csm : dans le cas "let rec", remplacer x_i =c[e_i] 
+par x_i = if true then c[e_i]  
+
+-- type entier avec taille (defaut : 32 bit)
+
+-- goto calculé
+
+-- bibliothèque standard

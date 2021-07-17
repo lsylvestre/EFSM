@@ -5,7 +5,7 @@
 %token EOF 
 %token LPAREN RPAREN COMMA PIPE_PIPE EQ COLONEQ SEMICOL
 %token PIPE LEFT_ARROW AUTOMATON END
-%token LET REC AND IN IF THEN RETURN
+%token LET REC AND IN IF THEN ELSE RETURN
 %token <string> IDENT
 %token <bool> BOOL_LIT 
 %token <int> INT_LIT
@@ -25,6 +25,7 @@
 %start <Ast.HSM.prog> hsm
 %start <Ast.PSM.prog> psm
 %start <Ast.CSM.prog> csm
+%start <Ast.KER.prog> ker
 %%
 
 efsm:
@@ -37,7 +38,7 @@ psi_efsm:
 | q=state LEFT_ARROW ts=transition_efsm* { (q,ts) }
 
 transition_efsm:
-| IF g=atom THEN s=inst SEMICOL q=state { (g,s,q) }
+| IF g=atom THEN s=inst(atom) SEMICOL q=state { (g,s,q) }
 
 /*  ******************* HSM ******************* */
 
@@ -52,7 +53,7 @@ psi_hsm:
 | q=state EQ ts=transition_hsm* { (q,ts) }
 
 transition_hsm:
-| IF g=atom THEN s=inst SEMICOL a=automaton_hsm { (g,s,a) }
+| IF g=atom THEN s=inst(atom) SEMICOL a=automaton_hsm { (g,s,a) }
 
 /*  ******************* PSM ******************* */
 
@@ -61,7 +62,7 @@ psm:
 
 automaton_psm:
 | q=state LPAREN es=separated_list(COMMA,atom) RPAREN { PSM.State (q,es) }
-| s=inst SEMICOL a=automaton_psm { PSM.Seq(s,a) } 
+| s=inst(atom) SEMICOL a=automaton_psm { PSM.Seq(s,a) } 
 | LET REC bs=separated_nonempty_list(AND,psi_psm) IN a=automaton_psm { PSM.LetRec (bs,a) }
 
 psi_psm:
@@ -77,7 +78,7 @@ csm:
 
 automaton_csm:
 | q=state LPAREN es=separated_list(COMMA,atom) RPAREN { CSM.State (q,es) }
-| s=inst SEMICOL a=automaton_csm { CSM.Seq(s,a) } 
+| s=inst(atom) SEMICOL a=automaton_csm { CSM.Seq(s,a) } 
 | LET REC bs=separated_nonempty_list(AND,psi_csm) IN a=automaton_csm { CSM.LetRec (bs,a) }
 | RETURN a=atom { CSM.Return a }
 | LET bs=separated_nonempty_list(AND,binding_csm) IN a=automaton_csm { CSM.Let (bs,a) }
@@ -92,25 +93,63 @@ transition_csm:
 binding_csm:
 | x=IDENT EQ a=automaton_csm { (x,a) }
 
+/*  ******************* ker ******************* */
+ker:
+| e=exp_ker EOF { e }
+
+exp_ker:
+| LPAREN e=exp_ker RPAREN   { e }
+| e=exp_ker_without_paren   { e }
+
+exp_ker_without_paren:
+| x=IDENT                   { KER.Var x }
+| p=prim(exp_ker)           { KER.Prim p }
+| x=IDENT COLONEQ e=exp_ker SEMICOL e2=exp_ker 
+  { KER.Seq(Inst.Assign [(x,e)],e2) }
+/*| s=inst(exp_ker) SEMICOL e=exp_ker  { KER.Seq(s,e) }*/
+| LET bs=separated_nonempty_list(AND,binding_ker) 
+  IN e=exp_ker              { KER.Let (bs,e) }
+| LET REC bs=separated_nonempty_list(AND,fun_binding_ker) 
+  IN e=exp_ker              { KER.LetRec (bs,e) }
+| x=IDENT LPAREN 
+  e1=exp_ker COMMA es=separated_nonempty_list(COMMA,exp_ker) RPAREN      
+                             { KER.App(x,e1::es) }
+| x=IDENT LPAREN e=exp_ker_without_paren RPAREN  
+                             { KER.App(x,[e]) }
+| x=IDENT LPAREN RPAREN     { KER.App(x,[]) }
+| IF e1=exp_ker
+  THEN e2=exp_ker
+  ELSE e3=exp_ker           { KER.If(e1,e2,e3) } 
+
+/* array, map, reduce */
+
+binding_ker:
+| x=IDENT EQ e=exp_ker      { (x,e) }
+
+fun_binding_ker:
+| f=IDENT LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ e=exp_ker { (f,xs,e) }
+
+
 /*  ******************* Atoms and instructions ******************* */
 
 state:
 | x=IDENT { x }
 
-prim:
+prim(E):
 | b=BOOL_LIT               { Atom.Bool b }
 | v=std_logic              { Atom.Std_logic v }
 | n=INT_LIT                { Atom.Int n }       
-| a1=atom c=binop a2=atom  { Atom.Binop(c,a1,a2) }
-| NOT a=atom { Atom.Unop(Not,a) }
-| MINUS a=atom %prec UMINUS { Atom.Unop(Uminus,a) }
+| a1=E c=binop a2=E  { Atom.Binop(c,a1,a2) }
+| NOT a=E { Atom.Unop(Not,a) }
+| MINUS a=E %prec UMINUS { Atom.Unop(Uminus,a) }
+
 std_logic:
 | ZERO { Atom.Zero }
 | ONE  { Atom.One }
 
 atom:
 | x=IDENT                { Atom.Var x }
-| p=prim                 { Atom.Prim p }
+| p=prim(atom)           { Atom.Prim p }
 | LPAREN a=atom RPAREN   { a }
 
 %inline binop:
@@ -126,7 +165,7 @@ atom:
 | LAND { Atom.And }
 | PIPE_PIPE { Atom.Or }
 
-inst:
-| x=IDENT COLONEQ a=atom { Inst.Assign [ (x,a) ] }
+inst(E):
+| x=IDENT COLONEQ a=E { Inst.Assign [ (x,a) ] }
 | LPAREN xs=separated_list(COMMA,IDENT) RPAREN 
-  COLONEQ LPAREN es=separated_list(COMMA,atom) RPAREN { Inst.Assign (List.combine xs es) }
+  COLONEQ LPAREN es=separated_list(COMMA,E) RPAREN { Inst.Assign (List.combine xs es) }
