@@ -10,19 +10,15 @@ let grab_args q env =
   | None -> failwith (Printf.sprintf "psm: unbound state %s\n" q)
   | Some xs -> xs
 
-let rec c_atom theta = function
-  | Atom.Var x ->
-    let x' = substitute theta x in
-    Atom.Var x'
-  | Atom.Prim c ->
-    let c' =
-      match c with
-      | Std_logic _ | Bool _ | Int _ -> c
-      | Binop(op,a1,a2) ->
-          Binop(op,c_atom theta a1,c_atom theta a2)
-      | Unop(op,a) ->
-          Unop(op,c_atom theta a)
-    in Atom.Prim c'
+let rec c_atom theta a =
+  let open Atom in
+  match a with 
+  | Var x ->
+      let x' = substitute theta x in
+      Var x'
+  | Const _ -> a
+  | Prim (c,l) ->
+      Prim (c,List.map (c_atom theta) l)
 
 let c_inst theta = function
   | Inst.Assign bs ->
@@ -73,5 +69,5 @@ let c_prog ?(env=[]) p =
   List.map (fun a ->
       let s,a' = c_automaton env theta a in
       let q0 = Gensym.gensym "Q" in
-      HSM.LetRec ([ (q0,[ (Atom.Prim(Bool true),s,a') ]) ],HSM.State q0)) p
+      HSM.LetRec ([ (q0,[ (mk_bool' true,s,a') ]) ],HSM.State q0)) p
 

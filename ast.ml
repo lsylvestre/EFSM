@@ -28,21 +28,54 @@ module Atom = struct
 
   type unop = 
   | Not | Uminus
+  
+  type const = 
+  | Std_logic of std_logic
+  | Bool of bool 
+  | Int of int
+
+  type op =   
+  | Binop of binop
+  | Unop of unop
 
   type atom = 
   | Var of ident 
-  | Prim of atom const
-  and 'a const = 
+  | Const of const
+  | Prim of atom prim
+  and 'a prim = (op * 'a list)
+
+  let ill_formed_constant_application () = 
+    Printf.printf "*** ill formed constant application\n"
+  (*
   | Std_logic of std_logic
   | Bool of bool 
   | Int of int
   | Binop of binop * 'a * 'a
   | Unop of unop * 'a
-
+*)
 
 end 
 
 open Atom
+
+(* smart constructors *)
+let mk_bool (b:bool) = Bool b
+let mk_int (n:int) = Int n
+let mk_std_logic (v:std_logic) = Std_logic v
+let mk_binop (p:binop) (a1:'a) (a2:'a) = (Binop p,[a1;a2])
+let mk_unop (p:unop) (a:'a) = (Unop p,[a]) 
+
+let mk_prim p = Prim p
+let mk_const c = Const c
+
+let mk_bool' b        = mk_const @@ mk_bool b
+let mk_int' n         = mk_const @@ mk_int n
+let mk_std_logic' v   = mk_const @@ mk_std_logic v
+
+let mk_binop' p a1 a2 = mk_prim @@ mk_binop p a1 a2
+let mk_unop' p a      = mk_prim @@ mk_unop p a
+
+let mk_var x = Var x 
 
 module Inst = struct
   type 'a inst = Assign of (ident * 'a) list
@@ -111,11 +144,12 @@ module LI = struct
   type prog = exp
   and exp = 
   | Var of ident
-  | Prim of prog const
+  | Const of const
+  | Prim of exp prim
   | Seq of exp inst * exp
-  | Let of (ident * prog) list * exp
+  | Let of (ident * exp) list * exp
   | LetRec of (ident * ident list * exp) list * exp
-  | App of ident * prog list
+  | App of ident * exp list
   | If of exp * exp * exp
   (* | Case of exp * (const * exp) list
   | Map of {x : ident ; trt : prog ; arr : prog}

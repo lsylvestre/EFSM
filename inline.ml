@@ -5,13 +5,9 @@ open LI
 let rec occur x e =
   match e with
   | Var x' -> x = x'
-  | Prim (Std_logic _)
-  | Prim (Bool _)
-  | Prim (Int _) -> false
-  | Prim (Binop (_,e1,e2)) -> 
-      occur x e1 || occur x e2
-  | Prim (Unop (_,e)) -> 
-      occur x e
+  | Const _ -> false
+  | Prim (_,es) ->
+     List.exists (occur x) es
   | Seq (Inst.Assign s,e) -> 
       List.exists (fun (_,e) -> occur x e) s || occur x e
   | If(e1,e2,e3) -> 
@@ -31,13 +27,8 @@ let rec inline extra_env env e =
     inline (env@extra_env) [] e 
   in 
   match e with
-  | Var x -> Var x
-  | Prim (Std_logic v) -> Prim (Std_logic v)
-  | Prim (Bool b) -> Prim (Bool b)
-  | Prim (Int n) -> Prim (Int n)
-  | Prim (Binop (p,e1,e2)) -> Prim (Binop (p,inline' e1,inline' e2))
-  | Prim (Unop (p,e)) -> Prim (Unop (p,inline' e))
-(*  | Prim es -> Prim (List.map inline' es) *)
+  | Var _ | Const _ -> e
+  | Prim (c,es) -> Prim (c,List.map inline' es)
   | Seq _ -> failwith "todo inline"
   | If(e1,e2,e3) -> 
       let inline_exp e = inline extra_env env e in
@@ -68,12 +59,8 @@ module S = Set.Make(struct
 
 let rec dead_code_elim e =
   match e with
-  | Var _
-  | Prim (Std_logic _)
-  | Prim (Bool _)
-  | Prim (Int _) -> e
-  | Prim (Binop (p,e1,e2)) -> Prim (Binop (p,dead_code_elim e1,dead_code_elim e2))
-  | Prim (Unop (p,e)) -> Prim (Unop (p,dead_code_elim e))
+  | Var _ | Const _ -> e
+  | Prim (c,es) -> Prim (c,List.map dead_code_elim es)
   | If(e1,e2,e3) -> If(dead_code_elim e1,dead_code_elim e2,dead_code_elim e3)
   | Let(bs,e) -> 
      let bs = List.map (fun (x,e) -> (x,dead_code_elim e)) bs in

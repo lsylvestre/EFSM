@@ -11,7 +11,7 @@ let rec c_automaton theta = function
     ([],q')
 | HSM.LetRec (selects, a) -> 
   let theta' = 
-    let fresh = Gensym.gensym "level" in
+    let fresh = Gensym.gensym "H" in
     (List.map (fun (q,_) -> (q,fresh^q)) selects) @ theta
   in
   let ps = List.map (c_transition theta') selects in

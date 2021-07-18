@@ -87,7 +87,7 @@ psi_csm:
 | q=state LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ ts=transition_csm* { (q,xs,ts) }
 
 transition_csm:
-| a=automaton_csm { (Atom.Prim(Bool true),a) }
+| a=automaton_csm { (mk_bool' true,a) }
 | IF e=atom THEN a=automaton_csm { (e,a) }
 
 binding_csm:
@@ -103,6 +103,7 @@ exp_li:
 
 exp_li_without_paren:
 | x=IDENT                  { LI.Var x }
+| c=const(exp_li)           { LI.Const c }
 | p=prim(exp_li)           { LI.Prim p }
 | x=IDENT COLONEQ e=exp_li SEMICOL e2=exp_li 
                            { LI.Seq(Inst.Assign [(x,e)],e2) }
@@ -135,13 +136,15 @@ fun_binding_li:
 state:
 | x=IDENT { x }
 
-prim(E):
-| b=BOOL_LIT               { Atom.Bool b }
-| v=std_logic              { Atom.Std_logic v }
-| n=INT_LIT                { Atom.Int n }       
-| a1=E c=binop a2=E  { Atom.Binop(c,a1,a2) }
-| NOT a=E { Atom.Unop(Not,a) }
-| MINUS a=E %prec UMINUS { Atom.Unop(Uminus,a) }
+const(E):
+| b=BOOL_LIT               { mk_bool b }
+| v=std_logic              { mk_std_logic v }
+| n=INT_LIT                { mk_int n }       
+
+prim(E): 
+| a1=E c=binop a2=E        { mk_binop c a1 a2 }
+| NOT a=E                  { mk_unop Atom.Not a  }
+| MINUS a=E %prec UMINUS   { mk_unop Atom.Uminus a }
 
 std_logic:
 | ZERO { Atom.Zero }
@@ -149,7 +152,8 @@ std_logic:
 
 atom:
 | x=IDENT                { Atom.Var x }
-| p=prim(atom)           { Atom.Prim p }
+| c=const(atom)          { mk_const c }
+| p=prim(atom)           { mk_prim p }
 | LPAREN a=atom RPAREN   { a }
 
 %inline binop:

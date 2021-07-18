@@ -6,7 +6,7 @@ module PP_atom = struct
   open Atom
   
   let pp_ident = pp_print_text
-
+  
   let pp_std_logic fmt v = 
     pp_print_text fmt @@
     match v with
@@ -19,6 +19,16 @@ module PP_atom = struct
     | L -> "'L'"
     | H -> "'H'"
     | Whatever -> "'-'"
+
+  let pp_const fmt c =
+    match c with 
+    | Std_logic v -> 
+        pp_std_logic fmt v
+    | Bool b ->
+        fprintf fmt "%b" b
+    | Int n ->
+        fprintf fmt "%d" n
+
 
   let pp_binop fmt p =
     pp_print_text fmt @@
@@ -49,25 +59,23 @@ module PP_atom = struct
   let pp_atom fmt a = 
     let rec pp_atom_aux ~paren fmt a = 
     match a with
-    | Var x -> pp_print_text fmt x
-    | Prim c -> 
-      (match c with
-      | Std_logic v -> pp_std_logic fmt v
-      | Bool b -> 
-        fprintf fmt "%b" b
-      | Int n -> 
-        fprintf fmt "%d" n
-      | Binop(p,a1,a2) ->
+    | Var x -> 
+        pp_print_text fmt x
+    | Const c -> 
+        pp_const fmt c
+    | Prim (Binop p,[a1;a2]) ->
         parenthesized ~paren fmt @@ fun () ->
           fprintf fmt "%a %a %a"
             (pp_atom_aux ~paren:true) a1
             pp_binop p
             (pp_atom_aux ~paren:true) a2
-      | Unop(p,a) -> 
+    | Prim (Unop p,[a]) -> 
         parenthesized ~paren fmt @@ fun () ->
           fprintf fmt "%a %a"
             pp_unop p
-            (pp_atom_aux ~paren:true) a)
+            (pp_atom_aux ~paren:true) a
+    | _ -> ill_formed_constant_application ();
+           assert false
   in
   pp_atom_aux ~paren:false fmt a
 
@@ -210,23 +218,22 @@ module PP_LI = struct
 
 let rec print_exp fmt e = 
   match e with
-  | Var x -> PP_atom.pp_ident fmt x
-  | Prim c -> 
-      (match c with
-      | Std_logic v -> PP_atom.pp_std_logic fmt v
-      | Bool b -> 
-        fprintf fmt "%b" b
-      | Int n -> 
-        fprintf fmt "%d" n
-      | Binop(p,e1,e2) ->
-          fprintf fmt "(%a %a @[<v>%a@])"
-            print_exp e1
-            PP_atom.pp_binop p
-            print_exp e2
-      | Unop(p,e) -> 
+  | Var x -> 
+      PP_atom.pp_ident fmt x
+  | Const c -> 
+      PP_atom.pp_const fmt c
+  | Prim (Binop p,[e1;e2]) ->
+      fprintf fmt "(%a %a @[<v>%a@])"
+        print_exp e1
+        PP_atom.pp_binop p
+        print_exp e2
+  | Prim (Unop p,[e]) ->
           fprintf fmt "(%a %a)"
             PP_atom.pp_unop p
-            print_exp e)
+            print_exp e
+  | Prim _ -> 
+      Atom.ill_formed_constant_application ();
+      assert false
   | Seq(Assign(s),e) -> failwith "todo pprint_ast seq"
   | Let(bs,e) ->
       fprintf fmt "@[<v>let ";

@@ -47,29 +47,32 @@ let parenthesized ~paren fmt cb =
   if paren then fprintf fmt ")" 
 
 let c_atom fmt a = 
+  let open Atom in
   let rec pp_atom ~paren fmt a =
     match a with 
-    | Atom.Var x -> 
+    | Var x -> 
         pp_print_text fmt x
-    | Atom.Prim c -> 
+    | Const c -> 
         (match c with
          | Std_logic v -> 
              pp_std_logic fmt v
          | Bool b -> 
             fprintf fmt "%b" b
          | Int n -> 
-            fprintf fmt "%d" n
-         | Binop(p,a1,a2) ->
-            parenthesized ~paren fmt @@ fun () ->
-              fprintf fmt "%a %a %a"
-                (pp_atom ~paren:true) a1
-                c_binop p
-                (pp_atom ~paren:true) a2
-         | Unop(p,a) -> 
-            parenthesized ~paren fmt @@ fun () ->
-              fprintf fmt "%a %a"
-                c_unop p
-                (pp_atom ~paren:true) a)
+            fprintf fmt "%d" n)
+
+    | Prim(Binop p,[a1;a2]) ->
+      parenthesized ~paren fmt @@ fun () ->
+        fprintf fmt "%a %a %a"
+          (pp_atom ~paren:true) a1
+          c_binop p
+          (pp_atom ~paren:true) a2
+   | Prim(Unop p,[a]) -> 
+      parenthesized ~paren fmt @@ fun () ->
+        fprintf fmt "%a %a"
+          c_unop p
+          (pp_atom ~paren:true) a
+   | _ -> assert false (* ill-formed primitive application *)
   in
   pp_atom ~paren:false fmt a
 
@@ -79,14 +82,9 @@ let c_next_state state_var fmt q =
 let c_assign fmt s = 
   match s with
   | Inst.Assign bs ->
-      let bs' = List.filter 
-                  (function 
-                   | (x,Atom.Var x') -> x <> x'
-                   | _ -> true) bs 
-      in
       pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt "@,") 
-        (fun fmt (x,a) -> fprintf fmt "%s <= %a;" x c_atom a) fmt bs'
+        (fun fmt (x,a) -> fprintf fmt "%s <= %a;" x c_atom a) fmt bs
 
 let c_transitions state_var fmt (q,ts) =
   match ts with 

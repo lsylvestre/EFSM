@@ -6,20 +6,14 @@ module FreeVariables = struct
   open Variables 
   
   let vars_atom ?(fv=Vs.empty) ?(bv=Vs.empty) e = 
+    let open Atom in
     let rec aux acc = function
-    | Atom.Var x -> 
+    | Var x -> 
         if Vs.mem x bv then acc 
         else Vs.add x acc
-    | Atom.Prim c ->
-      match c with
-      | Std_logic _ 
-      | Bool _ 
-      | Int _ -> acc
-      | Binop (_,e1,e2) -> 
-         let acc' = aux acc e1 in
-         aux acc' e2
-      | Unop (_,e) -> 
-         aux acc e
+    | Const _ -> Vs.empty
+    | Prim (_,es) ->
+        List.fold_left aux acc es
     in
     aux fv e
 
@@ -57,19 +51,15 @@ end
 let substitute theta x =
   List.assoc x theta
 
-let rec c_atom theta = function
-  | Atom.Var x ->
-    let x' = substitute theta x in
-    Atom.Var x'
-  | Atom.Prim c ->
-    let c' =
-      match c with
-      | Std_logic _ | Bool _ | Int _ -> c
-      | Binop(op,a1,a2) ->
-        Binop(op,c_atom theta a1,c_atom theta a2)
-      | Unop(op,a) ->
-        Unop(op,c_atom theta a)
-    in Atom.Prim c'
+let rec c_atom theta a = 
+  let open Atom in
+  match a with
+  | Var x ->
+      let x' = substitute theta x in
+      Var x'
+  | Const _ -> a
+  | Prim (c,args) ->
+      Prim (c,List.map (c_atom theta) args)
 
 let c_inst theta = function
   | Inst.Assign bs ->
@@ -79,16 +69,11 @@ let c_inst theta = function
            let a' = c_atom theta a in
            (x',a')) bs)
 
-let bool b = 
-  Atom.Prim (Atom.Bool b)
+let (===) a1 a2 = mk_binop' Atom.Eq a1 a2
+let (=/=) a1 a2 = mk_binop' Atom.Neq a1 a2
+let (!!) = mk_var
 
-let std_logic v = 
-  Atom.Prim (Atom.Std_logic v)
 
-let (=/=) a1 a2 = Atom.Prim(Binop(Neq,a1,a2))
-let (===) a1 a2 = Atom.Prim(Binop(Eq,a1,a2))
-let (&&&) a1 a2 = Atom.Prim(Binop(And,a1,a2))
-let (!!) x = Atom.Var x
 let (<:=) x e = Inst.Assign([(x,e)])
 
 let rec c_automaton q' d = function
@@ -109,7 +94,7 @@ let rec c_automaton q' d = function
     let p1,a1' = c_automaton tmp x1 a1 in
     let p2,a2' = c_automaton q' d a2 in
     let p'' = p1@p2 in
-    let a'' = PSM.LetRec([(tmp,[],[(bool true,a2')])],a1') in
+    let a'' = PSM.LetRec([(tmp,[],[(mk_bool' true,a2')])],a1') in
     (p'',a'')
   | CSM.Let (bs,a) -> 
     let len = List.length bs in
@@ -127,19 +112,19 @@ let rec c_automaton q' d = function
           c_automaton (idle^s) (r^s) a) aa in
     let p,a' =  c_automaton q' d a in
     let a'' =
-      PSM.Seq(start <:= bool true,
+      PSM.Seq(start <:= mk_bool' true,
               PSM.LetRec
-                ([(top,[],[(bool true,PSM.Seq(start <:= bool false,
-                                              PSM.State(wait,[])))]);
+                ([(top,[],[(mk_bool' true,PSM.Seq(start <:= mk_bool' false,
+                                                 PSM.State(wait,[])))]);
                   (wait,[],[
                       (let rec aux acc = function
                           | 0 -> acc
-                          | n -> aux (!!(rdy^string_of_int (n-1)) &&& acc) (n - 1)
-                       in aux (bool true) len,
+                          | n -> aux (mk_binop' Atom.And (!! (rdy^string_of_int (n-1))) acc) (n - 1)
+                       in aux (mk_bool' true) len,
                           PSM.Seq
                             (Inst.Assign (List.mapi
                                             (fun i x ->
-                                               x,!!(r^string_of_int i)) xs),
+                                               x,!! (r^string_of_int i)) xs),
                              a'))])],
                  PSM.State(top,[])))
     in
@@ -148,18 +133,18 @@ let rec c_automaton q' d = function
         let rdy_i = rdy^string_of_int i in
         let wait_i = wait^string_of_int i in
         let q_i = q^string_of_int i in
-        PSM.LetRec([(idle_i,[],[(bool true,
-                                 PSM.Seq(rdy_i <:= bool true,
+        PSM.LetRec([(idle_i,[],[(mk_bool' true,
+                                 PSM.Seq(rdy_i <:= mk_bool' true,
                                          PSM.State(wait_i,[])))]);
-                    (wait_i,[],[(!!start,
-                                 PSM.Seq(rdy_i <:= bool false,
+                    (wait_i,[],[(!! start,
+                                 PSM.Seq(rdy_i <:= mk_bool' false,
                                          (* let fv = FreeVariables.vars_automaton ai' in *)
                                          let params = [] (* Vs.elements fv *) in
                                          (* y a t'il vraiment besoin de passer des copies des variables libres comme ici ? 
                                             Tout dépend de si on accepte les assignation (Seq) "sous" un [let and] *)
                                          PSM.LetRec
                                            ([(q_i,params,
-                                              [(bool true,ai')])],
+                                              [(mk_bool' true,ai')])],
                                             PSM.State(q_i,List.map (!!) params))))])],
                    PSM.State(idle_i,[]))) aa'
     in
@@ -184,8 +169,8 @@ let c_prog a =
   let rdy = "rdy" in
   let d = "result" in
   let p,a' = c_automaton idle d a in
-  let a'' = PSM.LetRec([(idle,[],[(!! start =/= std_logic One, 
-                  PSM.Seq(rdy <:= std_logic One, PSM.State(idle,[])));
-                  (!! start === std_logic One, 
-                  PSM.Seq(rdy <:= std_logic Zero, a'))])],PSM.State(idle,[])) in
+  let a'' = PSM.LetRec([(idle,[],[(!! start =/= mk_std_logic' One, 
+                  PSM.Seq(rdy <:= mk_std_logic' One, PSM.State(idle,[])));
+                  (!! start === mk_std_logic' One, 
+                  PSM.Seq(rdy <:= mk_std_logic' Zero, a'))])],PSM.State(idle,[])) in
   p@[a'']

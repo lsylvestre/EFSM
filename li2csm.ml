@@ -2,13 +2,9 @@ open Ast
 open LI
 
 let rec is_atom = function
-| Var x -> true
-| Prim c ->  
-  (match c with
-  | Std_logic _ | Bool _ | Int _ -> true
-  | Binop(_,e1,e2) ->
-    is_atom e1 && is_atom e2
-  | Unop(_,e) -> is_atom e)
+| Var _ | Const _ -> true
+| Prim (_,args) ->
+    List.for_all is_atom args  
 | _ -> false
 
 exception Not_an_atom
@@ -16,42 +12,26 @@ exception Not_an_atom
 (* [exp_to_atom e] raise [Not_an_atom] if [e] is not an atom *)
 let rec exp_to_atom = function
 | Var x -> Atom.Var x
-| Prim c ->  
-  let c' =
-    match c with
-    | Std_logic v -> Atom.Std_logic v
-    | Bool b -> Bool b
-    | Int n -> Int n
-    | Binop(op,e1,e2) ->
-      Atom.Binop(op,exp_to_atom e1,exp_to_atom e2)
-    | Unop(op,e) ->
-      Atom.Unop(op,exp_to_atom e)
-  in Atom.Prim c'
+| Const n -> Atom.Const n
+| Prim (c,args) -> 
+    Prim(c,List.map exp_to_atom args) 
 | _ -> raise Not_an_atom
 
 let rec c_exp e = 
   if is_atom e then CSM.Return (exp_to_atom e) else
   match e with
-  | Var x -> assert false (* is an atom *)
-  | Prim c -> 
-    (* is not an atom *)
-      (match c with
-      | Std_logic _ | Bool _| Int _ -> assert false (* is an atom *)
-      | Binop(op,e1,e2) ->
-        let x1 = Gensym.gensym "dsl" in
-        let x2 = Gensym.gensym "dsl" in
-        Let ([(x1,c_prog e1);(x2,c_prog e2)], 
-              CSM.Return (Atom.Prim (Binop(op,Atom.Var x1,Atom.Var x2))))
-     | Unop(op,e) ->
-        let x = Gensym.gensym "dsl" in
-        Let ([(x,c_prog e)], 
-              CSM.Return (Atom.Prim (Unop(op,Atom.Var x)))))
+  | Var _ | Const _ -> assert false (* is an atom *)
+  | Prim (c,es) ->
+      c_exp @@  (* à factoriser avec le cas app, etc. *)
+      let bs = List.map (fun e -> let x = Gensym.gensym "dsl" in (x,e)) es in
+      let xs = List.map (fun (x,_) -> Var x) bs in
+      Let (bs, Prim (c,xs))
   | Let(bs,e) ->
       let bs' = List.map (fun (x,e) -> (x,c_prog e)) bs in
       let a = c_exp e in
       CSM.Let(bs',a)
   | LetRec(bs,e) -> 
-      let bs' = List.map (fun (f,ys,e) -> (f,ys,[(Atom.Prim (Bool true),c_exp e)])) bs in
+      let bs' = List.map (fun (f,ys,e) -> (f,ys,[(mk_bool' true,c_exp e)])) bs in
       let a = c_exp e in
       CSM.LetRec(bs',a)
   | If(e1,e2,e3) -> 
@@ -61,7 +41,7 @@ let rec c_exp e =
         let a2 = c_exp e2 in
         let a3 = c_exp e3 in
         let q = Gensym.gensym "dsl_q" in
-        CSM.LetRec([(q,[],[(e,a2);(Atom.Prim (Unop(Not,e)),a3)])],CSM.State(q,[]))
+        CSM.LetRec([(q,[],[(e,a2);(mk_unop' Atom.Not e,a3)])],CSM.State(q,[]))
       else 
         c_exp @@
         let x = Gensym.gensym "dsl_cond" in

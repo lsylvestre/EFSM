@@ -56,49 +56,50 @@ v := V n
          print_ty t2;
        failwith "unify"
 
-let rec typ_atom env = function 
-| Atom.Var x -> 
-  (match Tenv.find_opt env x with
-   | None ->
-      let v = newvar() in
-      Tenv.add env x v; v
-   | Some ty -> 
-      ty)
-| Atom.Prim c -> 
-  match c with
-  | Std_logic _ -> TStd_logic
-  | Bool _ -> TBool 
-  | Int _ -> TInt 
-  | Binop (Add,a1,a2)
-  | Binop (Sub,a1,a2)
-  | Binop (Mul,a1,a2) -> 
-      unify env (typ_atom env a1) TInt;
-      unify env (typ_atom env a2) TInt;
-      TInt
-  | Binop (Lt,a1,a2)
-  | Binop (Le,a1,a2)
-  | Binop (Gt,a1,a2)
-  | Binop (Ge,a1,a2) ->
-      unify env (typ_atom env a1) TInt;
-      unify env (typ_atom env a2) TInt;
-      TBool  
-  | Binop (Eq,a1,a2)
-  | Binop (Neq,a1,a2) -> 
-      let t1 = typ_atom env a1 in
-      let t2 = typ_atom env a2 in
-      unify env t1 t2;
-      TBool
-  | Binop (And,a1,a2)
-  | Binop (Or,a1,a2) -> 
-      unify env (typ_atom env a1) TBool;
-      unify env (typ_atom env a2) TBool;
-      TBool 
- | Unop (Not,a) ->
-      unify env (typ_atom env a) TBool;
-      TBool
-  | Unop (Uminus,a) ->
-      unify env (typ_atom env a) TInt;
-      TInt
+let rec typ_atom env a =
+  let open Atom in
+  match a with
+  | Var x -> 
+    (match Tenv.find_opt env x with
+     | None ->
+        let v = newvar() in
+        Tenv.add env x v; v
+     | Some ty -> 
+        ty)
+  | Const c -> 
+      (match c with
+      | Std_logic _ -> TStd_logic
+      | Bool _ -> TBool 
+      | Int _ -> TInt)
+  | Prim (Binop c,[a1;a2]) -> 
+      (match c with
+      | (Add|Sub|Mul) ->
+          unify env (typ_atom env a1) TInt;
+          unify env (typ_atom env a2) TInt;
+          TInt
+      | (Lt|Le|Gt|Ge) ->
+          unify env (typ_atom env a1) TInt;
+          unify env (typ_atom env a2) TInt;
+          TBool  
+      | (Eq|Neq) -> 
+          let t1 = typ_atom env a1 in
+          let t2 = typ_atom env a2 in
+          unify env t1 t2;
+          TBool
+      | (And|Or) -> 
+          unify env (typ_atom env a1) TBool;
+          unify env (typ_atom env a2) TBool;
+          TBool)
+  | Prim (Unop c,[a]) -> 
+      (match c with
+       | Not -> 
+          unify env (typ_atom env a) TBool;
+          TBool
+       | Uminus ->
+          unify env (typ_atom env a) TInt;
+          TInt)
+  | Prim _ -> 
+      failwith "typing-efsm: bad arity"
 
 let typ_inst env = function
 | Inst.Assign bs -> 
@@ -130,7 +131,7 @@ let typ_automaton glob_states env ((EFSM.Automaton l) as a) =
   List.iter (typ_transition env) l
 
 let rec canon t = 
-  (* Si des variables de types ne peuvent pas être instantiées,
+  (* Si des variables de types ne sont pas instantiées dans [t],
      une exception est lancée *)
   match t with 
   | TVar{contents=Ty t} -> 

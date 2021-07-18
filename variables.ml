@@ -13,11 +13,8 @@ let vs_of_list ?(acc=Vs.empty) l =
 
 let rec rv_atom = function
 | Atom.Var x -> Vs.singleton x
-| Atom.Prim c -> 
-    match c with
-    | Std_logic _ | Bool _ | Int _ -> Vs.empty
-    | Binop (_,a1,a2) -> Vs.union (rv_atom a1) (rv_atom a2)
-    | Unop (_,a) -> rv_atom a
+| Atom.Const _ -> Vs.empty
+| Atom.Prim (_,l) -> accum rv_atom l
 
 let rv_inst = function
 | Inst.Assign bs -> 
