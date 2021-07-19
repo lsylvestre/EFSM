@@ -14,14 +14,22 @@ let vs_of_list ?(acc=Vs.empty) l =
 let rec rv_atom = function
 | Atom.Var x -> Vs.singleton x
 | Atom.Const _ -> Vs.empty
-| Atom.Prim (_,l) -> accum rv_atom l
+| Atom.Prim (c,l) -> 
+  let vs = accum rv_atom l in
+  match c with
+  | ArrayGet x -> Vs.add x vs
+  | _ -> vs
 
 let rv_inst = function
 | Inst.Assign bs -> 
-    accum (fun (_,e) -> rv_atom e) bs
+    accum (fun ((_,o),e) -> 
+      Vs.union (rv_atom e) 
+               (match o with 
+                | None -> Vs.empty 
+                | Some a -> rv_atom a)) bs
 
 (* variables écrites *)
 
 let wv_inst = function
 | Inst.Assign bs -> 
-    accum (fun (x,_) -> Vs.singleton x) bs
+    accum (fun ((x,_),_) -> Vs.singleton x) bs

@@ -41,6 +41,14 @@ rule token = parse
 | "&&"              { LAND }
 | "'0'"             { ZERO }
 | "'1'"             { ONE }
+| "["               { LBRACKET }
+| "]"               { RBRACKET }
+| "^"               { HAT }
+| "int"             { INT }
+| "bool"            { BOOL }
+| "array"           { ARRAY }
+| "std_logic"       { STD_LOGIC }
+| [':']             { COL }
 | ident as lxm      { IDENT lxm }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }
 | [' ' '\t']        { token lexbuf }

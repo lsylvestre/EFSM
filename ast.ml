@@ -37,6 +37,9 @@ module Atom = struct
   type op =   
   | Binop of binop
   | Unop of unop
+  | ArrayGet of ident
+  | ArrayMake of int
+  | TyAnnot of Types_efsm.ty
 
   type atom = 
   | Var of ident 
@@ -46,13 +49,6 @@ module Atom = struct
 
   let ill_formed_constant_application () = 
     Printf.printf "*** ill formed constant application\n"
-  (*
-  | Std_logic of std_logic
-  | Bool of bool 
-  | Int of int
-  | Binop of binop * 'a * 'a
-  | Unop of unop * 'a
-*)
 
 end 
 
@@ -64,21 +60,29 @@ let mk_int (n:int) = Int n
 let mk_std_logic (v:std_logic) = Std_logic v
 let mk_binop (p:binop) (a1:'a) (a2:'a) = (Binop p,[a1;a2])
 let mk_unop (p:unop) (a:'a) = (Unop p,[a]) 
+let mk_array_get (x:ident) (idx:'a) = (ArrayGet x,[idx]) 
+let mk_array_make (size:int) (a:'a) = (ArrayMake size,[a]) 
+let mk_ty_annot (a:'a) (t:Types_efsm.ty) = (TyAnnot t,[a])
 
 let mk_prim p = Prim p
 let mk_const c = Const c
 
-let mk_bool' b        = mk_const @@ mk_bool b
-let mk_int' n         = mk_const @@ mk_int n
-let mk_std_logic' v   = mk_const @@ mk_std_logic v
+let mk_bool' b         = mk_const @@ mk_bool b
+let mk_int' n          = mk_const @@ mk_int n
+let mk_std_logic' v    = mk_const @@ mk_std_logic v
 
-let mk_binop' p a1 a2 = mk_prim @@ mk_binop p a1 a2
-let mk_unop' p a      = mk_prim @@ mk_unop p a
+let mk_binop' p a1 a2  = mk_prim @@ mk_binop p a1 a2
+let mk_unop' p a       = mk_prim @@ mk_unop p a
+let mk_array_get' a idx = mk_prim @@ mk_array_get a idx
+let mk_array_make' size a = mk_prim @@ mk_array_make size a
+let mk_ty_annot' a t = mk_prim @@ mk_ty_annot a t
 
 let mk_var x = Var x 
 
 module Inst = struct
-  type 'a inst = Assign of (ident * 'a) list
+  type 'a inst = 
+  | Assign of ('a lvalue * 'a) list
+  and 'a lvalue = (ident * 'a option)
 end
 
 ;;

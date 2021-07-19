@@ -92,7 +92,12 @@ module PP_inst = struct
     fprintf fmt "@[<hov>(";
     pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ",") 
-        pp_print_text fmt xs;
+        (fun fmt (x,idx_opt) ->
+            match idx_opt with
+            | None -> 
+               pp_print_text fmt x
+            | Some a -> 
+               fprintf fmt "%s[%a]" x PP_atom.pp_atom a) fmt xs;
     fprintf fmt ") := (";
     pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ",") 

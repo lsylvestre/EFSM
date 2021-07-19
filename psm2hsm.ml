@@ -23,25 +23,38 @@ let rec c_atom theta a =
 let c_inst theta = function
   | Inst.Assign bs ->
       Inst.Assign
-        (List.map (fun (x,a) ->
+        (List.map (fun ((x,o),a) ->
            let x' = substitute theta x in
+           let o' = Option.map (c_atom theta) o in
            let a' = c_atom theta a in
-           (x',a')) bs)
+           ((x',o'),a')) bs)
 
 let merge s s' =
-  Inst.(match s,s' with
-      | Assign l, Assign l' -> Assign (l@l'))
+  let open Inst in
+  match s,s' with
+  | Assign l, Assign l' -> 
+      if Variables.(Vs.disjoint (wv_inst s) (wv_inst s')) 
+      then Some (Assign (l@l'))
+      else None
+
 
 let rec c_automaton env theta = function
   | PSM.State (q,es) ->
       let xs = grab_args q env in
       let s = Inst.Assign (List.map2 (fun x e -> 
-                             (substitute theta x, c_atom theta e)) xs es) in
+                             ((substitute theta x,None), c_atom theta e)) xs es) in
       (s,HSM.State q)
   | PSM.Seq(s,a) ->
       let s1 = c_inst theta s in
       let (s2,a') = c_automaton env theta a in
-      ((merge s1 s2),a')
+      (*  (* ici essaie t'on de fusionner s1 et s2 ? que faire s'il y a des doublons, etc. 
+             Il faut également bien penser aux tableaux *)
+
+       (match merge s1 s2 with
+      | Some s -> (s,a')
+      | None ->*)
+        let q = Gensym.gensym "seq" in
+        (s1, HSM.LetRec ([(q,[(mk_bool' true, s2,a')])],HSM.State q))
   | PSM.LetRec (selects, a) -> (* revoir le schéma papier *)
       let l_theta = List.map (fun (_,xs,_) -> 
                        let fresh = Gensym.gensym "params" in

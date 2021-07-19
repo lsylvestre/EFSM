@@ -29,7 +29,8 @@ let rec inline extra_env env e =
   match e with
   | Var _ | Const _ -> e
   | Prim (c,es) -> Prim (c,List.map inline' es)
-  | Seq _ -> failwith "todo inline"
+  | Seq (s,e) -> Seq (s,e)
+      (* seq : todo expressions non atomiques dans [s] *)
   | If(e1,e2,e3) -> 
       let inline_exp e = inline extra_env env e in
       If(inline_exp e1, inline_exp e2, inline_exp e3)

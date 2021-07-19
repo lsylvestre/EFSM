@@ -60,19 +60,26 @@ let c_atom fmt a =
             fprintf fmt "%b" b
          | Int n -> 
             fprintf fmt "%d" n)
-
-    | Prim(Binop p,[a1;a2]) ->
-      parenthesized ~paren fmt @@ fun () ->
-        fprintf fmt "%a %a %a"
-          (pp_atom ~paren:true) a1
-          c_binop p
-          (pp_atom ~paren:true) a2
-   | Prim(Unop p,[a]) -> 
-      parenthesized ~paren fmt @@ fun () ->
-        fprintf fmt "%a %a"
-          c_unop p
-          (pp_atom ~paren:true) a
-   | _ -> assert false (* ill-formed primitive application *)
+    | Prim p -> 
+     (match p with
+      | (Binop p,[a1;a2]) ->
+        parenthesized ~paren fmt @@ fun () ->
+          fprintf fmt "%a %a %a"
+            (pp_atom ~paren:true) a1
+            c_binop p
+            (pp_atom ~paren:true) a2
+     | (Unop p,[a]) -> 
+        parenthesized ~paren fmt @@ fun () ->
+          fprintf fmt "%a %a"
+            c_unop p
+            (pp_atom ~paren:true) a
+     | (ArrayGet x,[idx]) ->
+         fprintf fmt "%s(%a)" x (pp_atom ~paren:false) idx
+     | (ArrayMake _,[init]) ->
+         fprintf fmt "(others => %a)" (pp_atom ~paren:false) init
+     | (TyAnnot _,[a]) -> 
+         pp_atom ~paren fmt a 
+     | _ -> assert false) (* ill-formed primitive application *)
   in
   pp_atom ~paren:false fmt a
 
@@ -83,8 +90,14 @@ let c_assign fmt s =
   match s with
   | Inst.Assign bs ->
       pp_print_list 
-        ~pp_sep:(fun fmt () -> fprintf fmt "@,") 
-        (fun fmt (x,a) -> fprintf fmt "%s <= %a;" x c_atom a) fmt bs
+        ~pp_sep:(fun fmt () -> fprintf fmt "@,")
+        (fun fmt ((x,o),a) -> 
+            fprintf fmt "%s%a <= %a;" 
+                  x (fun fmt o -> 
+                       match o with 
+                       | None -> ()
+                       | Some a -> fprintf fmt "(%a)" c_atom a) o
+                  c_atom a) fmt bs
 
 let c_transitions state_var fmt (q,ts) =
   match ts with 
@@ -103,15 +116,18 @@ let c_transitions state_var fmt (q,ts) =
         c_assign s
         (c_next_state state_var) q'
     ) ts';
-    fprintf fmt "else NULL;@,end if;@]"
+    fprintf fmt "end if;@]"  (* else NULL; *)
 
 
-let default_value fmt ty =
+let rec default_value fmt ty =
   let open Types_efsm in
   match ty with
   | TStd_logic -> pp_print_text fmt "-"
   | TBool -> pp_print_text fmt "false"
   | TInt -> pp_print_text fmt "0"
+  | TArray(t,_) -> 
+      fprintf fmt "(others => %a)" default_value t 
+  | TSize n -> assert false
   | TVar _ -> assert false
 
 
@@ -136,19 +152,24 @@ let c_automaton ~reset ~clock state_var locals fmt (EFSM.Automaton l) =
   fprintf fmt "@]@,end process;@," (* fix indent *)
 
 
-let c_ty fmt ty = 
+let rec c_ty fmt ty = 
   let open Types_efsm in
   match ty with
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> pp_print_text fmt "integer"
+  | TArray(t,size) -> (* 
+    pp_print_text fmt "todo_array" *)
+      fprintf fmt "array_%a_%a" c_ty t c_ty size
+  | TSize n -> fprintf fmt "%d" n
   | TVar _ -> assert false
 
 let c_prog ?(reset="reset") ?(clock="clk") 
            ?(entity_name="Main") (envi,envo,l_locals) fmt automata = 
   fprintf fmt "@[<v>library ieee;@,";
   fprintf fmt "use ieee.std_logic_1164.all;@,";
-  fprintf fmt "use ieee.numeric_std.all;@,@,";
+  fprintf fmt "use ieee.numeric_std.all;@,";
+  fprintf fmt "use work.misc_types.all;@,@,";
   fprintf fmt "@[<v 2>entity %s is@," entity_name;
   fprintf fmt "port(@[< v>signal %s : in std_logic;@," clock;
   fprintf fmt "signal %s : in std_logic" reset;
@@ -193,6 +214,27 @@ let c_prog ?(reset="reset") ?(clock="clk")
 
   (* ***************************************** *)
 
+let mk_package fmt = 
+  fprintf fmt "@[<v>library ieee;@,";
+  fprintf fmt "use ieee.std_logic_1164.all;@,";
+  fprintf fmt "use ieee.numeric_std.all;@,@,";
+  fprintf fmt "@[<v 2>package misc_types is@,";
+  
+  let l = Typing_efsm.sort_array_type_decl () in
+  List.iter Types_efsm.(function
+  | TArray(t,TSize n) as ta ->  
+    fprintf fmt "type %a is array (%a range 0 to %d) of integer;@,"
+      c_ty ta
+      c_ty t
+      (n-1)
+  | _ -> assert false) l;
+
+  fprintf fmt "@]@,end;@,";
+  fprintf fmt "package body misc_types is@,";
+  fprintf fmt "end;@,@."
+
+  (* ***************************************** *)
+
 
 let bin_of_int ?(pad=4) d =
   if d < 0 || pad < 1 then invalid_arg "bin_of_int" else
@@ -216,7 +258,8 @@ let conversion_from_vect ty fmt data =
       fprintf fmt "(%s(0)) = '1'" data
   | TInt -> 
       fprintf fmt "to_integer(unsigned(%s))" data
-  | TVar _ -> assert false
+  | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
+  | (TSize _ | TVar _) -> assert false
 
 let set_result dst ty fmt data =
   let open Types_efsm in
@@ -229,7 +272,8 @@ let set_result dst ty fmt data =
       fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@," dst;
   | TInt -> 
       fprintf fmt "%s <= std_logic_vector(to_unsigned(%s,%s'length))" dst data dst
-  | TVar _ -> assert false
+  | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
+  | (TSize _ | TVar _) -> assert false
 
 
 
@@ -240,13 +284,13 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "@[<v>-- AVALON MM-slave wrapper around the core %s IP@," name;
   fprintf fmt "library IEEE;@,";
   fprintf fmt "use IEEE.std_logic_1164.all;@,";
-  fprintf fmt "use IEEE.numeric_std.all;@,@,";
-
+  fprintf fmt "use IEEE.numeric_std.all;@,";
+  fprintf fmt "use work.misc_types.all;@,@,";
   fprintf fmt "@[<v 2>entity avs_%s is@," name;
   fprintf fmt "port (@[< v>";
   fprintf fmt "@[<v 2>avs_s0_address : in std_logic_vector(3 downto 0)  := (others => '0');@,"; 
   fprintf fmt "-- 0000  : control/status register (b1=start, b0=rdy)@,";
-  List.iteri (fun i (x,_) ->
+  List.iteri (fun i (x,t) ->
     fprintf fmt "-- %s  : %s register@," (bin_of_int (i+1)) x) (envi@envo);
   fprintf fmt "@]@,avs_s0_read        : in  std_logic                     := '0';@,";
   fprintf fmt "avs_s0_readdata    : out std_logic_vector(31 downto 0);@,";
@@ -337,7 +381,8 @@ let t_val ty =
   | TStd_logic
   | TBool -> "Bool_val" 
   | TInt -> "Int_val"
-  | TVar _ -> assert false
+  | TArray _ -> "TODO!!!!!!!!!!!!?"
+  | (TSize _ | TVar _) -> assert false
 
 let mk_platform_bindings fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
@@ -363,7 +408,8 @@ let t_C ty =
   | TStd_logic
   | TBool
   | TInt -> "int"
-  | TVar _ -> assert false
+  | TArray _ -> "TODO!!!!!!!!!!!!?"
+  | (TSize _ | TVar _) -> assert false
 
 let up = String.uppercase_ascii
 let low = String.lowercase_ascii
@@ -426,13 +472,14 @@ let mk_simul_c fmt (envi,envo,_) name =
 
 let mk_simul_h = mk_platform_h
 
-let t_ML ty =
+let rec t_ML ty =
   let open Types_efsm in
   match ty with
   | TStd_logic
   | TBool -> "bool"
   | TInt -> "int"
-  | TVar _ -> assert false
+  | TArray(t,_) -> t_ML t ^ " array"
+  | (TSize _ | TVar _) -> assert false
 
 
 (* pour le moment, on ignore les résultats multiples. 

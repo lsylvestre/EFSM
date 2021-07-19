@@ -1,5 +1,6 @@
 %{
     open Ast
+    open Types_efsm
 %}
 
 %token EOF 
@@ -12,6 +13,8 @@
 %token PLUS MINUS TIMES LT LE GT GE NEQ LAND NOT
 %token UMINUS
 %token ZERO ONE /* std_logic values */
+%token LBRACKET RBRACKET HAT
+%token INT BOOL ARRAY STD_LOGIC COL
 
 %left PIPE_PIPE
 %left LAND
@@ -105,9 +108,9 @@ exp_li_without_paren:
 | x=IDENT                  { LI.Var x }
 | c=const(exp_li)           { LI.Const c }
 | p=prim(exp_li)           { LI.Prim p }
-| x=IDENT COLONEQ e=exp_li SEMICOL e2=exp_li 
-                           { LI.Seq(Inst.Assign [(x,e)],e2) }
-/*| s=inst(exp_li) SEMICOL e=exp_li  { li.Seq(s,e) }*/
+/*| x=IDENT COLONEQ e=exp_li SEMICOL e2=exp_li 
+                           { LI.Seq(Inst.Assign [(x,e)],e2) }*/
+| s=inst(exp_li) SEMICOL e=exp_li  { LI.Seq(s,e) }
 | LET bs=separated_nonempty_list(AND,binding_li) 
   IN e=exp_li              { LI.Let (bs,e) }
 | LET REC bs=separated_nonempty_list(AND,fun_binding_li) 
@@ -142,9 +145,12 @@ const(E):
 | n=INT_LIT                { mk_int n }       
 
 prim(E): 
-| a1=E c=binop a2=E        { mk_binop c a1 a2 }
-| NOT a=E                  { mk_unop Atom.Not a  }
-| MINUS a=E %prec UMINUS   { mk_unop Atom.Uminus a }
+| a1=E c=binop a2=E             { mk_binop c a1 a2 }
+| NOT a=E                       { mk_unop Atom.Not a  }
+| MINUS a=E %prec UMINUS        { mk_unop Atom.Uminus a }
+| x=IDENT LBRACKET a=E RBRACKET { mk_array_get x a }
+| e=E HAT n=INT_LIT { mk_array_make n e }
+| LPAREN e=E COL t=ty RPAREN    { mk_ty_annot e t }
 
 std_logic:
 | ZERO { Atom.Zero }
@@ -170,6 +176,19 @@ atom:
 | PIPE_PIPE { Atom.Or }
 
 inst(E):
-| x=IDENT COLONEQ a=E { Inst.Assign [ (x,a) ] }
-| LPAREN xs=separated_list(COMMA,IDENT) RPAREN 
+| x=lvalue(E) COLONEQ a=E { Inst.Assign [ (x,a) ] }
+| LPAREN xs=separated_list(COMMA,lvalue(E)) RPAREN 
   COLONEQ LPAREN es=separated_list(COMMA,E) RPAREN { Inst.Assign (List.combine xs es) }
+
+lvalue(E):
+| x=IDENT                        { (x,None) }
+| x=IDENT LBRACKET a=E RBRACKET  { (x,Some a) }
+
+ty:
+| LPAREN t=ty RPAREN                   { t }
+| STD_LOGIC                            { TStd_logic }
+| INT                                  { TInt }
+| BOOL                                 { TBool }
+| t=ty ARRAY LPAREN n=INT_LIT RPAREN   { TArray(t,TSize n) }
+
+

@@ -22,3 +22,6 @@ par x_i = if true then c[e_i]
 -- goto calculé
 
 -- bibliothèque standard
+
+
+-- to fix : problème de portée : les paramètres des états sont inférés comme des sorties s'ils ne sont jamais lus.

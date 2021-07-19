@@ -6,10 +6,12 @@ type token =
   | UMINUS
   | TIMES
   | THEN
+  | STD_LOGIC
   | SEMICOL
   | RPAREN
   | RETURN
   | REC
+  | RBRACKET
   | PLUS
   | PIPE_PIPE
   | PIPE
@@ -22,11 +24,14 @@ type token =
   | LET
   | LEFT_ARROW
   | LE
+  | LBRACKET
   | LAND
   | INT_LIT of (int)
+  | INT
   | IN
   | IF
   | IDENT of (string)
+  | HAT
   | GT
   | GE
   | EQ
@@ -35,8 +40,11 @@ type token =
   | ELSE
   | COMMA
   | COLONEQ
+  | COL
   | BOOL_LIT of (bool)
+  | BOOL
   | AUTOMATON
+  | ARRAY
   | AND
 
 (* This exception is raised by the monolithic API functions. *)

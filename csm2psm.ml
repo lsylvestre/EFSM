@@ -21,9 +21,12 @@ module FreeVariables = struct
     match s with
     | Inst.Assign bs ->  
     List.fold_left 
-      (fun fv (x,e) -> 
+      (fun fv ((x,o),e) -> 
          if Vs.mem x bv then failwith "cannot assign a local variable"
-         else vars_atom ~fv ~bv e) fv bs
+         else let fv = match o with 
+                       | None -> Vs.empty 
+                       | Some a -> vars_atom ~fv ~bv a in
+              vars_atom ~fv ~bv e) fv bs
 
   let rec vars_automaton ?(fv=Vs.empty) ?(bv=Vs.empty) a =
     let open PSM in
@@ -64,10 +67,11 @@ let rec c_atom theta a =
 let c_inst theta = function
   | Inst.Assign bs ->
     Inst.Assign
-      (List.map (fun (x,a) ->
+      (List.map (fun ((x,o),a) ->
            let x' = substitute theta x in
+           let o' = Option.map (c_atom theta) o in
            let a' = c_atom theta a in
-           (x',a')) bs)
+           ((x',o'),a')) bs)
 
 let (===) a1 a2 = mk_binop' Atom.Eq a1 a2
 let (=/=) a1 a2 = mk_binop' Atom.Neq a1 a2
@@ -88,7 +92,7 @@ let rec c_automaton q' d = function
     let ps,a' = c_automaton q' d a in
     ps'@ps,PSM.LetRec (selects', a')
   | CSM.Return e -> 
-    ([],PSM.Seq(Inst.Assign [(d,e)], PSM.State (q',[])))
+    ([],PSM.Seq(Inst.Assign [((d,None),e)], PSM.State (q',[])))
   | CSM.Let ([(x1,a1)],a2) -> 
     let tmp = Gensym.gensym "tmp" in
     let p1,a1' = c_automaton tmp x1 a1 in
@@ -112,9 +116,9 @@ let rec c_automaton q' d = function
           c_automaton (idle^s) (r^s) a) aa in
     let p,a' =  c_automaton q' d a in
     let a'' =
-      PSM.Seq(start <:= mk_bool' true,
+      PSM.Seq((start,None) <:= mk_bool' true,
               PSM.LetRec
-                ([(top,[],[(mk_bool' true,PSM.Seq(start <:= mk_bool' false,
+                ([(top,[],[(mk_bool' true,PSM.Seq((start,None) <:= mk_bool' false,
                                                  PSM.State(wait,[])))]);
                   (wait,[],[
                       (let rec aux acc = function
@@ -124,7 +128,7 @@ let rec c_automaton q' d = function
                           PSM.Seq
                             (Inst.Assign (List.mapi
                                             (fun i x ->
-                                               x,!! (r^string_of_int i)) xs),
+                                               (x,None),!! (r^string_of_int i)) xs),
                              a'))])],
                  PSM.State(top,[])))
     in
@@ -134,10 +138,10 @@ let rec c_automaton q' d = function
         let wait_i = wait^string_of_int i in
         let q_i = q^string_of_int i in
         PSM.LetRec([(idle_i,[],[(mk_bool' true,
-                                 PSM.Seq(rdy_i <:= mk_bool' true,
+                                 PSM.Seq((rdy_i,None) <:= mk_bool' true,
                                          PSM.State(wait_i,[])))]);
                     (wait_i,[],[(!! start,
-                                 PSM.Seq(rdy_i <:= mk_bool' false,
+                                 PSM.Seq((rdy_i,None) <:= mk_bool' false,
                                          (* let fv = FreeVariables.vars_automaton ai' in *)
                                          let params = [] (* Vs.elements fv *) in
                                          (* y a t'il vraiment besoin de passer des copies des variables libres comme ici ? 
@@ -170,7 +174,7 @@ let c_prog a =
   let d = "result" in
   let p,a' = c_automaton idle d a in
   let a'' = PSM.LetRec([(idle,[],[(!! start =/= mk_std_logic' One, 
-                  PSM.Seq(rdy <:= mk_std_logic' One, PSM.State(idle,[])));
+                  PSM.Seq((rdy,None) <:= mk_std_logic' One, PSM.State(idle,[])));
                   (!! start === mk_std_logic' One, 
-                  PSM.Seq(rdy <:= mk_std_logic' Zero, a'))])],PSM.State(idle,[])) in
+                  PSM.Seq((rdy,None) <:= mk_std_logic' Zero, a'))])],PSM.State(idle,[])) in
   p@[a'']

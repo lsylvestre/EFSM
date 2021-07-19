@@ -1,0 +1,13 @@
+let rec q() = 
+  if true then x := (42^10 : int array(10)) ; q1()
+and q1() = 
+  if true then y := x[11] ; q1() in
+  q()
+
+(* let rec q() = 
+  if true then x := (42^10); q1()
+and q1() = 
+  if true then x[4] := 3;
+     return x[4]
+in q()
+*)

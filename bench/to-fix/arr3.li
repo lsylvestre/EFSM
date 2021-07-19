@@ -1,0 +1,13 @@
+w := 0^10;
+let rec fact(n) = 
+  let rec aux(acc,i) = 
+    if i >= n then acc
+    else w[i] := acc ; aux (n * acc, n + 1)
+  in aux(1,1)
+in 
+let x = fact(9) in
+let rec sum(n) = 
+  let rec aux(acc,n) = 
+    if n <= 0 then acc else aux(w[n] + acc, n-1) in aux(0,n)
+  in 
+  sum(9) + sum(9)

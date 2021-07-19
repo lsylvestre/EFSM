@@ -64,15 +64,20 @@ let rec c_exp e =
        let es = List.map snd bs in
        if List.for_all is_atom es 
        then
-         let bs' = List.map (fun (x,e) -> (x, exp_to_atom e)) bs in
+         let bs' = List.map (fun ((x,o),e) -> 
+                              let o' = Option.map exp_to_atom o in
+                              ((x,o'), exp_to_atom e)) bs in
          let a = c_exp e in
          CSM.Seq(Assign(bs'),a)
-       else 
+       else failwith "todo li2csm seq") (**
         c_exp @@
-        let bs2 = List.map (fun (x,e) -> 
-                    let x = Gensym.gensym "dsl" in (x,e)) bs in
-         let l = List.map2 (fun (x,_) (x',_) -> (x,Var x')) bs bs2 in
-        Let (bs,Seq(Assign(l),e)))
+        let bs2 = List.map (fun ((x,o),e) -> 
+                    (* pour le moment, 
+                       ne gère pas les indices-expressions complexes *)
+                    let x' = Gensym.gensym "dsl" in (x',e)) bs in
+         let l = List.map2 (fun ((x,o),_) (x',_) -> 
+                    (x,Var x')) bs bs2 in (* à vérifier *)
+        Let (bs,Seq(Assign(l),e))) *)
 
 and c_prog e =
   c_exp e

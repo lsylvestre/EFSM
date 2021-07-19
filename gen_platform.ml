@@ -4,8 +4,9 @@ let mk_vhdl_with_cc vars entity_name efsm =
   let open Format in
   let open Efsm2vhdl in
   let dst = "gen" in
-  let desc_name = concat dst (entity_name ^".vhdl")
-  and cc_name = concat dst (entity_name ^"_cc.vhdl")
+  let desc_name = concat dst (entity_name ^".vhd")
+  and cc_name = concat dst (entity_name ^"_cc.vhd")
+  and misc_types_name = concat dst "misc_types.vhd"
   and bindings_name = concat dst "bindings_ext.c"
   and platform_c_name = concat dst "platform_ext.c"
   and platform_h_name = concat dst "platform_ext.h"
@@ -17,6 +18,7 @@ let mk_vhdl_with_cc vars entity_name efsm =
   let fmt = std_formatter in
   let desc_oc = open_out desc_name
   and cc_oc = open_out cc_name
+  and misc_types_cc = open_out misc_types_name
   and bindings_oc = open_out bindings_name
   and platform_c_oc = open_out platform_c_name
   and platform_h_oc = open_out platform_h_name
@@ -28,6 +30,10 @@ let mk_vhdl_with_cc vars entity_name efsm =
 
   set_formatter_out_channel desc_oc;
   c_prog ~entity_name vars fmt efsm;
+
+  set_formatter_out_channel misc_types_cc;
+  mk_package fmt;
+  pp_print_flush fmt ();
 
   set_formatter_out_channel cc_oc;
   gen_cc fmt vars entity_name;

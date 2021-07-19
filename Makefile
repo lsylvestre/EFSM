@@ -3,6 +3,7 @@ EXE=compile
 
 all:
 	$(CC) -c misc.ml
+	$(CC) -c types_efsm.ml
 	$(CC) -c ast.ml
 	$(CC) -c pprint_ast.ml
 	menhir parser.mly
@@ -11,7 +12,6 @@ all:
 	ocamllex lexer.mll
 	$(CC) -c lexer.ml
 	$(CC) -c variables.ml
-	$(CC) -c types_efsm.ml
 	$(CC) -c typing_efsm.ml
 	$(CC) -c efsm2vhdl.ml
 	$(CC) -c hsm2efsm.ml
@@ -40,4 +40,4 @@ clean:
 	rm -f `find . -name "*.cmo"`
 	rm -f `find . -name "*.cmi"`
 	rm -f $(EXE)
-	rm -f gen/*.vhdl gen/*.c gen/*.h gen/*.ml gen/*.mli
+	rm -f gen/*.vhd gen/*.c gen/*.h gen/*.ml gen/*.mli

@@ -43,6 +43,10 @@ open Types_efsm
 
 let rec unify env t1 t2 = match t1,t2 with
 | TStd_logic, TStd_logic | TBool, TBool | TInt,TInt -> ()
+| TArray(t,s),TArray(t',s') -> 
+  unify env t t';
+  unify env s s'
+| (TSize n, TSize m) when n = m -> () 
 | TVar {contents=V n},TVar ({contents=V m} as v) -> 
 v := V n
 | TVar {contents=Ty ty},TVar ({contents=V n} as v) 
@@ -55,6 +59,26 @@ v := V n
          print_ty t1 
          print_ty t2;
        failwith "unify"
+
+(* ************************* *)
+
+let arrayTypDecls = ref []
+
+let array_type_decl_reset () =
+  arrayTypDecls := []
+
+let array_type_decl t = 
+  arrayTypDecls := t :: (!arrayTypDecls)
+
+let sort_array_type_decl () =
+  let h = Hashtbl.create 10 in
+  List.iter (fun t -> Hashtbl.add h (canon t) ()) !arrayTypDecls;
+  h 
+  |> Hashtbl.to_seq_keys
+  |> List.of_seq
+
+
+(* ************************* *)
 
 let rec typ_atom env a =
   let open Atom in
@@ -98,17 +122,49 @@ let rec typ_atom env a =
        | Uminus ->
           unify env (typ_atom env a) TInt;
           TInt)
+  | Prim (ArrayGet x,[a]) -> 
+     let v = newvar() in
+     let vs = newvar() in
+     (match Tenv.find_opt env x with
+     | None ->
+        Tenv.add env x (TArray(v,vs))
+     | Some ty -> 
+        unify env ty (TArray(v,vs)));
+     unify env (typ_atom env a) TInt;
+     TInt
+  | Prim (ArrayMake n,[a]) ->
+     let t = typ_atom env a in
+     let ta = TArray(t,TSize n) in
+     array_type_decl ta;
+     ta
+  | Prim (TyAnnot t,[a]) -> 
+     unify env t (typ_atom env a);
+     (match t with
+     | TArray _ -> array_type_decl t
+     | _ -> ());
+     t
   | Prim _ -> 
       failwith "typing-efsm: bad arity"
 
 let typ_inst env = function
 | Inst.Assign bs -> 
-    List.iter (fun (x,a) -> 
-                 let t = typ_atom env a in 
+    List.iter (fun ((x,o),a) ->
+                let ty = typ_atom env a in
+                match o with
+                | None -> 
+                   (match Tenv.find_opt env x with
+                    | None -> 
+                      Tenv.add env x ty
+                    | Some t -> unify env t ty)
+                | Some idx -> 
+                   let ty_idx = typ_atom env idx in   
+                   let vs = newvar() in
                    match Tenv.find_opt env x with
                    | None -> 
-                       Tenv.add env x t 
-                   | Some ty -> unify env ty t) bs
+                      Tenv.add env x (TArray(ty,vs))
+                   | Some t -> 
+                      unify env TInt ty_idx;
+                      unify env (TArray(ty,vs)) t) bs
 
 let typ_transition env (_,ts) = 
   List.iter (fun (a,s,_) ->
@@ -130,17 +186,9 @@ let typ_automaton glob_states env ((EFSM.Automaton l) as a) =
   check_state_scope glob_states a;
   List.iter (typ_transition env) l
 
-let rec canon t = 
-  (* Si des variables de types ne sont pas instantiées dans [t],
-     une exception est lancée *)
-  match t with 
-  | TVar{contents=Ty t} -> 
-      canon t
-  | TVar{contents=V n} -> 
-      failwith "Typing_efsm.canon: uninstantiated type variable"
-  | t -> t
 
 let typ_prog p =
+  array_type_decl_reset ();
   let env = Tenv.create 10 in
   List.iter (typ_automaton [] env) p;
   let (rvs,wvs,vl) = v_prog p in

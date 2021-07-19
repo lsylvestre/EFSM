@@ -1,0 +1,9 @@
+x := (42^10) ; return 42
+
+(* let rec q() = 
+  if true then x := (42^10); q1()
+and q1() = 
+  if true then x[4] := 3;
+     return x[4]
+in q()
+*)
