@@ -51,7 +51,8 @@ let conversion_from_vect ty fmt x =
       fprintf fmt "(%s(0)) = '1'" x
   | TInt -> 
       fprintf fmt "signed(%s(30 downto 0))" x
-  | TCamlRef _ -> pp_print_text fmt x
+  | (TCamlRef _ | TCamlArray _) -> 
+      pp_print_text fmt x
   | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
   | (TSize _ | TVar _) -> assert false
   | TPtr -> assert false
@@ -67,7 +68,7 @@ let set_result dst ty fmt x =
       fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@,end if" dst;
   | TInt -> 
       fprintf fmt "%s <= \"0\" & std_logic_vector(%s)" dst x
-  | TCamlRef _ -> fprintf fmt "%s <= %s" dst x
+  | (TCamlRef _ | TCamlArray _) -> fprintf fmt "%s <= %s" dst x
   | TPtr -> assert false
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
@@ -219,7 +220,7 @@ let t_val ty fmt x =
   | TStd_logic
   | TBool -> fprintf fmt "Bool_val(%s)" x
   | TInt -> fprintf fmt "Int_val(%s)" x
-  | TCamlRef _ -> pp_print_text fmt x
+  | (TCamlRef _ | TCamlArray _) -> pp_print_text fmt x
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!?"
   | TPtr -> assert false
   | (TSize _ | TVar _) -> assert false
@@ -248,7 +249,7 @@ let t_C ty =
   | TStd_logic
   | TBool
   | TInt -> "int"
-  | TCamlRef _ -> "value"
+  | (TCamlRef _ | TCamlArray _) -> "value"
   | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
@@ -333,7 +334,8 @@ let rec t_ML ty =
   | TBool -> "bool"
   | TInt -> "int"
   | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
-  | TArray{ty;_} -> t_ML ty ^ " array"
+  | TCamlArray t -> "(" ^ t_ML t ^ ") array"
+  | TArray{ty;_} -> t_ML ty ^ " nativ_array"
   | TPtr -> assert false (* todo *)
   | (TSize _ | TVar _) -> assert false
 

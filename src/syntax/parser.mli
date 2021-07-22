@@ -9,6 +9,7 @@ type token =
   | STD_LOGIC
   | SEMICOL
   | RPAREN
+  | RIGHT_ARROW
   | RETURN
   | REF
   | REC
@@ -40,6 +41,7 @@ type token =
   | EOF
   | END
   | ELSE
+  | DOT
   | COMMA
   | COLONEQ
   | COL

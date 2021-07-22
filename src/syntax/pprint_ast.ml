@@ -282,4 +282,8 @@ let rec print_exp fmt e =
   | RefAccess e -> 
       fprintf fmt "!(%a)"
         print_exp e
+  | ArrayAccess{arr;idx} -> 
+      fprintf fmt "(%a).(%a)"
+        print_exp arr
+        print_exp idx
 end

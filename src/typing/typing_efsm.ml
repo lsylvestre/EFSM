@@ -48,6 +48,8 @@ let rec unify env t1 t2 = match t1,t2 with
     unify env s s'
 | TCamlRef t, TCamlRef t' -> 
     unify env t t'
+| TCamlArray t, TCamlArray t' -> 
+    unify env t t'
 | (TSize n, TSize m) when n = m -> () 
 | TVar {contents=V n},TVar ({contents=V m} as v) -> 
 v := V n
@@ -152,6 +154,7 @@ let rec typ_atom env a =
      | "val" -> List.iter2 (unify env) ts [TPtr]; TInt
      | "int_val" -> List.iter2 (unify env) ts [TPtr]; TInt
      | "caml_heap_addr" -> List.iter2 (unify env) ts [TPtr;TCamlRef TInt]; TPtr
+     | "caml_heap_addr_ofs" -> List.iter2 (unify env) ts [TPtr;TCamlArray TInt;TInt]; TPtr
      | _ ->  failwith "typing-efsm: todo")
   (* | Prim(CamlRefAccess,[a]) ->
     typ_atom env a*)

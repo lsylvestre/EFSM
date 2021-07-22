@@ -8,6 +8,7 @@ type ty =
 | TSize of int
 | TArray of {ty:ty ; size:ty}   (*  (elements type * size)  *)
 | TCamlRef of ty
+| TCamlArray of ty
 | TPtr               (* pointeur *)
 | TVar of tvar ref
 and tvar = V of int | Ty of ty
@@ -24,13 +25,16 @@ let rec print_ty fmt ty =
   | TInt -> 
       pp_print_text fmt "int"
   | TArray {ty ; size} -> 
-      fprintf fmt "array(%a,%a)"
+      fprintf fmt "nativ_array(%a,%a)"
          print_ty ty 
          print_ty size
   | TSize(n) -> 
       fprintf fmt "%d" n
   | TCamlRef ty ->
      fprintf fmt "ref(%a)"
+         print_ty ty
+  | TCamlArray ty ->
+     fprintf fmt "array(%a)"
          print_ty ty
   | TPtr ->
      pp_print_text fmt "ptr"

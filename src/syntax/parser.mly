@@ -17,6 +17,7 @@
 %token INT BOOL ARRAY STD_LOGIC COL
 %token BANG
 %token CALL REF PTR
+%token DOT RIGHT_ARROW
 
 %left PIPE_PIPE
 %left LAND
@@ -127,7 +128,8 @@ exp_li_without_paren:
   THEN e2=exp_li
   ELSE e3=exp_li           { LI.If(e1,e2,e3) } 
 | BANG e=exp_li            { LI.RefAccess e }
-
+| arr=exp_li DOT 
+  LPAREN idx=exp_li RPAREN { LI.ArrayAccess{arr;idx} }
 /* array, map, reduce */
 
 binding_li:
@@ -196,6 +198,7 @@ ty:
 | INT                                  { TInt }
 | BOOL                                 { TBool }
 | PTR                                  { TPtr }
+| ty=ty ARRAY                          { TCamlArray ty }
 | ty=ty ARRAY LPAREN n=INT_LIT RPAREN  { TArray{ty;size=TSize n} }
 | ty=ty REF { TCamlRef ty }
 

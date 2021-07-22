@@ -1,7 +1,7 @@
 open Ast
 open Format
 
-let allow_heap_access = ref false
+let allow_heap_access = ref true
 (* todo: forcer à '1' rdy dès le reset *)
 
 let c_binop fmt p = 
@@ -92,7 +92,11 @@ let c_atom fmt a =
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)))"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr
-
+         | "caml_heap_addr_ofs",[heap_base;addr;ofs] ->
+              fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + RESIZE(unsigned(%a(19 downto 0)) * 4,32))"
+                 (pp_atom ~paren:true) heap_base
+                 (pp_atom ~paren:true) addr
+                 (pp_atom ~paren:true) ofs
          | _ -> let s' = match s with
                   | "ref_addr" -> "caml_encode_int"
                   | "ref_contents" -> "caml_decode_int"
@@ -152,7 +156,7 @@ let rec default_value fmt ty =
   | TInt -> pp_print_text fmt "to_signed(0,31)"
   | TArray{ty;_} -> 
       fprintf fmt "(others => %a)" default_value ty 
-  | TPtr | TCamlRef _ -> pp_print_text fmt "\"00000000000000000000000000000000\""
+  | TPtr | TCamlRef _ | TCamlArray _ -> pp_print_text fmt "\"00000000000000000000000000000000\""
   | TSize n -> assert false
   | TVar _ -> assert false
 
@@ -184,7 +188,7 @@ let rec c_ty fmt ty =
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> fprintf fmt "@[<h>caml_int@]"
-  | TCamlRef _ -> 
+  | (TCamlRef _ | TCamlArray _) -> 
        pp_print_text fmt "caml_ptr"
   |  TPtr -> 
       pp_print_text fmt "caml_value"

@@ -20,7 +20,7 @@ let rec occur x e =
      List.for_all (fun (x',xs,_) -> x <> x' && List.for_all ((<>) x) xs) bs && 
      (List.exists (fun (_,_,e) -> occur x e) bs || occur x e)
   | App(x',es) -> x' = x || List.exists (occur x) es
-  | RefAccess _ -> assert false (* already encoded *)
+  | (RefAccess _ | ArrayAccess _) -> assert false (* already encoded *)
 
 let rec inline extra_env env e = 
   let inline' e = 
@@ -52,7 +52,7 @@ let rec inline extra_env env e =
            let e'' = inline (env@extra_env) [(x,([],Var "fake"))] e' in
            let es = List.map inline' es in
            LetRec([(x,xs,e'')],App(x,es))
-  | RefAccess _ -> assert false (* already encoded *)
+ | (RefAccess _ | ArrayAccess _) -> assert false (* already encoded *)
 
 module S = Set.Make(struct 
                      type t = (Atom.ident * Atom.ident list * exp) 
@@ -85,8 +85,8 @@ let rec dead_code_elim e =
   | Seq (Assign(s),e) -> 
      let s' = List.map (fun (x,e) -> (x, dead_code_elim e)) s in
      Seq(Assign(s'),dead_code_elim e)
-  | RefAccess _ -> assert false (* already encoded *)
-  
+  | (RefAccess _ | ArrayAccess _) -> assert false (* already encoded *)
+
 let inlining e = 
   let e' = inline [] [] e in
   let e' = dead_code_elim e' in

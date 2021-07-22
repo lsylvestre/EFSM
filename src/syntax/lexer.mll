@@ -52,6 +52,8 @@ rule token = parse
 | "ref"             { REF }
 | "ptr"             { PTR }
 | ['!']             { BANG }
+| ['.']             { DOT }
+| "<-"              { RIGHT_ARROW }
 | [':']             { COL }
 | ident as lxm      { IDENT lxm }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }
