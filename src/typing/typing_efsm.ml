@@ -43,7 +43,6 @@ open Types
 
 let rec unify env t1 t2 = match t1,t2 with
 | TStd_logic, TStd_logic | TBool, TBool | TInt,TInt | TPtr,TPtr -> ()
-| TIdent s, TIdent s' when s = s' -> ()
 | TArray{ty=t;size=s},TArray{ty=t';size=s'} -> 
     unify env t t';
     unify env s s'

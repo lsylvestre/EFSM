@@ -5,7 +5,6 @@ type ty =
 | TStd_logic 
 | TBool 
 | TInt
-| TIdent of string
 | TSize of int
 | TArray of {ty:ty ; size:ty}   (*  (elements type * size)  *)
 | TCamlRef of ty
@@ -35,8 +34,6 @@ let rec print_ty fmt ty =
          print_ty ty
   | TPtr ->
      pp_print_text fmt "ptr"
-  | TIdent x -> 
-     pp_print_text fmt x
   | TVar{contents=V n} -> 
       fprintf fmt "'a%d" n
   | TVar{contents=Ty t} -> 

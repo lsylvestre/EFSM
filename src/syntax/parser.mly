@@ -16,7 +16,7 @@
 %token LBRACKET RBRACKET HAT
 %token INT BOOL ARRAY STD_LOGIC COL
 %token BANG
-%token STD_LOGIC_VECTOR CALL REF PTR
+%token CALL REF PTR
 
 %left PIPE_PIPE
 %left LAND
@@ -196,7 +196,6 @@ ty:
 | INT                                  { TInt }
 | BOOL                                 { TBool }
 | PTR                                  { TPtr }
-| STD_LOGIC_VECTOR                     { TIdent "std_logic_vector" }
 | ty=ty ARRAY LPAREN n=INT_LIT RPAREN  { TArray{ty;size=TSize n} }
 | ty=ty REF { TCamlRef ty }
 

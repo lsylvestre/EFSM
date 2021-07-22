@@ -152,7 +152,6 @@ let rec default_value fmt ty =
   | TInt -> pp_print_text fmt "to_signed(0,31)"
   | TArray{ty;_} -> 
       fprintf fmt "(others => %a)" default_value ty 
-  | TIdent x -> failwith "todo default_value tident"
   | TPtr | TCamlRef _ -> pp_print_text fmt "\"00000000000000000000000000000000\""
   | TSize n -> assert false
   | TVar _ -> assert false
@@ -189,8 +188,6 @@ let rec c_ty fmt ty =
        pp_print_text fmt "caml_ptr"
   |  TPtr -> 
       pp_print_text fmt "caml_value"
-  | TIdent s -> 
-      pp_print_text fmt s
   | TArray{ty;size} -> (* 
     pp_print_text fmt "todo_array" *)
       fprintf fmt "array_%a_%a" c_ty ty c_ty size

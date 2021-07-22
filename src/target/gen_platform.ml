@@ -51,10 +51,10 @@ let conversion_from_vect ty fmt x =
       fprintf fmt "(%s(0)) = '1'" x
   | TInt -> 
       fprintf fmt "signed(%s(30 downto 0))" x
-  | TIdent "std_logic_vector" | TCamlRef _ -> pp_print_text fmt x
+  | TCamlRef _ -> pp_print_text fmt x
   | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
   | (TSize _ | TVar _) -> assert false
-  | (TIdent _ |TPtr) -> assert false
+  | TPtr -> assert false
 
 let set_result dst ty fmt x =
   let open Types in
@@ -67,8 +67,8 @@ let set_result dst ty fmt x =
       fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@,end if" dst;
   | TInt -> 
       fprintf fmt "%s <= \"0\" & std_logic_vector(%s)" dst x
-  | TIdent "std_logic_vector" | TCamlRef _ -> fprintf fmt "%s <= %s" dst x
-  | (TPtr | TIdent _) -> assert false
+  | TCamlRef _ -> fprintf fmt "%s <= %s" dst x
+  | TPtr -> assert false
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
 
@@ -219,10 +219,9 @@ let t_val ty fmt x =
   | TStd_logic
   | TBool -> fprintf fmt "Bool_val(%s)" x
   | TInt -> fprintf fmt "Int_val(%s)" x
-  | TIdent "std_logic_vector" | TCamlRef _ -> pp_print_text fmt x
+  | TCamlRef _ -> pp_print_text fmt x
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!?"
   | TPtr -> assert false
-  | TIdent _ -> assert false
   | (TSize _ | TVar _) -> assert false
 
 let mk_platform_bindings fmt (envi,envo,_) name = 
@@ -250,9 +249,8 @@ let t_C ty =
   | TBool
   | TInt -> "int"
   | TCamlRef _ -> "value"
-  | TIdent "std_logic_vector" | TPtr -> assert false
+  | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
-  | TIdent _ -> "TODO!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
 
 let up = String.uppercase_ascii
@@ -336,7 +334,7 @@ let rec t_ML ty =
   | TInt -> "int"
   | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
   | TArray{ty;_} -> t_ML ty ^ " array"
-  | TPtr | TIdent _ -> assert false (* todo *)
+  | TPtr -> assert false (* todo *)
   | (TSize _ | TVar _) -> assert false
 
 

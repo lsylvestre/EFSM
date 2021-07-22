@@ -6,7 +6,6 @@ type token =
   | UMINUS
   | TIMES
   | THEN
-  | STD_LOGIC_VECTOR
   | STD_LOGIC
   | SEMICOL
   | RPAREN

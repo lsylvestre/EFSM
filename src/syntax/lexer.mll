@@ -48,7 +48,6 @@ rule token = parse
 | "bool"            { BOOL }
 | "array"           { ARRAY }
 | "std_logic"       { STD_LOGIC }
-| "std_logic_vector" { STD_LOGIC_VECTOR }
 | "call"            { CALL }
 | "ref"             { REF }
 | "ptr"             { PTR }
