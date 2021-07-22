@@ -1,6 +1,6 @@
 %{
     open Ast
-    open Types_efsm
+    open Types
 %}
 
 %token EOF 
@@ -15,6 +15,8 @@
 %token ZERO ONE /* std_logic values */
 %token LBRACKET RBRACKET HAT
 %token INT BOOL ARRAY STD_LOGIC COL
+%token BANG
+%token STD_LOGIC_VECTOR CALL REF PTR
 
 %left PIPE_PIPE
 %left LAND
@@ -22,7 +24,7 @@
 %left PLUS MINUS
 %left TIMES
 %nonassoc NOT UMINUS
-
+%nonassoc BANG
 
 %start <Ast.EFSM.prog> efsm
 %start <Ast.HSM.prog> hsm
@@ -124,6 +126,7 @@ exp_li_without_paren:
 | IF e1=exp_li
   THEN e2=exp_li
   ELSE e3=exp_li           { LI.If(e1,e2,e3) } 
+| BANG e=exp_li            { LI.RefAccess e }
 
 /* array, map, reduce */
 
@@ -149,9 +152,11 @@ prim(E):
 | NOT a=E                       { mk_unop Atom.Not a  }
 | MINUS a=E %prec UMINUS        { mk_unop Atom.Uminus a }
 | x=IDENT LBRACKET a=E RBRACKET { mk_array_get x a }
-| e=E HAT n=INT_LIT { mk_array_make n e }
+| e=E HAT n=INT_LIT             { mk_array_make n e }
 | LPAREN e=E COL t=ty RPAREN    { mk_ty_annot e t }
-
+| CALL x=IDENT 
+  LPAREN args= separated_nonempty_list(COMMA,E) RPAREN 
+                                { mk_call x args }
 std_logic:
 | ZERO { Atom.Zero }
 | ONE  { Atom.One }
@@ -178,17 +183,21 @@ atom:
 inst(E):
 | x=lvalue(E) COLONEQ a=E { Inst.Assign [ (x,a) ] }
 | LPAREN xs=separated_list(COMMA,lvalue(E)) RPAREN 
-  COLONEQ LPAREN es=separated_list(COMMA,E) RPAREN { Inst.Assign (List.combine xs es) }
+  COLONEQ LPAREN es=separated_list(COMMA,E) RPAREN 
+  { Inst.Assign (List.combine xs es) }
 
 lvalue(E):
 | x=IDENT                        { (x,None) }
 | x=IDENT LBRACKET a=E RBRACKET  { (x,Some a) }
 
 ty:
-| LPAREN t=ty RPAREN                   { t }
+| LPAREN ty=ty RPAREN                  { ty }
 | STD_LOGIC                            { TStd_logic }
 | INT                                  { TInt }
 | BOOL                                 { TBool }
-| t=ty ARRAY LPAREN n=INT_LIT RPAREN   { TArray(t,TSize n) }
+| PTR                                  { TPtr }
+| STD_LOGIC_VECTOR                     { TIdent "std_logic_vector" }
+| ty=ty ARRAY LPAREN n=INT_LIT RPAREN  { TArray{ty;size=TSize n} }
+| ty=ty REF { TCamlRef ty }
 
 

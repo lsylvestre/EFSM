@@ -3,25 +3,25 @@
    (cf. psm2hsm.ml)
 
 -- csm2psm.ml : gérer les variables libres dans [let and in ...]
+  ~> idée courante : pas de Seq() sous un [let and] et donc pas besoin de copies pour ces variables libres
 
 -- revoir dans le rapport la règle de traduction c_prog de CSM vers HSM
    avec rdy/start implicite. (telle qu'implémenté par la fonction c_prog dans csm2psm.ml)
 
--- avoir des annotations de types disponibles comme primitives
-
 -- pprint_ast à finir/corriger et intégrer des options dans main.ml pour l'appeler.
 
--- syntaxe alternative pour les automates (à la place des let-rec)
+-- syntaxe alternative pour les automates (à la place des let-rec)   ??
 
 
 -- schéma dsl2csm : dans le cas "let rec", remplacer x_i =c[e_i] 
 par x_i = if true then c[e_i]  
 
 -- type entier avec taille (defaut : 32 bit)
+  ~> maintenant c'est plutôt un type "signed (31 downto 0)"
 
 -- goto calculé
 
 -- bibliothèque standard
-
+  ~> c'est plus pratique d'avoir des fichiers auxiliaires différents pour chaque CC
 
 -- to fix : problème de portée : les paramètres des états sont inférés comme des sorties s'ils ne sont jamais lus.

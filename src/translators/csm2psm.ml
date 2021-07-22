@@ -101,6 +101,7 @@ let rec c_automaton q' d = function
     let a'' = PSM.LetRec([(tmp,[],[(mk_bool' true,a2')])],a1') in
     (p'',a'')
   | CSM.Let (bs,a) -> 
+    assert (bs <> []);
     let len = List.length bs in
     let xs,aa = List.split bs in
     let idle = Gensym.gensym "idle" in

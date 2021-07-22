@@ -1,0 +1,102 @@
+src/dsl/caml_interop.cmo :
+src/dsl/caml_interop.cmx :
+src/dsl/inline.cmo : \
+    src/syntax/ast.cmo
+src/dsl/inline.cmx : \
+    src/syntax/ast.cmx
+src/main.cmo : \
+    src/typing/typing_efsm.cmo \
+    src/translators/psm2hsm.cmo \
+    src/syntax/parser.cmi \
+    src/translators/li2csm.cmo \
+    src/syntax/lexer.cmo \
+    src/dsl/inline.cmo \
+    src/translators/hsm2efsm.cmo \
+    src/target/gen_platform.cmo \
+    src/translators/efsm2vhdl.cmo \
+    src/translators/csm2psm.cmo
+src/main.cmx : \
+    src/typing/typing_efsm.cmx \
+    src/translators/psm2hsm.cmx \
+    src/syntax/parser.cmx \
+    src/translators/li2csm.cmx \
+    src/syntax/lexer.cmx \
+    src/dsl/inline.cmx \
+    src/translators/hsm2efsm.cmx \
+    src/target/gen_platform.cmx \
+    src/translators/efsm2vhdl.cmx \
+    src/translators/csm2psm.cmx
+src/misc.cmo :
+src/misc.cmx :
+src/syntax/ast.cmo : \
+    src/syntax/types.cmo
+src/syntax/ast.cmx : \
+    src/syntax/types.cmx
+src/syntax/lexer.cmo : \
+    src/syntax/parser.cmi
+src/syntax/lexer.cmx : \
+    src/syntax/parser.cmx
+src/syntax/parser.cmo : \
+    src/syntax/types.cmo \
+    src/syntax/ast.cmo \
+    src/syntax/parser.cmi
+src/syntax/parser.cmx : \
+    src/syntax/types.cmx \
+    src/syntax/ast.cmx \
+    src/syntax/parser.cmi
+src/syntax/parser.cmi : \
+    src/syntax/ast.cmo
+src/syntax/pprint_ast.cmo : \
+    src/syntax/ast.cmo
+src/syntax/pprint_ast.cmx : \
+    src/syntax/ast.cmx
+src/syntax/types.cmo :
+src/syntax/types.cmx :
+src/syntax/variables.cmo : \
+    src/syntax/ast.cmo
+src/syntax/variables.cmx : \
+    src/syntax/ast.cmx
+src/target/gen_platform.cmo : \
+    src/typing/typing_efsm.cmo \
+    src/syntax/types.cmo \
+    src/translators/efsm2vhdl.cmo
+src/target/gen_platform.cmx : \
+    src/typing/typing_efsm.cmx \
+    src/syntax/types.cmx \
+    src/translators/efsm2vhdl.cmx
+src/translators/csm2psm.cmo : \
+    src/syntax/variables.cmo \
+    src/syntax/ast.cmo
+src/translators/csm2psm.cmx : \
+    src/syntax/variables.cmx \
+    src/syntax/ast.cmx
+src/translators/efsm2vhdl.cmo : \
+    src/syntax/types.cmo \
+    src/misc.cmo \
+    src/syntax/ast.cmo
+src/translators/efsm2vhdl.cmx : \
+    src/syntax/types.cmx \
+    src/misc.cmx \
+    src/syntax/ast.cmx
+src/translators/hsm2efsm.cmo : \
+    src/syntax/ast.cmo
+src/translators/hsm2efsm.cmx : \
+    src/syntax/ast.cmx
+src/translators/li2csm.cmo : \
+    src/syntax/ast.cmo
+src/translators/li2csm.cmx : \
+    src/syntax/ast.cmx
+src/translators/psm2hsm.cmo : \
+    src/syntax/variables.cmo \
+    src/syntax/ast.cmo
+src/translators/psm2hsm.cmx : \
+    src/syntax/variables.cmx \
+    src/syntax/ast.cmx
+src/typing/typing_efsm.cmo : \
+    src/syntax/variables.cmo \
+    src/syntax/types.cmo \
+    src/syntax/ast.cmo
+src/typing/typing_efsm.cmx : \
+    src/syntax/variables.cmx \
+    src/syntax/types.cmx \
+    src/syntax/ast.cmx

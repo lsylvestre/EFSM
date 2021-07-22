@@ -1,216 +1,5 @@
-open Ast
 open Format
-
-let c_binop fmt p = 
-  let open Atom in
-  pp_print_text fmt @@
-  match p with
-  | Add -> "+"
-  | Sub -> "-"
-  | Mul -> "*"
-  | Lt -> "<"
-  | Le -> "<="
-  | Gt -> ">"
-  | Ge -> ">="
-  | Eq -> "="
-  | Neq -> "/="
-  | And -> "and"
-  | Or -> "or"
-
-let c_unop fmt p = 
-  let open Atom in
-  pp_print_text fmt @@
-  match p with
-  | Not -> "not"
-  | Uminus -> "-"
-
-let c_state fmt q = 
-  pp_print_text fmt (String.uppercase_ascii q)
-
-let pp_std_logic fmt v = 
-  let open Atom in
-  pp_print_text fmt @@
-  match v with
-  | U -> "'U'"
-  | X -> "'X'"
-  | Zero -> "'0'"
-  | One -> "'1'"
-  | Z -> "'Z'"
-  | W -> "'W'"
-  | L -> "'L'"
-  | H -> "'H'"
-  | Whatever -> "'-'"
-
-let parenthesized ~paren fmt cb = 
-  if paren then fprintf fmt "("; 
-  cb (); 
-  if paren then fprintf fmt ")" 
-
-let c_atom fmt a = 
-  let open Atom in
-  let rec pp_atom ~paren fmt a =
-    match a with 
-    | Var x -> 
-        pp_print_text fmt x
-    | Const c -> 
-        (match c with
-         | Std_logic v -> 
-             pp_std_logic fmt v
-         | Bool b -> 
-            fprintf fmt "%b" b
-         | Int n -> 
-            fprintf fmt "%d" n)
-    | Prim p -> 
-     (match p with
-      | (Binop p,[a1;a2]) ->
-        parenthesized ~paren fmt @@ fun () ->
-          fprintf fmt "%a %a %a"
-            (pp_atom ~paren:true) a1
-            c_binop p
-            (pp_atom ~paren:true) a2
-     | (Unop p,[a]) -> 
-        parenthesized ~paren fmt @@ fun () ->
-          fprintf fmt "%a %a"
-            c_unop p
-            (pp_atom ~paren:true) a
-     | (ArrayGet x,[idx]) ->
-         fprintf fmt "%s(%a)" x (pp_atom ~paren:false) idx
-     | (ArrayMake _,[init]) ->
-         fprintf fmt "(others => %a)" (pp_atom ~paren:false) init
-     | (TyAnnot _,[a]) -> 
-         pp_atom ~paren fmt a 
-     | _ -> assert false) (* ill-formed primitive application *)
-  in
-  pp_atom ~paren:false fmt a
-
-let c_next_state state_var fmt q = 
-  fprintf fmt "%s <= %a;" state_var c_state q
-
-let c_assign fmt s = 
-  match s with
-  | Inst.Assign bs ->
-      pp_print_list 
-        ~pp_sep:(fun fmt () -> fprintf fmt "@,")
-        (fun fmt ((x,o),a) -> 
-            fprintf fmt "%s%a <= %a;" 
-                  x (fun fmt o -> 
-                       match o with 
-                       | None -> ()
-                       | Some a -> fprintf fmt "(%a)" c_atom a) o
-                  c_atom a) fmt bs
-
-let c_transitions state_var fmt (q,ts) =
-  match ts with 
-  | [] -> fprintf fmt "@,when %a => NULL;" c_state q;
-  | (a,s,q')::ts' -> 
-    fprintf fmt "@,@[<v 2>when %a =>@," c_state q;
-    
-    fprintf fmt "@[<v 2>if %a then@,%a@,%a@]@,"
-        c_atom a 
-        c_assign s
-        (c_next_state state_var) q';
-
-    List.iter (fun (a,s,q') -> 
-      fprintf fmt "@[<v 2>elsif %a then@,%a@,%a@]@,"
-        c_atom a 
-        c_assign s
-        (c_next_state state_var) q'
-    ) ts';
-    fprintf fmt "end if;@]"  (* else NULL; *)
-
-
-let rec default_value fmt ty =
-  let open Types_efsm in
-  match ty with
-  | TStd_logic -> pp_print_text fmt "-"
-  | TBool -> pp_print_text fmt "false"
-  | TInt -> pp_print_text fmt "0"
-  | TArray(t,_) -> 
-      fprintf fmt "(others => %a)" default_value t 
-  | TSize n -> assert false
-  | TVar _ -> assert false
-
-
-let c_automaton ~reset ~clock state_var locals fmt (EFSM.Automaton l) =
-  let q0 = 
-    match l with 
-    | [] -> assert false (* les FSM doivent être non vide *)
-    | (q0,_)::_ -> q0 
-  in
-  fprintf fmt "@[<v 2>process(%s,%s) begin@," reset clock;
-  fprintf fmt "@[<v 2>if %s = '1' then@," reset;
-  fprintf fmt "@[<v 2>%s <= %a;" state_var c_state q0;
-  List.iter (fun (x,ty) -> 
-              fprintf fmt "@,%s <= %a;" x default_value ty) 
-           locals;
-  fprintf fmt "@]@]@,";
-  fprintf fmt "@[<v 2>elsif rising_edge(%s) then@," clock;
-  fprintf fmt "@[<v 2>case %s is" state_var;
-  List.iter (c_transitions state_var fmt) l;
-  fprintf fmt "@]@,end case;@]@,";
-  fprintf fmt "end if;";
-  fprintf fmt "@]@,end process;@," (* fix indent *)
-
-
-let rec c_ty fmt ty = 
-  let open Types_efsm in
-  match ty with
-  | TStd_logic -> pp_print_text fmt "std_logic"
-  | TBool -> pp_print_text fmt "boolean"
-  | TInt -> pp_print_text fmt "integer"
-  | TArray(t,size) -> (* 
-    pp_print_text fmt "todo_array" *)
-      fprintf fmt "array_%a_%a" c_ty t c_ty size
-  | TSize n -> fprintf fmt "%d" n
-  | TVar _ -> assert false
-
-let c_prog ?(reset="reset") ?(clock="clk") 
-           ?(entity_name="Main") (envi,envo,l_locals) fmt automata = 
-  fprintf fmt "@[<v>library ieee;@,";
-  fprintf fmt "use ieee.std_logic_1164.all;@,";
-  fprintf fmt "use ieee.numeric_std.all;@,";
-  fprintf fmt "use work.misc_types.all;@,@,";
-  fprintf fmt "@[<v 2>entity %s is@," entity_name;
-  fprintf fmt "port(@[< v>signal %s : in std_logic;@," clock;
-  fprintf fmt "signal %s : in std_logic" reset;
-  
-  List.iter (fun (x,ty) ->
-      fprintf fmt ";@,signal %s : in %a" x 
-        c_ty ty) envi;
-
-  List.iter (fun (x,ty) ->
-      fprintf fmt ";@,signal %s : out %a" x 
-        c_ty ty) envo;
-  
-  fprintf fmt ");@]@]@,";
-  fprintf fmt "end entity;@,";
-  fprintf fmt "@[<v 2>architecture RTL of %s is@," entity_name;
-
-  List.iter (fun l ->
-    List.iter (fun (x,ty) ->
-      fprintf fmt "signal %s : %a;@," x 
-        c_ty ty) l) l_locals;
-
-  let state_vars = List.map (fun _ -> Gensym.gensym "state") automata in
-  List.iter2 (fun sv (EFSM.Automaton l) ->
-    let qs = List.map fst l in
-    fprintf fmt "@,type %s_T is (@[<hov>" sv;
-    pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt ", @,") c_state fmt qs;
-    fprintf fmt ");@]@,";
-    fprintf fmt "signal %s : %s_T;" sv sv;
-  )
-    state_vars automata;
-  fprintf fmt "@]@,";
-  fprintf fmt "@[<v 2>begin@,";
-
-  Misc.list_iter3 (fun st_reg locals a -> 
-               c_automaton ~reset ~clock st_reg locals fmt a) 
-    state_vars 
-    l_locals 
-    automata;
-  
-  fprintf fmt "@]@,end architecture;@]@."
-
+open Efsm2vhdl
 
   (* ***************************************** *)
 
@@ -220,12 +9,16 @@ let mk_package fmt =
   fprintf fmt "use ieee.numeric_std.all;@,@,";
   fprintf fmt "@[<v 2>package misc_types is@,";
   
+  fprintf fmt "subtype caml_value is std_logic_vector(31 downto 0);@,";
+  fprintf fmt "subtype caml_ptr is std_logic_vector(31 downto 0);@,";
+  fprintf fmt "subtype caml_int is signed(30 downto 0);@,";
+
   let l = Typing_efsm.sort_array_type_decl () in
-  List.iter Types_efsm.(function
-  | TArray(t,TSize n) as ta ->  
-    fprintf fmt "type %a is array (%a range 0 to %d) of integer;@,"
+  List.iter Types.(function
+  | TArray{ty;size=TSize n} as ta ->  
+    fprintf fmt "type %a is array (%a range 0 to %d) of caml_int;@,"
       c_ty ta
-      c_ty t
+      c_ty ty
       (n-1)
   | _ -> assert false) l;
 
@@ -249,35 +42,39 @@ let bin_of_int ?(pad=4) d =
   aux d (pad-1);
   to_string b
 
-let conversion_from_vect ty fmt data =
-  let open Types_efsm in
+let conversion_from_vect ty fmt x =
+  let open Types in
   match ty with
   | TStd_logic -> 
-      fprintf fmt "%s(0)" data
+      fprintf fmt "%s(0)" x
   | TBool -> 
-      fprintf fmt "(%s(0)) = '1'" data
+      fprintf fmt "(%s(0)) = '1'" x
   | TInt -> 
-      fprintf fmt "to_integer(unsigned(%s))" data
+      fprintf fmt "signed(%s(30 downto 0))" x
+  | TIdent "std_logic_vector" | TCamlRef _ -> pp_print_text fmt x
   | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
   | (TSize _ | TVar _) -> assert false
+  | (TIdent _ |TPtr) -> assert false
 
-let set_result dst ty fmt data =
-  let open Types_efsm in
+let set_result dst ty fmt x =
+  let open Types in
   match ty with
   | TStd_logic -> 
-      fprintf fmt "%s <= \"0000000000000000000000000000000\" & %s" dst data
+      fprintf fmt "%s <= \"0000000000000000000000000000000\" & %s" dst x
   | TBool -> 
-      fprintf fmt "@[<v 2>if %s then@," data;
+      fprintf fmt "@[<v 2>if %s then@," x;
       fprintf fmt "%s <= \"00000000000000000000000000000001\";@]@," dst;
-      fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@," dst;
+      fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@,end if" dst;
   | TInt -> 
-      fprintf fmt "%s <= std_logic_vector(to_unsigned(%s,%s'length))" dst data dst
+      fprintf fmt "%s <= \"0\" & std_logic_vector(%s)" dst x
+  | TIdent "std_logic_vector" | TCamlRef _ -> fprintf fmt "%s <= %s" dst x
+  | (TPtr | TIdent _) -> assert false
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
 
 
 
-let gen_cc fmt (envi,envo,_) name =
+let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
   (* assume : ("start",_) in envi && ("rdy",_) in envo *)
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let envo = List.filter (fun (x,_) -> x <> "rdy") envo in
@@ -290,14 +87,30 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "port (@[< v>";
   fprintf fmt "@[<v 2>avs_s0_address : in std_logic_vector(3 downto 0)  := (others => '0');@,"; 
   fprintf fmt "-- 0000  : control/status register (b1=start, b0=rdy)@,";
+  let regs = envi'@envo' in
+  let len = List.length regs in
   List.iteri (fun i (x,t) ->
-    fprintf fmt "-- %s  : %s register@," (bin_of_int (i+1)) x) (envi@envo);
+    fprintf fmt "-- %s  : %s register@," (bin_of_int (i+1)) x) regs;
+
+  (if !allow_heap_access then 
+    fprintf fmt "-- %s  : caml_heap_base register@," (bin_of_int (len+1)));
+
   fprintf fmt "@]@,avs_s0_read        : in  std_logic                     := '0';@,";
   fprintf fmt "avs_s0_readdata    : out std_logic_vector(31 downto 0);@,";
   fprintf fmt "avs_s0_write       : in  std_logic                     := '0';@,";           
   fprintf fmt "avs_s0_writedata   : in  std_logic_vector(31 downto 0) := (others => '0');@,";
   fprintf fmt "clock_clk          : in  std_logic                     := '0';@,";         
-  fprintf fmt "reset_reset        : in  std_logic                     := '0');@]@]@,";       
+  fprintf fmt "reset_reset        : in  std_logic                     := '0'";
+  
+  if !allow_heap_access then begin
+    fprintf fmt ";@,@,-- READ MASTER INTERFACE@,";
+    fprintf fmt "avm_rm_address   : out std_logic_vector(31 downto 0);@,";                 
+    fprintf fmt "avm_rm_read      : out std_logic;@,";                                    
+    fprintf fmt "avm_rm_readdata  : in std_logic_vector(31 downto 0);@,";
+    fprintf fmt "avm_rm_waitrequest : in std_logic;@,";
+    fprintf fmt "avm_rm_response: in std_logic_vector(1 downto 0)";
+  end;
+  fprintf fmt ");@]@]@,";
   fprintf fmt "end entity;@,@,";
   fprintf fmt "@[<v 2>architecture rtl of avs_%s is@," name;
   fprintf fmt "@[<v 2>component %s is@," name;
@@ -306,18 +119,33 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "signal reset : in std_logic;@,";
   fprintf fmt "signal start : in std_logic;@,";
   fprintf fmt "signal rdy : out std_logic;@,";
-  List.iter (fun (x,t) -> fprintf fmt "signal %s: in %a;@," x c_ty t) envi;
+  
+  if !allow_heap_access then begin
+    fprintf fmt "signal caml_heap_base   : in std_logic_vector(31 downto 0);@,";
+    fprintf fmt "signal avm_rm_address   : out std_logic_vector(31 downto 0);@,";
+    fprintf fmt "signal avm_rm_read      : out std_logic;@,";                                    
+    fprintf fmt "signal avm_rm_readdata  : in std_logic_vector(31 downto 0);@,";
+    fprintf fmt "signal avm_rm_waitrequest : in std_logic;@,";
+  end;
+
+  List.iter (fun (x,t) -> fprintf fmt "signal %s: in %a;@," x c_ty t) envi';
   pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ";@,") 
-        (fun fmt (x,t) -> fprintf fmt "signal %s: out %a" x c_ty t) fmt envo;
+        (fun fmt (x,t) -> fprintf fmt "signal %s: out %a" x c_ty t) fmt envo';
   fprintf fmt ");@]@]@,";
   fprintf fmt "end component;@,@,";
-  List.iter (fun (x,t) -> fprintf fmt "signal %s: %a;@," x c_ty t) envi;
-  List.iter (fun (x,t) -> fprintf fmt "signal %s: %a;@," x c_ty t) envo;
+  
+  List.iter (fun (x,t) -> fprintf fmt "signal %s: %a;@," x c_ty t) envi';
+  List.iter (fun (x,t) -> fprintf fmt "signal %s: %a;@," x c_ty t) envo';
+
   fprintf fmt "signal start: std_logic;@]@,";
   fprintf fmt "signal rdy: std_logic;@]@,";
   fprintf fmt "type write_state_t is (Idle, StartAsserted);@,";
   fprintf fmt "signal write_state: write_state_t;@]@,";
+  
+  if !allow_heap_access then 
+    fprintf fmt "signal caml_heap_base : std_logic_vector(31 downto 0);@,";
+
   fprintf fmt "@[<v 2>begin@,";
   fprintf fmt "@[<v 2>%s_CC : component %s@," name name;
   fprintf fmt "port map (@[< v>";
@@ -325,6 +153,12 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "reset => reset_reset,@,";
   fprintf fmt "start => start,@,";
   fprintf fmt "rdy => rdy,@,";
+(*
+  fprintf fmt "avm_rm_address => avm_rm_address,@,";
+  fprintf fmt "avm_rm_read => avm_rm_read,@,";
+  fprintf fmt "avm_rm_readdata => avm_rm_readdata,@,";
+  fprintf fmt "avm_rm_waitrequest => avm_rm_waitrequest,@,";
+  *)
   List.iter (fun (x,_) -> fprintf fmt "%s => %s,@," x x) envi;
     pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
@@ -348,7 +182,11 @@ let gen_cc fmt (envi,envo,_) name =
   
   List.iteri (fun i (x,ty) -> 
    fprintf fmt "@[<v 2>when \"%s\" => %s <= %a;@]@,"
-       (bin_of_int (i+1)) x (conversion_from_vect ty) "avs_s0_writedata") envi;
+       (bin_of_int (i+1)) x (conversion_from_vect ty) "avs_s0_writedata") envi';
+  
+  (if !allow_heap_access then
+    fprintf fmt "@[<v 2>when \"%s\" => caml_heap_base <= avs_s0_writedata;@]@," 
+             (bin_of_int (len+1)));
 
   fprintf fmt "when others => NULL;@]@,";
   fprintf fmt "end case;@]@,";
@@ -366,7 +204,7 @@ let gen_cc fmt (envi,envo,_) name =
   
   List.iteri (fun i (x,ty) -> 
    fprintf fmt "@[<v 2>when \"%s\" => %a;@]@,"
-       (bin_of_int (i+1)) (set_result "avs_s0_readdata" ty) x) (envi@envo);
+       (bin_of_int (i+1)) (set_result "avs_s0_readdata" ty) x) (envi'@envo');
 
   fprintf fmt "when others => null;@,";
   fprintf fmt "end case;@]@,";
@@ -375,13 +213,16 @@ let gen_cc fmt (envi,envo,_) name =
   fprintf fmt "end process;@]@,";
   fprintf fmt "end architecture;@]@,"
 
-let t_val ty =
- let open Types_efsm in
+let t_val ty fmt x =
+ let open Types in
   match ty with
   | TStd_logic
-  | TBool -> "Bool_val" 
-  | TInt -> "Int_val"
-  | TArray _ -> "TODO!!!!!!!!!!!!?"
+  | TBool -> fprintf fmt "Bool_val(%s)" x
+  | TInt -> fprintf fmt "Int_val(%s)" x
+  | TIdent "std_logic_vector" | TCamlRef _ -> pp_print_text fmt x
+  | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!?"
+  | TPtr -> assert false
+  | TIdent _ -> assert false
   | (TSize _ | TVar _) -> assert false
 
 let mk_platform_bindings fmt (envi,envo,_) name = 
@@ -397,18 +238,21 @@ let mk_platform_bindings fmt (envi,envo,_) name =
   fprintf fmt "@[<hov>";
   pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
-        (fun fmt (x,ty) -> fprintf fmt "%s(%s)" (t_val ty) x) fmt envi; 
+        (fun fmt (x,ty) -> t_val ty fmt x) fmt envi; 
   fprintf fmt "@]));";
   fprintf fmt "@]@,}@,@]"
 
 
 let t_C ty =
- let open Types_efsm in
+ let open Types in
   match ty with
   | TStd_logic
   | TBool
   | TInt -> "int"
+  | TCamlRef _ -> "value"
+  | TIdent "std_logic_vector" | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
+  | TIdent _ -> "TODO!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
 
 let up = String.uppercase_ascii
@@ -421,8 +265,13 @@ let mk_platform_c fmt (envi,envo,_) name =
   let upName = up name in
   fprintf fmt "@[<v>";
   fprintf fmt "#define %s_CC_CTL 0@," upName;
+  
+  let regs = envi@envo in
   List.iteri (fun i (x,_) -> 
-    fprintf fmt "#define %s_CC_%s %d@," upName (up x) (i+1)) (envi@envo);
+    fprintf fmt "#define %s_CC_%s %d@," upName (up x) (i+1)) regs;
+  
+  if !allow_heap_access then
+    fprintf fmt "#define %s_CC_CAML_HEAP_BASE %d@," upName (List.length regs + 1);
 
   fprintf fmt "@,@[<v 2>int nios_%s_cc(" (low name);
   fprintf fmt "@[<hov>";
@@ -430,17 +279,20 @@ let mk_platform_c fmt (envi,envo,_) name =
         ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
         (fun fmt (x,t) -> fprintf fmt "%s %s" (t_C t) (low x)) fmt envi;
   fprintf fmt "@]){@,";
-  fprintf fmt "alt_u32 r;@,";
-  fprintf fmt "r = IORD(%s_CC_BASE, %s_CC_CTL); // Get RDY status by reading control/status reg@,"
-         upName upName;
-  fprintf fmt "if ( !r ) return 0;";
+  fprintf fmt "alt_u32 result;@,";
+  fprintf fmt "@[<v 2>while (!IORD(%s_CC_BASE, %s_CC_CTL))@," upName upName;
+  fprintf fmt "; // Get RDY status by reading control/status reg@]@,";  
   fprintf fmt "// Write arguments@,";
   List.iter (fun (x,_) -> 
     fprintf fmt "IOWR(%s_CC_BASE, %s_CC_%s, %s);@," upName upName (up x) (low x)) envi;  
+  
+  if !allow_heap_access then 
+    fprintf fmt "IOWR(%s_CC_BASE, %s_CC_CAML_HEAP_BASE, ocaml_ram_heap);@," upName upName;
+
   fprintf fmt "@,IOWR(%s_CC_BASE, %s_CC_CTL, 1);" upName upName;
-  fprintf fmt "@,@[<v 2>while ( (r = IORD(%s_CC_BASE, %s_CC_CTL)) == 0 ); // Wait for rdy@," upName upName;
-  fprintf fmt "r = IORD(%s_CC_BASE, %s_CC_RESULT); // Read result@," upName upName;
-  fprintf fmt "return r;@]";
+  fprintf fmt "@,@[<v 2>while ( (result = IORD(%s_CC_BASE, %s_CC_CTL)) == 0 ); // Wait for rdy@," upName upName;
+  fprintf fmt "result = IORD(%s_CC_BASE, %s_CC_RESULT); // Read result@," upName upName;
+  fprintf fmt "return result;@]";
   fprintf fmt "@]@,}@,@]"
 
 let mk_platform_h fmt (envi,envo,_) name = 
@@ -464,7 +316,11 @@ let mk_simul_c fmt (envi,envo,_) name =
   pp_print_list 
     ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
     (fun fmt _ -> fprintf fmt "%s" "%d") fmt envi;
-  fprintf fmt "%s" ")\\n\"";
+  
+  if !allow_heap_access then 
+    fprintf fmt ", caml_heap_base";      (* todo : cf. O2B list2 : printf("nios_list_reduce_cc(%x)\n", (unsigned int)v); *)
+
+  pp_print_text fmt ")\\n\"";
   List.iter (fun (x,t) -> fprintf fmt ", %s" (low x)) envi;
   fprintf fmt ");@]@,";
   fprintf fmt "return 1;@,@]";
@@ -473,12 +329,14 @@ let mk_simul_c fmt (envi,envo,_) name =
 let mk_simul_h = mk_platform_h
 
 let rec t_ML ty =
-  let open Types_efsm in
+  let open Types in
   match ty with
   | TStd_logic
   | TBool -> "bool"
   | TInt -> "int"
-  | TArray(t,_) -> t_ML t ^ " array"
+  | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
+  | TArray{ty;_} -> t_ML ty ^ " array"
+  | TPtr | TIdent _ -> assert false (* todo *)
   | (TSize _ | TVar _) -> assert false
 
 
@@ -508,3 +366,96 @@ let mk_platform_mli fmt (envi,envo,_) name =
   fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres)  (low name) "[@@noalloc]";
   fprintf fmt "@]@,end@,@]"
 
+
+
+
+let mk_vhdl_with_cc vars name efsm =
+  let open Filename in
+  let open Format in
+  let open Efsm2vhdl in
+  let dst = "gen" in
+  let desc_name = concat dst (name ^".vhd")
+  and cc_name = concat dst (name ^"_cc.vhd")
+  and misc_types_name = concat dst "misc_types.vhd"
+  and bindings_name = concat dst "bindings_ext.c"
+  and platform_c_name = concat dst "platform_ext.c"
+  and platform_h_name = concat dst "platform_ext.h"
+  and simul_c_name = concat dst "simul_ext.c"
+  and simul_h_name = concat dst "simul_ext.h" 
+  and platform_ml_name = concat dst "platform_ext.ml"
+  and platform_mli_name = concat dst "platform_ext.mli"
+  in
+  let fmt = std_formatter in
+  let desc_oc = open_out desc_name
+  and cc_oc = open_out cc_name
+  and misc_types_cc = open_out misc_types_name
+  and bindings_oc = open_out bindings_name
+  and platform_c_oc = open_out platform_c_name
+  and platform_h_oc = open_out platform_h_name
+  and simul_c_oc = open_out simul_c_name
+  and simul_h_oc = open_out simul_h_name 
+  and platform_ml_oc = open_out platform_ml_name
+  and platform_mli_oc = open_out platform_mli_name 
+  in 
+  set_formatter_out_channel desc_oc;
+  c_prog ~name vars fmt efsm;
+
+  set_formatter_out_channel misc_types_cc;
+  mk_package fmt;
+  pp_print_flush fmt ();
+
+
+  let vars' = 
+    let (envi,envo,l) = vars in
+    let f = List.filter (fun (x,t) -> match x with "start" | "rdy" | "avm_rm_read" | "avm_rm_waitrequest" | "avm_rm_readdata" | "avm_rm_address" | "caml_heap_base" -> false 
+                         | _ -> true) in
+    (f envi,f envo,l)
+  in
+
+  set_formatter_out_channel cc_oc;
+  gen_cc fmt vars vars' name;
+  pp_print_flush fmt ();
+
+  set_formatter_out_channel bindings_oc;
+  mk_platform_bindings fmt vars' name;
+  pp_print_flush fmt ();
+  
+  set_formatter_out_channel platform_c_oc;
+  mk_platform_c fmt vars' name;
+  pp_print_flush fmt ();
+  
+  set_formatter_out_channel platform_h_oc;
+  mk_platform_h fmt vars' name;
+  pp_print_flush fmt ();
+  
+  set_formatter_out_channel simul_c_oc;
+  mk_simul_c fmt vars' name;
+  pp_print_flush fmt ();
+  
+  set_formatter_out_channel simul_h_oc;
+  mk_simul_h fmt vars' name;
+  pp_print_flush fmt ();
+
+  set_formatter_out_channel simul_h_oc;
+  mk_simul_h fmt vars' name;
+  pp_print_flush fmt ();
+
+  set_formatter_out_channel platform_ml_oc;
+  mk_platform_ml fmt vars' name;
+  pp_print_flush fmt ();
+
+  set_formatter_out_channel platform_mli_oc;
+  mk_platform_mli fmt vars' name;
+  pp_print_flush fmt ();
+  
+  close_out desc_oc;
+  close_out cc_oc;
+  close_out bindings_oc;
+  close_out platform_c_oc;
+  close_out platform_h_oc;
+  close_out simul_c_oc;
+  close_out simul_h_oc;
+  close_out platform_ml_oc;
+  close_out platform_mli_oc;
+
+  Printf.printf "info: platform generated in then folder gen/.\n";

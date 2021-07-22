@@ -29,7 +29,7 @@ let mk_vhdl ?(with_cc=false) filename efsm =
   let entity_name = Filename.(remove_extension @@ basename filename) in
   let open Efsm2vhdl in
   match !flag_gen_cc,!flag_lang with 
-  | false,_ -> c_prog ~entity_name vars Format.std_formatter efsm
+  | false,_ -> c_prog ~name:entity_name vars Format.std_formatter efsm
   | true,(CSM|LI) -> 
       Gen_platform.mk_vhdl_with_cc vars entity_name efsm
   | true,_ -> 
@@ -61,9 +61,11 @@ let parse filename =
         |> (mk_vhdl filename)
     | LI -> 
         Parser.li Lexer.token lexbuf
+        |> Caml_interop.rw
         |> Inline.inlining
         |> Li2csm.c_prog
         |> Csm2psm.c_prog
+        (* |> (fun p -> Pprint_ast.PP_PSM.pp_prog Format.std_formatter p; p) *)
         |> Psm2hsm.c_prog
         |> Hsm2efsm.c_prog
         |> (mk_vhdl filename)

@@ -48,6 +48,11 @@ rule token = parse
 | "bool"            { BOOL }
 | "array"           { ARRAY }
 | "std_logic"       { STD_LOGIC }
+| "std_logic_vector" { STD_LOGIC_VECTOR }
+| "call"            { CALL }
+| "ref"             { REF }
+| "ptr"             { PTR }
+| ['!']             { BANG }
 | [':']             { COL }
 | ident as lxm      { IDENT lxm }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }

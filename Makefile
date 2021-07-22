@@ -1,30 +1,56 @@
-CC=ocamlc -g
-EXE=compile
+CAMLC=ocamlc
+CAMLLEX=ocamllex
+MENHIR=menhir --explain
+CAMLDEP=ocamldep
 
-all:
-	$(CC) -c misc.ml
-	$(CC) -c types_efsm.ml
-	$(CC) -c ast.ml
-	$(CC) -c pprint_ast.ml
-	menhir parser.mly
-	$(CC) -c parser.mli
-	$(CC) -c parser.ml
-	ocamllex lexer.mll
-	$(CC) -c lexer.ml
-	$(CC) -c variables.ml
-	$(CC) -c typing_efsm.ml
-	$(CC) -c efsm2vhdl.ml
-	$(CC) -c hsm2efsm.ml
-	$(CC) -c psm2hsm.ml
-	$(CC) -c csm2psm.ml
-	$(CC) -c li2csm.ml
-	$(CC) -c inline.ml
-	$(CC) -c gen_platform.ml
-	$(CC) -c main.ml
-	
-	$(CC) -o $(EXE) misc.cmo ast.cmo pprint_ast.cmo lexer.cmo \
-	 parser.cmo variables.cmo types_efsm.cmo typing_efsm.cmo efsm2vhdl.cmo hsm2efsm.cmo \
-	 psm2hsm.cmo csm2psm.cmo li2csm.cmo inline.cmo gen_platform.cmo main.cmo
+EXE=compile
+PCF_FLAGS=
+
+INCLUDES=-I src -I src/target -I src/syntax -I src/typing \
+         -I src/translators  -I src/dsl 
+
+OBJS=src/misc.cmo\
+	 src/syntax/types.cmo\
+	 src/syntax/ast.cmo\
+	 src/syntax/pprint_ast.cmo\
+	 src/syntax/parser.cmo\
+	 src/syntax/lexer.cmo\
+	 src/syntax/variables.cmo\
+	 src/typing/typing_efsm.cmo\
+	 src/translators/efsm2vhdl.cmo\
+	 src/translators/hsm2efsm.cmo\
+	 src/translators/psm2hsm.cmo\
+	 src/translators/csm2psm.cmo\
+	 src/translators/li2csm.cmo\
+	 src/dsl/inline.cmo\
+	 src/dsl/caml_interop.cmo\
+	 src/target/gen_platform.cmo\
+	 src/main.cmo
+
+SRCS=`find src -name "*.ml*"`
+all: $(OBJS)
+	$(CAMLC) $(FLAGS) $(INCLUDES) -o $(EXE) $(OBJS)
+
+.SUFFIXES: .mll .mly .ml .mli .cmo .cmi 
+
+.ml.cmo:
+	$(CAMLC) $(INCLUDES) $(FLAGS) -c $<
+
+.mli.cmi:
+	$(CAMLC) $(INCLUDES) $(FLAGS) -c $<
+
+.mly.ml:
+	$(MENHIR) $<
+
+.mll.ml:
+	$(CAMLLEX) $<
+
+depend:
+	$(CAMLDEP) $(INCLUDES) $(SRCS) > .depend
+
+include .depend
+
+
 
 FILE=
 OPT=

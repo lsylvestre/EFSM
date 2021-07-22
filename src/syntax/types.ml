@@ -5,8 +5,11 @@ type ty =
 | TStd_logic 
 | TBool 
 | TInt
+| TIdent of string
 | TSize of int
-| TArray of (ty * ty)   (*  (elements type * size)  *)
+| TArray of {ty:ty ; size:ty}   (*  (elements type * size)  *)
+| TCamlRef of ty
+| TPtr               (* pointeur *)
 | TVar of tvar ref
 and tvar = V of int | Ty of ty
 
@@ -21,12 +24,19 @@ let rec print_ty fmt ty =
       pp_print_text fmt "bool"
   | TInt -> 
       pp_print_text fmt "int"
-  | TArray(ty,size) -> 
+  | TArray {ty ; size} -> 
       fprintf fmt "array(%a,%a)"
          print_ty ty 
          print_ty size
   | TSize(n) -> 
       fprintf fmt "%d" n
+  | TCamlRef ty ->
+     fprintf fmt "ref(%a)"
+         print_ty ty
+  | TPtr ->
+     pp_print_text fmt "ptr"
+  | TIdent x -> 
+     pp_print_text fmt x
   | TVar{contents=V n} -> 
       fprintf fmt "'a%d" n
   | TVar{contents=Ty t} -> 

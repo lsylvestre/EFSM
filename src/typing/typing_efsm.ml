@@ -39,13 +39,16 @@ let v_prog p =
 
 (* typage *)
 
-open Types_efsm
+open Types
 
 let rec unify env t1 t2 = match t1,t2 with
-| TStd_logic, TStd_logic | TBool, TBool | TInt,TInt -> ()
-| TArray(t,s),TArray(t',s') -> 
-  unify env t t';
-  unify env s s'
+| TStd_logic, TStd_logic | TBool, TBool | TInt,TInt | TPtr,TPtr -> ()
+| TIdent s, TIdent s' when s = s' -> ()
+| TArray{ty=t;size=s},TArray{ty=t';size=s'} -> 
+    unify env t t';
+    unify env s s'
+| TCamlRef t, TCamlRef t' -> 
+    unify env t t'
 | (TSize n, TSize m) when n = m -> () 
 | TVar {contents=V n},TVar ({contents=V m} as v) -> 
 v := V n
@@ -127,14 +130,14 @@ let rec typ_atom env a =
      let vs = newvar() in
      (match Tenv.find_opt env x with
      | None ->
-        Tenv.add env x (TArray(v,vs))
+        Tenv.add env x (TArray{ty=v;size=vs})
      | Some ty -> 
-        unify env ty (TArray(v,vs)));
+        unify env ty (TArray{ty=v;size=vs}));
      unify env (typ_atom env a) TInt;
      TInt
   | Prim (ArrayMake n,[a]) ->
      let t = typ_atom env a in
-     let ta = TArray(t,TSize n) in
+     let ta = TArray{ty=t;size=TSize n} in
      array_type_decl ta;
      ta
   | Prim (TyAnnot t,[a]) -> 
@@ -143,6 +146,16 @@ let rec typ_atom env a =
      | TArray _ -> array_type_decl t
      | _ -> ());
      t
+   | Prim(Call s, args) -> 
+     let ts = List.map (typ_atom env) args in 
+     (match s with
+     | "ptr" -> List.iter2 (unify env) ts [TCamlRef TInt]; TPtr
+     | "val" -> List.iter2 (unify env) ts [TPtr]; TInt
+     | "int_val" -> List.iter2 (unify env) ts [TPtr]; TInt
+     | "caml_heap_addr" -> List.iter2 (unify env) ts [TPtr;TCamlRef TInt]; TPtr
+     | _ ->  failwith "typing-efsm: todo")
+  (* | Prim(CamlRefAccess,[a]) ->
+    typ_atom env a*)
   | Prim _ -> 
       failwith "typing-efsm: bad arity"
 
@@ -161,10 +174,10 @@ let typ_inst env = function
                    let vs = newvar() in
                    match Tenv.find_opt env x with
                    | None -> 
-                      Tenv.add env x (TArray(ty,vs))
+                      Tenv.add env x (TArray{ty;size=vs})
                    | Some t -> 
                       unify env TInt ty_idx;
-                      unify env (TArray(ty,vs)) t) bs
+                      unify env (TArray{ty;size=vs}) t) bs
 
 let typ_transition env (_,ts) = 
   List.iter (fun (a,s,_) ->

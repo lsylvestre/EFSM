@@ -6,12 +6,15 @@ type token =
   | UMINUS
   | TIMES
   | THEN
+  | STD_LOGIC_VECTOR
   | STD_LOGIC
   | SEMICOL
   | RPAREN
   | RETURN
+  | REF
   | REC
   | RBRACKET
+  | PTR
   | PLUS
   | PIPE_PIPE
   | PIPE
@@ -41,8 +44,10 @@ type token =
   | COMMA
   | COLONEQ
   | COL
+  | CALL
   | BOOL_LIT of (bool)
   | BOOL
+  | BANG
   | AUTOMATON
   | ARRAY
   | AND

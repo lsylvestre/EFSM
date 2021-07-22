@@ -74,6 +74,21 @@ module PP_atom = struct
           fprintf fmt "%a %a"
             pp_unop p
             (pp_atom_aux ~paren:true) a
+    | Prim (Call s,args) ->
+       fprintf fmt "call %s(%a)" s
+       (pp_print_list 
+        ~pp_sep:(fun fmt () -> fprintf fmt ",") 
+         (pp_atom_aux ~paren:false)) args;
+    | Prim (TyAnnot t,[a]) ->
+       fprintf fmt "(%a : %a)" 
+          (pp_atom_aux ~paren:false) a 
+          Types.print_ty t
+    | Prim(ArrayGet x,[idx]) ->
+       fprintf fmt "%s[%a]" x
+          (pp_atom_aux ~paren:false) idx
+    | Prim(ArrayMake n,[a]) ->
+       fprintf fmt "(%a)^%d"
+          (pp_atom_aux ~paren:false) a n
     | _ -> ill_formed_constant_application ();
            assert false
   in
@@ -264,4 +279,7 @@ let rec print_exp fmt e =
        print_exp e1
        print_exp e2
        print_exp e3
+  | RefAccess e -> 
+      fprintf fmt "!(%a)"
+        print_exp e
 end

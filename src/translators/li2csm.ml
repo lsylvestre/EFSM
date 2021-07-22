@@ -1,6 +1,9 @@
 open Ast
 open LI
 
+(* TODO: transformer [let ... seq() ... and ...] 
+   en [let ... seq () ... in let ...] *)
+
 let rec is_atom = function
 | Var _ | Const _ -> true
 | Prim (_,args) ->
@@ -17,19 +20,64 @@ let rec exp_to_atom = function
     Prim(c,List.map exp_to_atom args) 
 | _ -> raise Not_an_atom
 
+(* csm *)
+let rec contain_seq a =
+  let open CSM in
+  match a with
+  | (State _ | Return _) -> false
+  | Seq _ -> true
+  | LetRec (bs,a) -> 
+      List.exists (fun (_,_,ts) ->
+        List.exists (fun (_,a) -> contain_seq a) ts) 
+      bs || contain_seq a
+  | Let (bs,a) -> 
+      (* on pourrer optimiser: 
+         en supposant que les Let(bs,a) ont déjà été traité 
+         et ne contiennent dont aucune sequence *)
+      List.exists (fun (_,a) -> contain_seq a) bs || contain_seq a
+
+let csm_mk_let bs a =
+  match bs with 
+  | [] -> a 
+  | _ -> CSM.Let(bs,a)
+
 let rec c_exp e = 
   if is_atom e then CSM.Return (exp_to_atom e) else
   match e with
   | Var _ | Const _ -> assert false (* is an atom *)
+  | RefAccess _ -> assert false (* already encoded *)
   | Prim (c,es) ->
-      c_exp @@  (* à factoriser avec le cas app, etc. *)
-      let bs = List.map (fun e -> let x = Gensym.gensym "dsl" in (x,e)) es in
-      let xs = List.map (fun (x,_) -> Var x) bs in
-      Let (bs, Prim (c,xs))
-  | Let(bs,e) ->
-      let bs' = List.map (fun (x,e) -> (x,c_prog e)) bs in
-      let a = c_exp e in
-      CSM.Let(bs',a)
+      c_exp 
+      @@
+      let rec aux bs es' = function
+      | [] -> let e = Prim(c,List.rev es') in
+              assert (is_atom e);
+              (match bs with 
+               | [] -> e
+               | _ -> Let(List.rev bs,e))
+      | e::es -> 
+          if is_atom e then aux bs (e::es') es
+          else let x = Gensym.gensym "dsl" in
+               aux ((x,e)::bs) ((Var x)::es') es in
+      aux [] [] es
+  | Let(bs,e) -> 
+      (* TODO: attention capture ! *)
+      let bsa,bse = List.partition (fun (x,e) -> is_atom e) bs in
+      let q = Gensym.gensym "dsl_q" in
+      let a' = 
+        let a = c_exp e in
+        match List.map (fun (x,e) -> (x,c_prog e)) bse with
+        | [] -> a
+        | bs' -> let bs_seq,bs_noseq = 
+                    List.partition (fun (_,e) -> contain_seq e) bs'
+                 in
+                 List.fold_left (fun acc (x,e) -> CSM.Let([(x,e)],acc))
+                        (csm_mk_let bs_noseq a) bs_seq
+      in
+      (match bsa with 
+      | [] -> a'
+      | _ -> let xs,args = List.split bsa in
+             CSM.LetRec([(q,xs,[(mk_bool' true,a')])], CSM.State(q,List.map exp_to_atom args)))
   | LetRec(bs,e) -> 
       let bs' = List.map (fun (f,ys,e) -> (f,ys,[(mk_bool' true,c_exp e)])) bs in
       let a = c_exp e in
@@ -69,7 +117,8 @@ let rec c_exp e =
                               ((x,o'), exp_to_atom e)) bs in
          let a = c_exp e in
          CSM.Seq(Assign(bs'),a)
-       else failwith "todo li2csm seq") (**
+       else 
+         failwith "todo li2csm seq") (**
         c_exp @@
         let bs2 = List.map (fun ((x,o),e) -> 
                     (* pour le moment, 

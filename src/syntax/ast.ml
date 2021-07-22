@@ -39,7 +39,8 @@ module Atom = struct
   | Unop of unop
   | ArrayGet of ident
   | ArrayMake of int
-  | TyAnnot of Types_efsm.ty
+  | TyAnnot of Types.ty
+  | Call of string
 
   type atom = 
   | Var of ident 
@@ -62,7 +63,8 @@ let mk_binop (p:binop) (a1:'a) (a2:'a) = (Binop p,[a1;a2])
 let mk_unop (p:unop) (a:'a) = (Unop p,[a]) 
 let mk_array_get (x:ident) (idx:'a) = (ArrayGet x,[idx]) 
 let mk_array_make (size:int) (a:'a) = (ArrayMake size,[a]) 
-let mk_ty_annot (a:'a) (t:Types_efsm.ty) = (TyAnnot t,[a])
+let mk_ty_annot (a:'a) (t:Types.ty) = (TyAnnot t,[a])
+let mk_call x (args:'a list) = (Call x,args)
 
 let mk_prim p = Prim p
 let mk_const c = Const c
@@ -76,6 +78,7 @@ let mk_unop' p a       = mk_prim @@ mk_unop p a
 let mk_array_get' a idx = mk_prim @@ mk_array_get a idx
 let mk_array_make' size a = mk_prim @@ mk_array_make size a
 let mk_ty_annot' a t = mk_prim @@ mk_ty_annot a t
+let mk_call' x args = mk_prim @@ mk_call x args
 
 let mk_var x = Var x 
 
@@ -155,6 +158,7 @@ module LI = struct
   | LetRec of (ident * ident list * exp) list * exp
   | App of ident * exp list
   | If of exp * exp * exp
+  | RefAccess of exp
   (* | Case of exp * (const * exp) list
   | Map of {x : ident ; trt : prog ; arr : prog}
   | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog} *)
