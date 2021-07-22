@@ -286,4 +286,7 @@ let rec print_exp fmt e =
       fprintf fmt "(%a).(%a)"
         print_exp arr
         print_exp idx
+  | ArrayLength e ->
+      fprintf fmt "array_length (%a)"
+        print_exp e
 end

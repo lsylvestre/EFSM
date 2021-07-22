@@ -88,26 +88,20 @@ let c_atom fmt a =
      | (Call s,args) ->
          (match s,args with
          | "int_val",[a] -> fprintf fmt "signed(%a(31 downto 1))" (pp_atom ~paren:true) a
-         | "caml_heap_addr",[heap_base;addr] ->
+         | ("ref_contents"|"array_hd"),[heap_base;addr] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)))"
                  (pp_atom ~paren:true) heap_base
-                 (pp_atom ~paren:true) addr
-         | "caml_heap_addr_ofs",[heap_base;addr;ofs] ->
+                 (pp_atom ~paren:true) addr    (* !!! que faire si addr n'est pas une variable *)
+         | "array_get_field",[heap_base;addr;ofs] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + RESIZE(unsigned(%a(19 downto 0)) * 4,32))"
                  (pp_atom ~paren:true) heap_base
-                 (pp_atom ~paren:true) addr
+                 (pp_atom ~paren:true) addr       (* !!! idem ... *)
                  (pp_atom ~paren:true) ofs
-         | _ -> let s' = match s with
-                  | "ref_addr" -> "caml_encode_int"
-                  | "ref_contents" -> "caml_decode_int"
-                  | _ -> failwith "todo" in
-         fprintf fmt "%s(%a)" s'
-         (pp_print_list 
-          ~pp_sep:(fun fmt () -> fprintf fmt "@,")
-          (pp_atom ~paren:false)) args)
-     (* | (CamlRefAccess,[a]) ->
-          fprintf fmt "caml_encode_int(to_signed(%a,31))"
-            (pp_atom ~paren) a *)
+         | "wosize_hd",[heap_base;addr] ->
+              fprintf fmt "SHIFT_RIGHT((unsigned(%a) + unsigned(%a(19 downto 0))),2)"
+                 (pp_atom ~paren:true) heap_base
+                 (pp_atom ~paren:true) addr       (* !!! idem ... *)
+         | _ -> assert false)
      | _ -> assert false) (* ill-formed primitive application *)
   in
   pp_atom ~paren:false fmt a

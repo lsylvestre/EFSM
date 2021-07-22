@@ -1,5 +1,5 @@
 let rec get(r) =
-  (avm_rm_address,avm_rm_read) := (call caml_heap_addr(caml_heap_base,r),'1');
+  (avm_rm_address,avm_rm_read) := (call ref_contents(caml_heap_base,r),'1');
   let rec read() = 
     if avm_rm_waitrequest = '0' then
       (avm_rm_read,v) := ('0',avm_rm_readdata);

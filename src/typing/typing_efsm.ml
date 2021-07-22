@@ -147,14 +147,16 @@ let rec typ_atom env a =
      | TArray _ -> array_type_decl t
      | _ -> ());
      t
-   | Prim(Call s, args) -> 
+   | Prim(Call s, args) ->  (* TODO attention [exception Invalid_argument("List.iter2")] si listes de tailles différentes !! *)
      let ts = List.map (typ_atom env) args in 
      (match s with
      | "ptr" -> List.iter2 (unify env) ts [TCamlRef TInt]; TPtr
      | "val" -> List.iter2 (unify env) ts [TPtr]; TInt
      | "int_val" -> List.iter2 (unify env) ts [TPtr]; TInt
-     | "caml_heap_addr" -> List.iter2 (unify env) ts [TPtr;TCamlRef TInt]; TPtr
-     | "caml_heap_addr_ofs" -> List.iter2 (unify env) ts [TPtr;TCamlArray TInt;TInt]; TPtr
+     | "ref_contents" -> List.iter2 (unify env) ts [TPtr;TCamlRef TInt]; TPtr
+     | "array_get_field" -> List.iter2 (unify env) ts [TPtr;TCamlArray TInt;TInt]; TPtr
+     | "array_hd" -> List.iter2 (unify env) ts [TPtr;TCamlArray TInt]; TPtr
+     | "wosize_hd" -> List.iter2 (unify env) ts [TPtr;TPtr]; TInt
      | _ ->  failwith "typing-efsm: todo")
   (* | Prim(CamlRefAccess,[a]) ->
     typ_atom env a*)

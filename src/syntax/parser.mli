@@ -50,6 +50,7 @@ type token =
   | BOOL
   | BANG
   | AUTOMATON
+  | ARRAY_LENGTH
   | ARRAY
   | AND
 

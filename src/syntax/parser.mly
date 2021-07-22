@@ -17,7 +17,7 @@
 %token INT BOOL ARRAY STD_LOGIC COL
 %token BANG
 %token CALL REF PTR
-%token DOT RIGHT_ARROW
+%token DOT RIGHT_ARROW ARRAY_LENGTH
 
 %left PIPE_PIPE
 %left LAND
@@ -130,6 +130,7 @@ exp_li_without_paren:
 | BANG e=exp_li            { LI.RefAccess e }
 | arr=exp_li DOT 
   LPAREN idx=exp_li RPAREN { LI.ArrayAccess{arr;idx} }
+| ARRAY_LENGTH e=exp_li    { LI.ArrayLength e }
 /* array, map, reduce */
 
 binding_li:

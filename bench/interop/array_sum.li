@@ -1,0 +1,9 @@
+let rec sum(a) =
+  let n = array_length a in
+  let rec aux(acc,i) =
+    if i >= n then acc
+    else aux(acc + a.(i), i+1) 
+  in
+  aux(0,0)
+in
+sum(arr)

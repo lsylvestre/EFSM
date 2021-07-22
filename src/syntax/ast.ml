@@ -160,6 +160,7 @@ module LI = struct
   | If of exp * exp * exp
   | RefAccess of exp
   | ArrayAccess of { arr:exp ; idx:exp }
+  | ArrayLength of exp 
   (* | Case of exp * (const * exp) list
   | Map of {x : ident ; trt : prog ; arr : prog}
   | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog} *)
