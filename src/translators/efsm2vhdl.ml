@@ -85,21 +85,30 @@ let c_atom fmt a =
          fprintf fmt "(others => %a)" (pp_atom ~paren:false) init
      | (TyAnnot _,[a]) -> 
          pp_atom ~paren fmt a 
+     | (FromCaml t,[_;a]) -> 
+          (match t with
+           | TCamlArray _ | TCamlRef _ -> 
+              pp_atom ~paren fmt a 
+           | _ (* immediate value *) ->  
+              fprintf fmt "signed(%a(31 downto 1))" (pp_atom ~paren:true) a)
      | (Call s,args) ->
          (match s,args with
-         | "int_val",[a] -> fprintf fmt "signed(%a(31 downto 1))" (pp_atom ~paren:true) a
-         | ("ref_contents"|"array_hd"),[heap_base;addr] ->
+         | "%ref_contents",[heap_base;addr] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)))"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr    (* !!! que faire si addr n'est pas une variable *)
-         | "array_get_field",[heap_base;addr;ofs] ->
+         | "%array_get",[heap_base;addr;ofs] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + RESIZE(unsigned(%a(19 downto 0)) * 4,32))"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
                  (pp_atom ~paren:true) ofs
-         | "wosize_hd",[heap_base;addr] ->
-              fprintf fmt "SHIFT_RIGHT((unsigned(%a) + unsigned(%a(19 downto 0))),2)"
+         | "%array_hd",[heap_base;addr] ->
+              fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) - 4)"
                  (pp_atom ~paren:true) heap_base
+                 (pp_atom ~paren:true) addr       (* !!! idem ... *)
+         | "%wosize_hd",[heap_base;addr] ->
+              (* fprintf fmt "SHIFT_RIGHT((unsigned(%a) + unsigned(%a(19 downto 0))),2)" *)
+              fprintf fmt "signed(\"00000000000\"&std_logic_vector(%a)(21 downto 2))"
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
          | _ -> assert false)
      | _ -> assert false) (* ill-formed primitive application *)
@@ -182,15 +191,12 @@ let rec c_ty fmt ty =
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> fprintf fmt "@[<h>caml_int@]"
-  | (TCamlRef _ | TCamlArray _) -> 
-       pp_print_text fmt "caml_ptr"
-  |  TPtr -> 
-      pp_print_text fmt "caml_value"
+  | (TCamlRef _ | TCamlArray _ | TPtr | TVar _) -> 
+       pp_print_text fmt "caml_value"
   | TArray{ty;size} -> (* 
     pp_print_text fmt "todo_array" *)
       fprintf fmt "array_%a_%a" c_ty ty c_ty size
   | TSize n -> fprintf fmt "%d" n
-  | TVar _ -> assert false
 
 
 (* à mettre en argument de c_prog *)
@@ -203,7 +209,7 @@ let c_prog ?(reset="reset") ?(clock="clk")
   fprintf fmt "@[<v>library ieee;@,";
   fprintf fmt "use ieee.std_logic_1164.all;@,";
   fprintf fmt "use ieee.numeric_std.all;@,";
-  fprintf fmt "use work.misc_types.all;@,@,";
+  fprintf fmt "use work.misc_%s.all;@,@," name;
   fprintf fmt "@[<v 2>entity %s is@," name;
   fprintf fmt "port(@[<v>signal %s : in std_logic;@," clock;
   fprintf fmt "signal %s : in std_logic" reset;

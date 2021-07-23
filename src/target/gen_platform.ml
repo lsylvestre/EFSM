@@ -3,11 +3,11 @@ open Efsm2vhdl
 
   (* ***************************************** *)
 
-let mk_package fmt = 
+let mk_package name fmt = 
   fprintf fmt "@[<v>library ieee;@,";
   fprintf fmt "use ieee.std_logic_1164.all;@,";
   fprintf fmt "use ieee.numeric_std.all;@,@,";
-  fprintf fmt "@[<v 2>package misc_types is@,";
+  fprintf fmt "@[<v 2>package misc_%s is@," name;
   
   fprintf fmt "subtype caml_value is std_logic_vector(31 downto 0);@,";
   fprintf fmt "subtype caml_ptr is std_logic_vector(31 downto 0);@,";
@@ -23,7 +23,7 @@ let mk_package fmt =
   | _ -> assert false) l;
 
   fprintf fmt "@]@,end;@,";
-  fprintf fmt "package body misc_types is@,";
+  fprintf fmt "package body misc_%s is@," name;
   fprintf fmt "end;@,@."
 
   (* ***************************************** *)
@@ -68,10 +68,10 @@ let set_result dst ty fmt x =
       fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@,end if" dst;
   | TInt -> 
       fprintf fmt "%s <= \"0\" & std_logic_vector(%s)" dst x
-  | (TCamlRef _ | TCamlArray _) -> fprintf fmt "%s <= %s" dst x
+  | (TCamlRef _ | TCamlArray _ | TVar _) -> fprintf fmt "%s <= %s" dst x
   | TPtr -> assert false
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
-  | (TSize _ | TVar _) -> assert false
+  | TSize _ -> assert false
 
 
 
@@ -83,7 +83,7 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
   fprintf fmt "library IEEE;@,";
   fprintf fmt "use IEEE.std_logic_1164.all;@,";
   fprintf fmt "use IEEE.numeric_std.all;@,";
-  fprintf fmt "use work.misc_types.all;@,@,";
+  fprintf fmt "use work.misc_%s.all;@,@," name;
   fprintf fmt "@[<v 2>entity avs_%s is@," name;
   fprintf fmt "port (@[< v>";
   fprintf fmt "@[<v 2>avs_s0_address : in std_logic_vector(3 downto 0)  := (others => '0');@,"; 
@@ -228,11 +228,11 @@ let t_val ty fmt x =
 let mk_platform_bindings fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   (* ne gère pas les sorties multiples *)
-  fprintf fmt "@[<v>@[<v 2>value caml_nios_%s_cc(" name;
+  fprintf fmt "@[<v>@[<v 2>uint32_t caml_nios_%s_cc(" name;
   fprintf fmt "@[<hov>";
   pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
-        (fun fmt (x,_) -> fprintf fmt "value %s" x) fmt envi;
+        (fun fmt (x,_) -> fprintf fmt "uint32_t %s" x) fmt envi;
   fprintf fmt "@]) {@,";
   fprintf fmt "return Val_int(nios_%s_cc(" name;
   fprintf fmt "@[<hov>";
@@ -249,7 +249,7 @@ let t_C ty =
   | TStd_logic
   | TBool
   | TInt -> "int"
-  | (TCamlRef _ | TCamlArray _) -> "value"
+  | (TCamlRef _ | TCamlArray _) -> "uint32_t"
   | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
@@ -336,8 +336,11 @@ let rec t_ML ty =
   | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
   | TCamlArray t -> "(" ^ t_ML t ^ ") array"
   | TArray{ty;_} -> t_ML ty ^ " nativ_array"
+  | TVar v ->
+      assert (is_type_variable v);
+      Printf.sprintf "'a%d" (as_type_variable v)
   | TPtr -> assert false (* todo *)
-  | (TSize _ | TVar _) -> assert false
+  | TSize _ -> assert false
 
 
 (* pour le moment, on ignore les résultats multiples. 
@@ -376,7 +379,7 @@ let mk_vhdl_with_cc vars name efsm =
   let dst = "gen" in
   let desc_name = concat dst (name ^".vhd")
   and cc_name = concat dst (name ^"_cc.vhd")
-  and misc_types_name = concat dst "misc_types.vhd"
+  and misc_name = concat dst (name ^ "_misc.vhd")
   and bindings_name = concat dst "bindings_ext.c"
   and platform_c_name = concat dst "platform_ext.c"
   and platform_h_name = concat dst "platform_ext.h"
@@ -388,7 +391,7 @@ let mk_vhdl_with_cc vars name efsm =
   let fmt = std_formatter in
   let desc_oc = open_out desc_name
   and cc_oc = open_out cc_name
-  and misc_types_cc = open_out misc_types_name
+  and misc_cc = open_out misc_name
   and bindings_oc = open_out bindings_name
   and platform_c_oc = open_out platform_c_name
   and platform_h_oc = open_out platform_h_name
@@ -400,8 +403,8 @@ let mk_vhdl_with_cc vars name efsm =
   set_formatter_out_channel desc_oc;
   c_prog ~name vars fmt efsm;
 
-  set_formatter_out_channel misc_types_cc;
-  mk_package fmt;
+  set_formatter_out_channel misc_cc;
+  mk_package name fmt;
   pp_print_flush fmt ();
 
 

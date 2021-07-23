@@ -2,7 +2,7 @@ module Gensym = struct
   
   let gensym =
   let c = ref 0 in
-  fun prefix -> incr c; prefix ^ "_" ^ string_of_int !c
+  fun prefix -> incr c; Printf.sprintf "%s_%04d" prefix !c
 end
 
 module Atom = struct
@@ -40,7 +40,8 @@ module Atom = struct
   | ArrayGet of ident
   | ArrayMake of int
   | TyAnnot of Types.ty
-  | Call of string
+  | Call of string       (* usage interne, pas exposé dans le parser *)
+  | FromCaml of Types.ty  (* usage interne, pas exposé dans le parser *)
 
   type atom = 
   | Var of ident 

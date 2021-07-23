@@ -149,17 +149,18 @@ let rec typ_atom env a =
      t
    | Prim(Call s, args) ->  (* TODO attention [exception Invalid_argument("List.iter2")] si listes de tailles différentes !! *)
      let ts = List.map (typ_atom env) args in 
+     let v = newvar() in
      (match s with
-     | "ptr" -> List.iter2 (unify env) ts [TCamlRef TInt]; TPtr
+     | "ptr" -> List.iter2 (unify env) ts [TCamlRef v]; TPtr
      | "val" -> List.iter2 (unify env) ts [TPtr]; TInt
-     | "int_val" -> List.iter2 (unify env) ts [TPtr]; TInt
-     | "ref_contents" -> List.iter2 (unify env) ts [TPtr;TCamlRef TInt]; TPtr
-     | "array_get_field" -> List.iter2 (unify env) ts [TPtr;TCamlArray TInt;TInt]; TPtr
-     | "array_hd" -> List.iter2 (unify env) ts [TPtr;TCamlArray TInt]; TPtr
-     | "wosize_hd" -> List.iter2 (unify env) ts [TPtr;TPtr]; TInt
+     | "%ref_contents" -> List.iter2 (unify env) ts [TPtr;TCamlRef v]; TPtr
+     | "%array_get" -> List.iter2 (unify env) ts [TPtr;TCamlArray v;TInt]; TPtr
+     | "%array_hd" -> List.iter2 (unify env) ts [TPtr;TCamlArray v]; TPtr
+     | "%wosize_hd" -> List.iter2 (unify env) ts [TPtr;TPtr]; TInt
      | _ ->  failwith "typing-efsm: todo")
-  (* | Prim(CamlRefAccess,[a]) ->
-    typ_atom env a*)
+  | Prim(FromCaml t,[h;a]) -> 
+      unify env TPtr (typ_atom env h);
+      unify env TPtr (typ_atom env a); t
   | Prim _ -> 
       failwith "typing-efsm: bad arity"
 

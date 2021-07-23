@@ -43,6 +43,16 @@ let rec print_ty fmt ty =
   | TVar{contents=Ty t} -> 
       print_ty fmt t
 
+let is_type_variable {contents=t} =
+  match t with
+  | V _ -> true
+  | _ -> false
+
+let as_type_variable {contents=t} =
+  match t with
+  | V n -> n
+  | _ -> invalid_arg "Types.as_type_variable"
+
 let print_env fmt env = 
   Tenv.iter (fun x t -> Format.fprintf fmt "(%s, %a);" x print_ty t) env
 
@@ -57,6 +67,11 @@ let rec canon t =
   | TVar{contents=Ty t} -> 
       canon t
   | TVar{contents=V n} -> 
-      failwith "Typing_efsm.canon: uninstantiated type variable"
+      Printf.printf "info: [Typing_efsm.canon] uninstantiated type variable detected\n";
+      t
+      (* failwith "Typing_efsm.canon: uninstantiated type variable"*)
+  | TCamlRef t -> TCamlRef (canon t)
+  | TCamlArray t -> TCamlArray (canon t)
+  | TArray{ty;size} -> TArray{ty=canon ty;size=canon size}
   | t -> t
 

@@ -62,8 +62,10 @@ run:
 	echo "-- ./compile $(OPT) $(FILE)\n" > $(FILE).vhdl
 	./compile $(OPT) $(FILE) >> $(FILE).vhdl
 
-clean:
+clean:	clean-cc
 	rm -f `find . -name "*.cmo"`
 	rm -f `find . -name "*.cmi"`
 	rm -f $(EXE)
+	
+clean-cc:
 	rm -f gen/*.vhd gen/*.c gen/*.h gen/*.ml gen/*.mli
