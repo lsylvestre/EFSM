@@ -64,7 +64,10 @@ let c_atom fmt a =
          | Int n -> 
             fprintf fmt "to_signed(%d,31)" n
          | EmptyList -> 
-            pp_print_text fmt "X\"00000000\"")
+            pp_print_text 
+              fmt 
+              "X\"00000001\"" (* constant 0 as immediate OCaml value *)
+          )
     | Prim p -> 
      (match p with
       | (Binop p,[a1;a2]) ->
