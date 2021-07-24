@@ -31,9 +31,9 @@ let rec contain_seq a =
         List.exists (fun (_,a) -> contain_seq a) ts) 
       bs || contain_seq a
   | Let (bs,a) -> 
-      (* on pourrer optimiser: 
+      (* on pourrait optimiser: 
          en supposant que les Let(bs,a) ont déjà été traité 
-         et ne contiennent dont aucune sequence *)
+         et ne contiennent dont aucune séquence *)
       List.exists (fun (_,a) -> contain_seq a) bs || contain_seq a
 
 let csm_mk_let bs a =
@@ -45,7 +45,7 @@ let rec c_exp e =
   if is_atom e then CSM.Return (exp_to_atom e) else
   match e with
   | Var _ | Const _ -> assert false (* is an atom *)
-  | (RefAccess _ | ArrayAccess _|ArrayLength _ | ListHd _ | ListTl _) -> assert false (* already encoded *)
+  | CamlPrim _ -> assert false (* already encoded *)
   | Prim (c,es) ->
       c_exp 
       @@

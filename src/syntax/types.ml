@@ -5,6 +5,7 @@ type ty =
 | TStd_logic 
 | TBool 
 | TInt
+| TUnit
 | TSize of int
 | TArray of {ty:ty ; size:ty}   (*  (elements type * size)  *)
 | TCamlRef of ty
@@ -25,6 +26,8 @@ let rec print_ty fmt ty =
       pp_print_text fmt "bool"
   | TInt -> 
       pp_print_text fmt "int"
+  | TUnit -> 
+      pp_print_text fmt "unit"
   | TArray {ty ; size} -> 
       fprintf fmt "nativ_array(%a,%a)"
          print_ty ty 
@@ -67,15 +70,12 @@ let newvar =
   fun () -> TVar (ref (V (!c)))
 
 let rec canon t = 
-  (* Si des variables de types ne sont pas instantiées dans [t],
-     une exception est lancée *)
   match t with 
   | TVar{contents=Ty t} -> 
       canon t
   | TVar{contents=V n} -> 
-      Printf.printf "info: [Typing_efsm.canon] uninstantiated type variable detected\n";
+      (* Printf.printf "info: [Typing_efsm.canon] uninstantiated type variable detected\n"; *)
       t
-      (* failwith "Typing_efsm.canon: uninstantiated type variable"*)
   | TCamlRef t -> TCamlRef (canon t)
   | TCamlArray t -> TCamlArray (canon t)
   | TCamlList t -> TCamlList (canon t)

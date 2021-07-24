@@ -1,8 +1,8 @@
 open Ast
 open Format
 
-let allow_heap_access = ref true
-(* todo: forcer à '1' rdy dès le reset *)
+let allow_heap_access = ref false
+let allow_heap_assign = ref false
 
 let c_binop fmt p = 
   let open Atom in
@@ -49,6 +49,11 @@ let parenthesized ~paren fmt cb =
   cb (); 
   if paren then fprintf fmt ")" 
 
+let is_ptr t = 
+  match Types.canon t with
+  | TCamlArray _ | TCamlRef _ | TCamlList _ | TPtr | TVar _ -> true
+  | _ (* immediate value *) -> false
+
 let c_atom fmt a = 
   let open Atom in
   let rec pp_atom ~paren fmt a =
@@ -63,6 +68,8 @@ let c_atom fmt a =
             fprintf fmt "%b" b
          | Int n -> 
             fprintf fmt "to_signed(%d,31)" n
+         | Unit -> 
+            pp_print_text fmt "UNIT_VALUE"
          | EmptyList -> 
             pp_print_text 
               fmt 
@@ -91,18 +98,20 @@ let c_atom fmt a =
      | (TyAnnot _,[a]) -> 
          pp_atom ~paren fmt a 
      | (FromCaml t,[a]) -> 
-          (match Types.canon t with
-           | TCamlArray _ | TCamlRef _ | TCamlList _ | TPtr | TVar _ -> 
-              pp_atom ~paren fmt a 
-           | _ (* immediate value *) ->  
-              fprintf fmt "signed(%a(31 downto 1))" (pp_atom ~paren:true) a)
+          if is_ptr t 
+          then pp_atom ~paren fmt a 
+          else fprintf fmt "signed(%a(31 downto 1))" (pp_atom ~paren:true) a
+     | (ToCaml t,[a]) -> 
+          if is_ptr t 
+          then pp_atom ~paren fmt a 
+          else fprintf fmt "std_logic_vector(%a)& \"1\"" (pp_atom ~paren:true) a
      | (Call s,args) ->
          (match s,args with
-         | ("%ref_contents" | "%list_head"),[heap_base;addr] ->
+         | ("%ref_contents" | "%list_head" | "%ref_addr"),[heap_base;addr] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)))"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr    (* !!! que faire si addr n'est pas une variable *)
-         | "%array_get",[heap_base;addr;ofs] ->
+         | ("%array_get" | "%array_addr_ofs"),[heap_base;addr;ofs] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + RESIZE(unsigned(%a(19 downto 0)) * 4,32))"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
@@ -118,7 +127,7 @@ let c_atom fmt a =
          fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + 4)"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr
-         | "%magic_ptr",[a] -> 
+         | ("%magic_ptr"|"%ptr_magic"),[a] -> 
             pp_atom ~paren:true fmt a
          | _ -> assert false)
      | _ -> assert false) (* ill-formed primitive application *)
@@ -167,6 +176,7 @@ let rec default_value fmt ty =
   | TStd_logic -> pp_print_text fmt "-"
   | TBool -> pp_print_text fmt "false"
   | TInt -> pp_print_text fmt "to_signed(0,31)"
+  | TUnit -> pp_print_text fmt "UNIT_VALUE"
   | TArray{ty;_} -> 
       fprintf fmt "(others => %a)" default_value ty 
   | TPtr | TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _ -> 
@@ -201,6 +211,7 @@ let rec c_ty fmt ty =
   match ty with
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
+  | TUnit -> pp_print_text fmt "unit"
   | TInt -> fprintf fmt "@[<h>caml_int@]"
   | (TCamlRef _ | TCamlArray _ | TCamlList _ | TPtr | TVar _) -> 
        pp_print_text fmt "caml_value"
@@ -212,7 +223,7 @@ let rec c_ty fmt ty =
 
 (* à mettre en argument de c_prog *)
 let outputs_initial_values = 
-  Atom.[("rdy",Std_logic One);("avm_rm_read",Std_logic Zero)]
+  Atom.[("rdy",Std_logic Zero);("avm_rm_read",Std_logic Zero)]
 
 
 let c_prog ?(reset="reset") ?(clock="clk") 

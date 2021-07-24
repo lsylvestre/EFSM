@@ -3,6 +3,7 @@
 
 type token = 
   | ZERO
+  | WILDCARD
   | UMINUS
   | TIMES
   | THEN

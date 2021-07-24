@@ -21,7 +21,4 @@ par x_i = if true then c[e_i]
 
 -- goto calculé
 
--- bibliothèque standard
-  ~> c'est plus pratique d'avoir des fichiers auxiliaires différents pour chaque CC
-
 -- to fix : problème de portée : les paramètres des états sont inférés comme des sorties s'ils ne sont jamais lus.

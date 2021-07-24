@@ -30,6 +30,8 @@ module PP_atom = struct
         fprintf fmt "%d" n
     | EmptyList ->
         pp_print_text fmt "[]"
+    | Unit ->
+        pp_print_text fmt "()"
 
   let pp_binop fmt p =
     pp_print_text fmt @@
@@ -90,6 +92,7 @@ module PP_atom = struct
     | Prim(ArrayMake n,[a]) ->
        fprintf fmt "(%a)^%d"
           (pp_atom_aux ~paren:false) a n
+    | Prim((FromCaml _| ToCaml _),_) -> failwith "todo pprint_ast"
     | _ -> ill_formed_constant_application ();
            assert false
   in
@@ -280,20 +283,31 @@ let rec print_exp fmt e =
        print_exp e1
        print_exp e2
        print_exp e3
-  | RefAccess e -> 
-      fprintf fmt "!(%a)"
-        print_exp e
-  | ArrayAccess{arr;idx} -> 
-      fprintf fmt "(%a).(%a)"
-        print_exp arr
-        print_exp idx
-  | ArrayLength e ->
-      fprintf fmt "array_length (%a)"
-        print_exp e
-  | ListHd e ->
-      fprintf fmt "list_hd (%a)"
-        print_exp e
-  | ListTl e ->
-      fprintf fmt "list_tl (%a)"
-        print_exp e
+  | CamlPrim e -> 
+    (match e with
+    | RefAccess e -> 
+        fprintf fmt "!(%a)"
+          print_exp e
+    | RefAssign {r;e} -> 
+        fprintf fmt "(%a) := (%a)"
+          print_exp r
+          print_exp e
+    | ArrayAccess{arr;idx} -> 
+        fprintf fmt "(%a).(%a)"
+          print_exp arr
+          print_exp idx
+    | ArrayAssign{arr;idx;e} -> 
+        fprintf fmt "(%a).(%a) <- (%a)"
+          print_exp arr
+          print_exp idx
+          print_exp e
+    | ArrayLength e ->
+        fprintf fmt "array_length (%a)"
+          print_exp e
+    | ListHd e ->
+        fprintf fmt "list_hd (%a)"
+          print_exp e
+    | ListTl e ->
+        fprintf fmt "list_tl (%a)"
+          print_exp e)
 end

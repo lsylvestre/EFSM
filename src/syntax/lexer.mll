@@ -4,7 +4,7 @@
 
 }
 
-let ident = ['a'-'z''A'-'Z''_'] ['a'-'z''A'-'Z''0'-'9''_''A'-'Z'''']*
+let ident = ['a'-'z''A'-'Z'] ['a'-'z''A'-'Z''0'-'9''_''A'-'Z'''']*
 
 rule token = parse
 | '('               { LPAREN }
@@ -60,6 +60,7 @@ rule token = parse
 | "tl"              { LIST_TL }
 | "list"            { LIST }
 | ident as lxm      { IDENT lxm }
+| ['_']             { WILDCARD }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }
 | [' ' '\t']        { token lexbuf }
 | "(*"              { comment lexbuf }

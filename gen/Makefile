@@ -1,14 +1,18 @@
-all:
-	for i in *vhd; do (cp $$i ../rtl/$$i); done
-	cat bindings_ext.c >> ../c/platform-bindings.c
-	cat platform_ext.c >> ../c/platform.c
-	cat platform_ext.h >> ../c/platform.h
-	cat simul_ext.c >> ../c/simul.c
-	cat simul_ext.h >> ../c/simul.h
-	cat platform_ext.ml >> ../ml/platform.ml
-	cat platform_ext.mli >> ../ml/platform.mli
 
+all:
+	mkdir -p ../rtl/misc
+	for f in rtl/*.vhd rtl/misc/*.vhd; do (cp -R $${f} "../$${f}"); done
+	for c in c/*platform-bindings.c ;  do (cat $${c} >> ../c/platform-bindings.c); done
+	for c in c/*platform.c;            do (cat $${c} >> ../c/platform.c); done
+	for c in c/*platform.h;            do (cat $${c} >> ../c/platform.h); done
+	for c in c/*simul.c;               do (cat $${c} >> ../c/simul.c); done
+	for c in c/*simul.h;               do (cat $${c} >> ../c/simul.h); done
+	for c in ml/*platform.ml;          do (cat $${c} >> ../ml/platform.ml); done
+	for c in ml/*platform.mli;         do (cat $${c} >> ../ml/platform.mli); done
+
+clean:
+	rm -f  rtl/*.vhd rtl/misc/*.vhd c/*.c  c/*.h  ml/*.ml  ml/*mli
 
 check:
-	ghdl -a -fno-color-diagnostics *_misc.vhd *.vhd;
+	ghdl -a -fno-color-diagnostics rtl/misc/*.vhd rtl/*.vhd;
 	rm -f *.o *.cf

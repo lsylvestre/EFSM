@@ -34,6 +34,7 @@ module Atom = struct
   | Bool of bool 
   | Int of int
   | EmptyList
+  | Unit
 
   type op =   
   | Binop of binop
@@ -43,7 +44,8 @@ module Atom = struct
   | TyAnnot of Types.ty
   | Call of string       (* usage interne, pas exposé dans le parser *)
   | FromCaml of Types.ty  (* usage interne, pas exposé dans le parser *)
-
+  | ToCaml of Types.ty
+  
   type atom = 
   | Var of ident 
   | Const of const
@@ -160,8 +162,12 @@ module LI = struct
   | LetRec of (ident * ident list * exp) list * exp
   | App of ident * exp list
   | If of exp * exp * exp
+  | CamlPrim of interop
+  and interop =
   | RefAccess of exp
+  | RefAssign of  { r:exp ; e:exp }
   | ArrayAccess of { arr:exp ; idx:exp }
+  | ArrayAssign of { arr:exp ; idx:exp ; e:exp}
   | ArrayLength of exp
   | ListHd of exp
   | ListTl of exp

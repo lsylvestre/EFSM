@@ -7,6 +7,7 @@
 %token LPAREN RPAREN COMMA PIPE_PIPE EQ COLONEQ SEMICOL
 %token PIPE LEFT_ARROW AUTOMATON END
 %token LET REC AND IN IF THEN ELSE RETURN
+%token WILDCARD
 %token <string> IDENT
 %token <bool> BOOL_LIT 
 %token <int> INT_LIT
@@ -20,6 +21,7 @@
 %token DOT RIGHT_ARROW ARRAY_LENGTH
 %token LIST LIST_HD LIST_TL
 
+%left COLONEQ
 %left PIPE_PIPE
 %left LAND
 %left LT LE GT GE NEQ EQ
@@ -74,7 +76,7 @@ automaton_psm:
 | LET REC bs=separated_nonempty_list(AND,psi_psm) IN a=automaton_psm { PSM.LetRec (bs,a) }
 
 psi_psm:
-| q=state LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ ts=transition_psm* { (q,xs,ts) }
+| q=state LPAREN xs=separated_list(COMMA,ident) RPAREN EQ ts=transition_psm* { (q,xs,ts) }
 
 transition_psm:
 | IF g=atom THEN a=automaton_psm { (g,a) }
@@ -92,14 +94,14 @@ automaton_csm:
 | LET bs=separated_nonempty_list(AND,binding_csm) IN a=automaton_csm { CSM.Let (bs,a) }
 
 psi_csm:
-| q=state LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ ts=transition_csm* { (q,xs,ts) }
+| q=state LPAREN xs=separated_list(COMMA,ident) RPAREN EQ ts=transition_csm* { (q,xs,ts) }
 
 transition_csm:
 | a=automaton_csm { (mk_bool' true,a) }
 | IF e=atom THEN a=automaton_csm { (e,a) }
 
 binding_csm:
-| x=IDENT EQ a=automaton_csm { (x,a) }
+| x=ident EQ a=automaton_csm { (x,a) }
 
 /*  ******************* LI ******************* */
 li:
@@ -110,60 +112,72 @@ exp_li:
 | e=exp_li_without_paren   { e }
 
 exp_li_without_paren:
-| x=IDENT                  { LI.Var x }
-| c=const(exp_li)           { LI.Const c }
+| x=ident                  { LI.Var x }
+| c=const(exp_li)          { LI.Const c }
 | p=prim(exp_li)           { LI.Prim p }
-/*| x=IDENT COLONEQ e=exp_li SEMICOL e2=exp_li 
+/*| x=ident COLONEQ e=exp_li SEMICOL e2=exp_li 
                            { LI.Seq(Inst.Assign [(x,e)],e2) }*/
 | s=inst(exp_li) SEMICOL e=exp_li  { LI.Seq(s,e) }
 | LET bs=separated_nonempty_list(AND,binding_li) 
   IN e=exp_li              { LI.Let (bs,e) }
 | LET REC bs=separated_nonempty_list(AND,fun_binding_li) 
   IN e=exp_li              { LI.LetRec (bs,e) }
-| x=IDENT LPAREN 
+| x=ident LPAREN 
   e1=exp_li COMMA es=separated_nonempty_list(COMMA,exp_li) RPAREN      
-                             { LI.App(x,e1::es) }
-| x=IDENT LPAREN e=exp_li RPAREN 
-                             { LI.App(x,[e]) }
-| x=IDENT LPAREN RPAREN     { LI.App(x,[]) }
+                            { LI.App(x,e1::es) }
+| x=ident LPAREN e=exp_li RPAREN 
+                            { LI.App(x,[e]) }
+| x=ident LPAREN RPAREN     { LI.App(x,[]) }
 | IF e1=exp_li
   THEN e2=exp_li
-  ELSE e3=exp_li           { LI.If(e1,e2,e3) } 
-| BANG e=exp_li            { LI.RefAccess e }
+  ELSE e3=exp_li            { LI.If(e1,e2,e3) } 
+| e=caml_prim               { LI.CamlPrim e }
+
+caml_prim:
+| BANG e=exp_li             { LI.RefAccess e }
+| RPAREN r=exp_li LPAREN COLONEQ e=exp_li 
+                            { LI.RefAssign{r;e} }
+| x=ident COLONEQ e=exp_li  { LI.RefAssign{r=Var x;e} } 
 | arr=exp_li DOT 
-  LPAREN idx=exp_li RPAREN { LI.ArrayAccess{arr;idx} }
-| ARRAY_LENGTH e=exp_li    { LI.ArrayLength e }
-| LIST_HD e=exp_li         { LI.ListHd e }
-| LIST_TL e=exp_li         { LI.ListTl e }
+  LPAREN idx=exp_li RPAREN  { LI.ArrayAccess{arr;idx} }
+| arr=exp_li DOT 
+  LPAREN idx=exp_li RPAREN 
+  RIGHT_ARROW e=exp_li 
+                            { LI.ArrayAssign{arr;idx;e} }
+| ARRAY_LENGTH e=exp_li     { LI.ArrayLength e }
+| LIST_HD e=exp_li          { LI.ListHd e }
+| LIST_TL e=exp_li          { LI.ListTl e }
+
 
 /* array, map, reduce */
 
 binding_li:
-| x=IDENT EQ e=exp_li      { (x,e) }
+| x=ident EQ e=exp_li      { (x,e) }
 
 fun_binding_li:
-| f=IDENT LPAREN xs=separated_list(COMMA,IDENT) RPAREN EQ e=exp_li { (f,xs,e) }
+| f=ident LPAREN xs=separated_list(COMMA,ident) RPAREN EQ e=exp_li { (f,xs,e) }
 
 
 /*  ******************* Atoms and instructions ******************* */
 
 state:
-| x=IDENT { x }
+| x=ident { x }
 
 const(E):
 | b=BOOL_LIT               { mk_bool b }
 | v=std_logic              { mk_std_logic v }
 | n=INT_LIT                { mk_int n }       
+| LPAREN RPAREN            { Unit }
 | LBRACKET RBRACKET        { EmptyList }
 
 prim(E): 
 | a1=E c=binop a2=E             { mk_binop c a1 a2 }
 | NOT a=E                       { mk_unop Atom.Not a  }
 | MINUS a=E %prec UMINUS        { mk_unop Atom.Uminus a }
-| x=IDENT LBRACKET a=E RBRACKET { mk_array_get x a }
+| x=ident LBRACKET a=E RBRACKET { mk_array_get x a }
 | e=E HAT n=INT_LIT             { mk_array_make n e }
 | LPAREN e=E COL t=ty RPAREN    { mk_ty_annot e t }
-| CALL x=IDENT 
+| CALL x=ident 
   LPAREN args= separated_nonempty_list(COMMA,E) RPAREN 
                                 { mk_call x args }
 
@@ -172,7 +186,7 @@ std_logic:
 | ONE  { Atom.One }
 
 atom:
-| x=IDENT                { Atom.Var x }
+| x=ident                { Atom.Var x }
 | c=const(atom)          { mk_const c }
 | p=prim(atom)           { mk_prim p }
 | LPAREN a=atom RPAREN   { a }
@@ -197,8 +211,8 @@ inst(E):
   { Inst.Assign (List.combine xs es) }
 
 lvalue(E):
-| x=IDENT                        { (x,None) }
-| x=IDENT LBRACKET a=E RBRACKET  { (x,Some a) }
+| x=ident                        { (x,None) }
+| x=ident LBRACKET a=E RBRACKET  { (x,Some a) }
 
 ty:
 | LPAREN ty=ty RPAREN                  { ty }
@@ -211,5 +225,8 @@ ty:
 | ty=ty LIST                           { TCamlList ty }
 | ty=ty ARRAY LPAREN n=INT_LIT RPAREN  { TArray{ty;size=TSize n} }
 
+ident:
+| x=IDENT { x }
+| WILDCARD { Gensym.gensym "wildcard" }
 
 

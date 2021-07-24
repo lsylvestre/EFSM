@@ -68,4 +68,4 @@ clean:	clean-cc
 	rm -f $(EXE)
 	
 clean-cc:
-	rm -f gen/*.vhd gen/*.c gen/*.h gen/*.ml gen/*.mli
+	(cd gen; make clean)

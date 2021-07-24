@@ -1,0 +1,25 @@
+let rec quicksort (a,i0,j0) = 
+ if i0 <= j0 then
+    let pivot = j0-1 in
+    let rec aux (i,j) =
+      if i < j then
+        let rec aux2(i) =
+          if a.(i) < pivot then aux2(i+1) 
+          else let rec aux3(j) =
+                 if a.(j) < pivot then aux3(j-1) 
+                 else if i < j then
+                        let v = a.(i) in
+                        let ignore = a.(i) <- a.(j) in
+                        let ignore = a.(j) <- v in
+                        aux(i+1,j-1)
+                      else ()
+               in aux3(j)
+        in aux2(i)
+      else
+        let ignore = quicksort(a,i0,i) in
+        quicksort(a,j,j0-i)
+    in aux(i0,j0)
+else ()
+in
+quicksort(arr,0,array_length arr) 
+

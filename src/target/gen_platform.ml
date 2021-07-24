@@ -8,7 +8,7 @@ let mk_package name fmt =
   fprintf fmt "use ieee.std_logic_1164.all;@,";
   fprintf fmt "use ieee.numeric_std.all;@,@,";
   fprintf fmt "@[<v 2>package misc_%s is@," name;
-  
+  fprintf fmt "type UNIT is (UNIT_VALUE);@,";
   fprintf fmt "subtype caml_value is std_logic_vector(31 downto 0);@,";
   fprintf fmt "subtype caml_ptr is std_logic_vector(31 downto 0);@,";
   fprintf fmt "subtype caml_int is signed(30 downto 0);@,";
@@ -47,10 +47,12 @@ let conversion_from_vect ty fmt x =
   match ty with
   | TStd_logic -> 
       fprintf fmt "%s(0)" x
-  | TBool -> 
+  | TBool ->
       fprintf fmt "(%s(0)) = '1'" x
-  | TInt -> 
+  | TInt ->
       fprintf fmt "signed(%s(30 downto 0))" x
+  | TUnit ->
+      pp_print_text fmt "UNIT_VALUE"
   | (TCamlRef _ | TCamlArray _ | TCamlList _) -> 
       pp_print_text fmt x
   | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
@@ -61,13 +63,15 @@ let set_result dst ty fmt x =
   let open Types in
   match ty with
   | TStd_logic -> 
-      fprintf fmt "%s <= \"0000000000000000000000000000000\" & %s" dst x
+      fprintf fmt "%s <= X\"0000000\" & \"000\" & %s" dst x
   | TBool -> 
       fprintf fmt "@[<v 2>if %s then@," x;
-      fprintf fmt "%s <= \"00000000000000000000000000000001\";@]@," dst;
-      fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@,end if" dst;
+      fprintf fmt "%s <= X\"00000001\";@]@," dst;
+      fprintf fmt "@[<v 2>else@,%s <= X\"00000000\";@]@,end if" dst;
   | TInt -> 
       fprintf fmt "%s <= \"0\" & std_logic_vector(%s)" dst x
+  | TUnit -> 
+      fprintf fmt "%s <= X\"00000001\"" dst
   | (TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _) -> fprintf fmt "%s <= %s" dst x
   | TPtr -> assert false
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
@@ -93,7 +97,7 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
   List.iteri (fun i (x,t) ->
     fprintf fmt "-- %s  : %s register@," (bin_of_int (i+1)) x) regs;
 
-  (if !allow_heap_access then 
+  (if !allow_heap_access || !allow_heap_assign then 
     fprintf fmt "-- %s  : caml_heap_base register@," (bin_of_int (len+1)));
 
   fprintf fmt "@]@,avs_s0_read        : in  std_logic                     := '0';@,";
@@ -108,9 +112,17 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
     fprintf fmt "avm_rm_address   : out std_logic_vector(31 downto 0);@,";                 
     fprintf fmt "avm_rm_read      : out std_logic;@,";                                    
     fprintf fmt "avm_rm_readdata  : in std_logic_vector(31 downto 0);@,";
-    fprintf fmt "avm_rm_waitrequest : in std_logic;@,";
-    fprintf fmt "avm_rm_response: in std_logic_vector(1 downto 0)";
+    fprintf fmt "avm_rm_waitrequest : in std_logic@,";
   end;
+
+  if !allow_heap_assign then begin
+    fprintf fmt ";@,@,-- WRITE MASTER INTERFACE@,";
+    fprintf fmt "avm_wm_address   : out std_logic_vector(31 downto 0);@,";                 
+    fprintf fmt "avm_wm_write      : out std_logic;@,";                                    
+    fprintf fmt "avm_wm_writedata  : out std_logic_vector(31 downto 0);@,";
+    fprintf fmt "avm_wm_waitrequest : in std_logic@,";
+  end;
+
   fprintf fmt ");@]@]@,";
   fprintf fmt "end entity;@,@,";
   fprintf fmt "@[<v 2>architecture rtl of avs_%s is@," name;
@@ -121,12 +133,22 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
   fprintf fmt "signal start : in std_logic;@,";
   fprintf fmt "signal rdy : out std_logic;@,";
   
-  if !allow_heap_access then begin
+  if !allow_heap_access || !allow_heap_assign then begin
     fprintf fmt "signal caml_heap_base   : in std_logic_vector(31 downto 0);@,";
+  end;
+
+  if !allow_heap_access then begin
     fprintf fmt "signal avm_rm_address   : out std_logic_vector(31 downto 0);@,";
     fprintf fmt "signal avm_rm_read      : out std_logic;@,";                                    
     fprintf fmt "signal avm_rm_readdata  : in std_logic_vector(31 downto 0);@,";
     fprintf fmt "signal avm_rm_waitrequest : in std_logic;@,";
+  end;
+
+  if !allow_heap_assign then begin
+    fprintf fmt "signal avm_wm_address   : out std_logic_vector(31 downto 0);@,";
+    fprintf fmt "signal avm_wm_write      : out std_logic;@,";                                    
+    fprintf fmt "signal avm_wm_writedata  : out std_logic_vector(31 downto 0);@,";
+    fprintf fmt "signal avm_wm_waitrequest : in std_logic;@,";
   end;
 
   List.iter (fun (x,t) -> fprintf fmt "signal %s: in %a;@," x c_ty t) envi';
@@ -144,7 +166,7 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
   fprintf fmt "type write_state_t is (Idle, StartAsserted);@,";
   fprintf fmt "signal write_state: write_state_t;@]@,";
   
-  if !allow_heap_access then 
+  if !allow_heap_access || !allow_heap_assign then 
     fprintf fmt "signal caml_heap_base : std_logic_vector(31 downto 0);@,";
 
   fprintf fmt "@[<v 2>begin@,";
@@ -185,7 +207,7 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
    fprintf fmt "@[<v 2>when \"%s\" => %s <= %a;@]@,"
        (bin_of_int (i+1)) x (conversion_from_vect ty) "avs_s0_writedata") envi';
   
-  (if !allow_heap_access then
+  (if !allow_heap_access || !allow_heap_assign then
     fprintf fmt "@[<v 2>when \"%s\" => caml_heap_base <= avs_s0_writedata;@]@," 
              (bin_of_int (len+1)));
 
@@ -200,7 +222,7 @@ let gen_cc fmt (envi,envo,_) (envi',envo',_) name =
   fprintf fmt "@[<v 2>if rising_edge(clock_clk) then@,";
   fprintf fmt "@[<v 2>if avs_s0_read = '1' then@,";
   fprintf fmt "@[<v 2>case avs_s0_address is@,";
-  fprintf fmt "when \"%s\" => @[<v>avs_s0_readdata <= \"0000000000000000000000000000000\" & rdy;@," (bin_of_int 0);
+  fprintf fmt "when \"%s\" => @[<v>avs_s0_readdata <= X\"0000000\" & \"000\" & rdy;@," (bin_of_int 0);
   fprintf fmt "-- when reading CSR, bit 0 is rdy@]@,";
   
   List.iteri (fun i (x,ty) -> 
@@ -220,6 +242,7 @@ let t_val ty fmt x =
   | TStd_logic
   | TBool -> fprintf fmt "Bool_val(%s)" x
   | TInt -> fprintf fmt "Int_val(%s)" x
+  | TUnit -> fprintf fmt "Bool_val(%s)" x (* I use Bool_val to construct unit value *)
   | (TCamlRef _ | TCamlArray _ | TCamlList _) -> pp_print_text fmt x
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!?"
   | TPtr -> assert false
@@ -261,7 +284,8 @@ let t_C ty =
   match ty with
   | TStd_logic
   | TBool
-  | TInt -> "int"
+  | TInt
+  | TUnit -> "int"
   | (TCamlRef _ | TCamlArray _ | TCamlList _) -> "uint32_t"
   | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
@@ -282,7 +306,7 @@ let mk_platform_c fmt (envi,envo,_) name =
   List.iteri (fun i (x,_) -> 
     fprintf fmt "#define %s_CC_%s %d@," upName (up x) (i+1)) regs;
   
-  if !allow_heap_access then
+  if !allow_heap_access || !allow_heap_assign then
     fprintf fmt "#define %s_CC_CAML_HEAP_BASE %d@," upName (List.length regs + 1);
 
   fprintf fmt "@,@[<v 2>int nios_%s_cc(" (low name);
@@ -292,16 +316,21 @@ let mk_platform_c fmt (envi,envo,_) name =
         (fun fmt (x,t) -> fprintf fmt "%s %s" (t_C t) (low x)) fmt envi;
   fprintf fmt "@]){@,";
   fprintf fmt "alt_u32 result;@,";
-  fprintf fmt "@[<v 2>while (!IORD(%s_CC_BASE, %s_CC_CTL))@," upName upName;
-  fprintf fmt "; // Get RDY status by reading control/status reg@]@,";  
+  (* fprintf fmt "@[<v 2>while (!IORD(%s_CC_BASE, %s_CC_CTL))@," upName upName;
+  fprintf fmt "; // Get RDY status by reading control/status reg@]@,";  *)
   fprintf fmt "// Write arguments@,";
   List.iter (fun (x,_) -> 
     fprintf fmt "IOWR(%s_CC_BASE, %s_CC_%s, %s);@," upName upName (up x) (low x)) envi;  
   
-  if !allow_heap_access then 
+  if !allow_heap_access || !allow_heap_assign then 
     fprintf fmt "IOWR(%s_CC_BASE, %s_CC_CAML_HEAP_BASE, ocaml_ram_heap);@," upName upName;
 
   fprintf fmt "@,IOWR(%s_CC_BASE, %s_CC_CTL, 1);" upName upName;
+
+  fprintf fmt "@,IOWR(%s_CC_BASE, %s_CC_CTL, 1); // to be improved" upName upName; 
+  (* pas très heureux, besoin d'écrire deux fois start, 
+     sinon à l'instruction suivante, le rdy est pottentiiellement toujours à 0 *)
+
   fprintf fmt "@,@[<v 2>while ( (result = IORD(%s_CC_BASE, %s_CC_CTL)) == 0 ); // Wait for rdy@," upName upName;
   fprintf fmt "result = IORD(%s_CC_BASE, %s_CC_RESULT); // Read result@," upName upName;
   fprintf fmt "return result;@]";
@@ -329,7 +358,7 @@ let mk_simul_c fmt (envi,envo,_) name =
     ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
     (fun fmt _ -> fprintf fmt "%s" "%d") fmt envi;
   
-  if !allow_heap_access then 
+  if !allow_heap_access || !allow_heap_assign then 
     fprintf fmt ", caml_heap_base";      (* todo : cf. O2B list2 : printf("nios_list_reduce_cc(%x)\n", (unsigned int)v); *)
 
   pp_print_text fmt ")\\n\"";
@@ -346,6 +375,7 @@ let rec t_ML ty =
   | TStd_logic
   | TBool -> "bool"
   | TInt -> "int"
+  | TUnit -> "unit"
   | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
   | TCamlArray t -> "(" ^ t_ML t ^ ") array"
   | TCamlList t -> "(" ^ t_ML t ^ ") list"
@@ -386,19 +416,23 @@ let mk_platform_mli fmt (envi,envo,_) name =
 
 let mk_vhdl_with_cc vars name efsm =
   let open Filename in
+  let (^^) = Filename.concat in
   let open Format in
   let open Efsm2vhdl in
-  let dst = "gen" in
-  let desc_name = concat dst (name ^".vhd")
-  and cc_name = concat dst (name ^"_cc.vhd")
-  and misc_name = concat dst (name ^ "_misc.vhd")
-  and bindings_name = concat dst "bindings_ext.c"
-  and platform_c_name = concat dst "platform_ext.c"
-  and platform_h_name = concat dst "platform_ext.h"
-  and simul_c_name = concat dst "simul_ext.c"
-  and simul_h_name = concat dst "simul_ext.h" 
-  and platform_ml_name = concat dst "platform_ext.ml"
-  and platform_mli_name = concat dst "platform_ext.mli"
+  let dst = "gen"
+  and rtl_dir = "rtl"
+  and c_dir   = "c" 
+  and ml_dir  = "ml" in
+  let desc_name         = dst ^^ rtl_dir ^^  (name ^".vhd")
+  and cc_name           = dst ^^ rtl_dir ^^  (name ^"_cc.vhd")
+  and misc_name         = dst ^^ rtl_dir ^^ "misc" ^^ (name ^ "_misc.vhd")
+  and bindings_name     = dst ^^ c_dir   ^^  (name ^ "_platform-bindings.c")
+  and platform_c_name   = dst ^^ c_dir   ^^  (name ^ "_platform.c")
+  and platform_h_name   = dst ^^ c_dir   ^^  (name ^ "_platform.h")
+  and simul_c_name      = dst ^^ c_dir   ^^  (name ^ "_simul.c")
+  and simul_h_name      = dst ^^ c_dir   ^^  (name ^ "_simul.h")
+  and platform_ml_name  = dst ^^ ml_dir  ^^  (name ^ "_platform.ml")
+  and platform_mli_name = dst ^^ ml_dir  ^^  (name ^ "_platform.mli")
   in
   let fmt = std_formatter in
   let desc_oc = open_out desc_name
@@ -419,11 +453,23 @@ let mk_vhdl_with_cc vars name efsm =
   mk_package name fmt;
   pp_print_flush fmt ();
 
-
   let vars' = 
     let (envi,envo,l) = vars in
-    let f = List.filter (fun (x,t) -> match x with "start" | "rdy" | "avm_rm_read" | "avm_rm_waitrequest" | "avm_rm_readdata" | "avm_rm_address" | "caml_heap_base" -> false 
-                         | _ -> true) in
+    let f = List.filter (fun (x,t) -> 
+      match x with 
+      | "start" 
+      | "rdy" 
+      | "avm_rm_read" 
+      | "avm_rm_waitrequest" 
+      | "avm_rm_readdata" 
+      | "avm_rm_address"
+      | "avm_wm_writedata" 
+      | "avm_wm_address"
+      | "avm_wm_write"
+      | "avm_wm_waitrequest"
+      | "caml_heap_base"
+        -> false 
+      | _ -> true) in
     (f envi,f envo,l)
   in
 
@@ -473,4 +519,4 @@ let mk_vhdl_with_cc vars name efsm =
   close_out platform_ml_oc;
   close_out platform_mli_oc;
 
-  Printf.printf "info: platform generated in then folder gen/.\n";
+  Printf.printf "info: platform generated in folder gen/.\n"
