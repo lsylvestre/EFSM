@@ -219,9 +219,10 @@ let typ_prog p =
   List.iter (typ_automaton [] env) p;
   let (rvs,wvs,vl) = v_prog p in
   let f vs = 
+    List.rev @@
     Vs.fold (fun x acc ->
                let ty = canon @@ Tenv.find env x in
-               (* [ty] est un type en forme normale. *)
+               (* [ty] est un type en forme normale (canon) *)
               (x,ty)::acc)
       vs [] 
   in

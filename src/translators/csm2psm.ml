@@ -74,7 +74,7 @@ let c_inst theta = function
            ((x',o'),a')) bs)
 
 let (===) a1 a2 = mk_binop' Atom.Eq a1 a2
-let (=/=) a1 a2 = mk_binop' Atom.Neq a1 a2
+let (=/=) a1 a2 = mk_unop' Atom.Not @@ mk_binop' Atom.Eq a1 a2
 let (!!) = mk_var
 
 

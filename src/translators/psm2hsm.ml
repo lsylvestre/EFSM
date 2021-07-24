@@ -33,7 +33,7 @@ let merge s s' =
   let open Inst in
   match s,s' with
   | Assign l, Assign l' -> 
-      if Variables.(Vs.disjoint (wv_inst s) (wv_inst s')) 
+      if Variables.(Vs.disjoint (wrv_inst s) (wrv_inst s')) 
       then Some (Assign (l@l'))
       else None
 
@@ -48,14 +48,11 @@ let rec c_automaton env theta = function
   | PSM.Seq(s,a) ->
       let s1 = c_inst theta s in
       let (s2,a') = c_automaton env theta a in
-      (*  (* ici essaie t'on de fusionner s1 et s2 ? que faire s'il y a des doublons, etc. 
-             Il faut également bien penser aux tableaux *)
-
        (match merge s1 s2 with
       | Some s -> (s,a')
-      | None ->*)
+      | None -> (* revoir le schéma papier *)
         let q = Gensym.gensym "seq" in
-        (s1, HSM.LetRec ([(q,[(mk_bool' true, s2,a')])],HSM.State q))
+        (s1, HSM.LetRec ([(q,[(mk_bool' true, s2,a')])],HSM.State q)))
   | PSM.LetRec (selects, a) -> (* revoir le schéma papier *)
       
       let l_theta = List.map (fun (_,xs,_) -> 

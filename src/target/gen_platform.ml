@@ -53,10 +53,10 @@ let conversion_from_vect ty fmt x =
       fprintf fmt "signed(%s(30 downto 0))" x
   | TUnit ->
       pp_print_text fmt "UNIT_VALUE"
-  | (TCamlRef _ | TCamlArray _ | TCamlList _) -> 
+  | (TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _) -> 
       pp_print_text fmt x
   | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
-  | (TSize _ | TVar _) -> assert false
+  | TSize _ -> assert false
   | TPtr -> assert false
 
 let set_result dst ty fmt x =
@@ -243,10 +243,10 @@ let t_val ty fmt x =
   | TBool -> fprintf fmt "Bool_val(%s)" x
   | TInt -> fprintf fmt "Int_val(%s)" x
   | TUnit -> fprintf fmt "Bool_val(%s)" x (* I use Bool_val to construct unit value *)
-  | (TCamlRef _ | TCamlArray _ | TCamlList _) -> pp_print_text fmt x
+  | (TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _) -> pp_print_text fmt x
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!?"
   | TPtr -> assert false
-  | (TSize _ | TVar _) -> assert false
+  | TSize _ -> assert false
 
 let val_t ty fmt cb =
   let open Types in
@@ -286,10 +286,10 @@ let t_C ty =
   | TBool
   | TInt
   | TUnit -> "int"
-  | (TCamlRef _ | TCamlArray _ | TCamlList _) -> "uint32_t"
+  | (TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _) -> "uint32_t"
   | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
-  | (TSize _ | TVar _) -> assert false
+  | TSize _ -> assert false
 
 let up = String.uppercase_ascii
 let low = String.lowercase_ascii
@@ -519,4 +519,4 @@ let mk_vhdl_with_cc vars name efsm =
   close_out platform_ml_oc;
   close_out platform_mli_oc;
 
-  Printf.printf "info: platform generated in folder gen/.\n"
+  Printf.printf "info: platform  \"%s\"  generated in folder gen/.\n" name

@@ -1,0 +1,8 @@
+let rec sum(l) =
+  let rec aux(l,acc) =
+    if l = [] then acc
+    else aux(tl l, acc + hd l) 
+  in
+  aux(l,0)
+in
+sum(dataa)

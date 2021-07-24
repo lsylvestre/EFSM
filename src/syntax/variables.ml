@@ -33,3 +33,6 @@ let rv_inst = function
 let wv_inst = function
 | Inst.Assign bs -> 
     accum (fun ((x,_),_) -> Vs.singleton x) bs
+
+let wrv_inst s = 
+  Vs.union (wv_inst s) (rv_inst s)

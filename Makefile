@@ -69,3 +69,6 @@ clean:	clean-cc
 	
 clean-cc:
 	(cd gen; make clean)
+
+check-cc:
+	(cd gen; make check)

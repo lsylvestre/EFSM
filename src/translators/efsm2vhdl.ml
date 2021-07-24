@@ -108,23 +108,23 @@ let c_atom fmt a =
      | (Call s,args) ->
          (match s,args with
          | ("%ref_contents" | "%list_head" | "%ref_addr"),[heap_base;addr] ->
-              fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)))"
+              fprintf fmt "@[<hov>std_logic_vector(unsigned(%a) +@,unsigned(%a(19 downto 0)))@]"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr    (* !!! que faire si addr n'est pas une variable *)
-         | ("%array_get" | "%array_addr_ofs"),[heap_base;addr;ofs] ->
-              fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + RESIZE(unsigned(%a(19 downto 0)) * 4,32))"
+         | ("%array_get" | "%array_addr_ofs"),[heap_base;addr;ofs] ->  (* au lieu de "* 4", utiliser [& "00"] *)
+              fprintf fmt "@[<hov>std_logic_vector(unsigned(%a) +@,unsigned(%a(19 downto 0)) +@,RESIZE(unsigned(%a(19 downto 0)) * 4,32))@]"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
                  (pp_atom ~paren:true) ofs
          | "%array_hd",[heap_base;addr] ->
-              fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) - 4)"
+              fprintf fmt "@[<hov>std_logic_vector(unsigned(%a) +@,unsigned(%a(19 downto 0)) - 4)@]"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
          | "%wosize_hd",[heap_base;addr] ->
               fprintf fmt "signed(\"00000000000\"&%a(21 downto 2))" (* "std_logic_vector(%a)(21 downto 2)) ...??" *)
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
          | "%list_tail",[heap_base;addr]  -> 
-         fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + 4)"
+         fprintf fmt "@[<hov>std_logic_vector(unsigned(%a) +@,unsigned(%a(19 downto 0)) + 4)@]"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr
          | ("%magic_ptr"|"%ptr_magic"),[a] -> 
@@ -139,6 +139,7 @@ let c_next_state state_var fmt q =
 
 let c_assign fmt s = 
   match s with
+  | Inst.Assign [] -> pp_print_text fmt ""
   | Inst.Assign bs ->
       pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt "@,")
@@ -148,26 +149,54 @@ let c_assign fmt s =
                        match o with 
                        | None -> ()
                        | Some a -> fprintf fmt "(%a)" c_atom a) o
-                  c_atom a) fmt bs
+                  c_atom a) fmt bs;
+      fprintf fmt "@,"
+
+let c_transition2_aux state_var fmt q a s q' s' q'' =
+  fprintf fmt "@,@[<v 2>when %a =>@," c_state q;
+  fprintf fmt "@[<v 2>if %a then@,%a%a@]@,"
+        c_atom a
+        c_assign s
+        (c_next_state state_var) q';
+  fprintf fmt "@[<v 2>else@,%a%a@]@,"
+        c_assign s'
+        (c_next_state state_var) q'';
+  fprintf fmt "end if;@]@,"
 
 let c_transitions state_var fmt (q,ts) =
   match ts with 
-  | [] -> fprintf fmt "@,when %a => NULL;" c_state q;
-  | (a,s,q')::ts' -> 
-    fprintf fmt "@,@[<v 2>when %a =>@," c_state q;
-    
-    fprintf fmt "@[<v 2>if %a then@,%a@,%a@]@,"
-        c_atom a 
-        c_assign s
-        (c_next_state state_var) q';
+  | [] -> 
+      fprintf fmt "@,when %a => NULL;@," c_state q
+  
+  (* <--optimisations *)
+  | [(Atom.(Const (Bool true)),s,q')] ->
+      fprintf fmt "@,@[<v 2>when %a =>@,%a%a@]@,"
+          c_state q
+          c_assign s
+          (c_next_state state_var) q'
 
-    List.iter (fun (a,s,q') -> 
-      fprintf fmt "@[<v 2>elsif %a then@,%a@,%a@]@,"
-        c_atom a 
-        c_assign s
-        (c_next_state state_var) q'
-    ) ts';
-    fprintf fmt "end if;@]"  (* else NULL; *)
+| [(a,s,q');(Atom.Prim(Unop Not,[a']),s',q'')] when a = a' ->
+    c_transition2_aux state_var fmt q a s q' s' q''
+
+| [(Atom.Prim(Unop Not,[a']),s',q'');(a,s,q')] when a = a' ->
+    c_transition2_aux state_var fmt q a s q' s' q''
+  (* optimisations--> *)
+
+  | (a,s,q')::ts' -> 
+      fprintf fmt "@,@[<v 2>when %a =>@," c_state q;
+    
+      fprintf fmt "@[<v 2>if %a then@,%a@,%a@]@,"
+          c_atom a 
+          c_assign s
+          (c_next_state state_var) q';
+
+      List.iter (fun (a,s,q') -> 
+        fprintf fmt "@[<v 2>elsif %a then@,%a%a@]@,"
+          c_atom a 
+          c_assign s
+          (c_next_state state_var) q'
+      ) ts';
+      fprintf fmt "end if;@]@,"  (* else NULL; *)
 
 
 let rec default_value fmt ty =
@@ -180,7 +209,7 @@ let rec default_value fmt ty =
   | TArray{ty;_} -> 
       fprintf fmt "(others => %a)" default_value ty 
   | TPtr | TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _ -> 
-      pp_print_text fmt "\"00000000000000000000000000000000\""
+      pp_print_text fmt "X\"00000000\""
   | TSize n -> assert false
   (* | TVar _ -> assert false *)
 
@@ -262,7 +291,7 @@ let c_prog ?(reset="reset") ?(clock="clk")
     fprintf fmt "@,type %s_T is (@[<hov>" sv;
     pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt ", @,") c_state fmt qs;
     fprintf fmt ");@]@,";
-    fprintf fmt "signal %s : %s_T;" sv sv;
+    fprintf fmt "signal %s : %s_T;@," sv sv;
   )
     state_vars automata;
   fprintf fmt "@]@,";

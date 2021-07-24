@@ -6,8 +6,8 @@ let flag_print_ast = ref false
 
 type lang = EFSM | HSM | PSM | CSM | LI
 
-let flag_lang = ref EFSM
-let flag_gen_cc = ref false
+let flag_lang = ref LI
+let flag_gen_cc = ref true
 
 
 let () =
@@ -25,11 +25,12 @@ let () =
       add_file "Usage:\n  ./compile files" 
 
 let mk_vhdl ?(with_cc=false) filename efsm =
+
   let vars = Typing_efsm.typ_prog efsm in
   let entity_name = Filename.(remove_extension @@ basename filename) in
-  let open Efsm2vhdl in
+
   match !flag_gen_cc,!flag_lang with 
-  | false,_ -> c_prog ~name:entity_name vars Format.std_formatter efsm
+  | false,_ -> Efsm2vhdl.c_prog ~name:entity_name vars Format.std_formatter efsm
   | true,(CSM|LI) -> 
       Gen_platform.mk_vhdl_with_cc vars entity_name efsm
   | true,_ -> 
@@ -38,6 +39,10 @@ let mk_vhdl ?(with_cc=false) filename efsm =
 
 let parse filename = 
   let ic = open_in filename in
+
+  Efsm2vhdl.allow_heap_access := false;
+  Efsm2vhdl.allow_heap_assign := false;
+
   try 
     let lexbuf = Lexing.from_channel ic in
     (match !flag_lang with
