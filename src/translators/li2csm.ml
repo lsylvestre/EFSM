@@ -45,7 +45,7 @@ let rec c_exp e =
   if is_atom e then CSM.Return (exp_to_atom e) else
   match e with
   | Var _ | Const _ -> assert false (* is an atom *)
-  | (RefAccess _ | ArrayAccess _|ArrayLength _) -> assert false (* already encoded *)
+  | (RefAccess _ | ArrayAccess _|ArrayLength _ | ListHd _ | ListTl _) -> assert false (* already encoded *)
   | Prim (c,es) ->
       c_exp 
       @@

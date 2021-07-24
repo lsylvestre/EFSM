@@ -51,7 +51,7 @@ let conversion_from_vect ty fmt x =
       fprintf fmt "(%s(0)) = '1'" x
   | TInt -> 
       fprintf fmt "signed(%s(30 downto 0))" x
-  | (TCamlRef _ | TCamlArray _) -> 
+  | (TCamlRef _ | TCamlArray _ | TCamlList _) -> 
       pp_print_text fmt x
   | TArray _ -> failwith "todo conversion_from_vect array" (* nécessaire ? *)
   | (TSize _ | TVar _) -> assert false
@@ -68,7 +68,7 @@ let set_result dst ty fmt x =
       fprintf fmt "@[<v 2>else@,%s <= \"00000000000000000000000000000000\";@]@,end if" dst;
   | TInt -> 
       fprintf fmt "%s <= \"0\" & std_logic_vector(%s)" dst x
-  | (TCamlRef _ | TCamlArray _ | TVar _) -> fprintf fmt "%s <= %s" dst x
+  | (TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _) -> fprintf fmt "%s <= %s" dst x
   | TPtr -> assert false
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!!?"
   | TSize _ -> assert false
@@ -220,10 +220,21 @@ let t_val ty fmt x =
   | TStd_logic
   | TBool -> fprintf fmt "Bool_val(%s)" x
   | TInt -> fprintf fmt "Int_val(%s)" x
-  | (TCamlRef _ | TCamlArray _) -> pp_print_text fmt x
+  | (TCamlRef _ | TCamlArray _ | TCamlList _) -> pp_print_text fmt x
   | TArray _ -> pp_print_text fmt "TODO!!!!!!!!!!!!?"
   | TPtr -> assert false
   | (TSize _ | TVar _) -> assert false
+
+let val_t ty fmt cb =
+  let open Types in
+  fprintf fmt "return ";
+  match ty with 
+  | TInt | TBool -> (* immediate *)
+      pp_print_text fmt "Val_int(";
+      cb fmt;
+      pp_print_text fmt ")"
+  | _ -> (* already a value *) 
+      cb fmt
 
 let mk_platform_bindings fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
@@ -234,12 +245,14 @@ let mk_platform_bindings fmt (envi,envo,_) name =
         ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
         (fun fmt (x,_) -> fprintf fmt "uint32_t %s" x) fmt envi;
   fprintf fmt "@]) {@,";
-  fprintf fmt "return Val_int(nios_%s_cc(" name;
-  fprintf fmt "@[<hov>";
-  pp_print_list 
+  val_t (List.assoc "result" envo) fmt (fun fmt ->  
+    fprintf fmt "nios_%s_cc(" name;
+    fprintf fmt "@[<hov>";
+    pp_print_list 
         ~pp_sep:(fun fmt () -> fprintf fmt ",@,") 
         (fun fmt (x,ty) -> t_val ty fmt x) fmt envi; 
-  fprintf fmt "@]));";
+    fprintf fmt "@]");
+  fprintf fmt ");";
   fprintf fmt "@]@,}@,@]"
 
 
@@ -249,7 +262,7 @@ let t_C ty =
   | TStd_logic
   | TBool
   | TInt -> "int"
-  | (TCamlRef _ | TCamlArray _) -> "uint32_t"
+  | (TCamlRef _ | TCamlArray _ | TCamlList _) -> "uint32_t"
   | TPtr -> assert false
   | TArray _ -> "TODO!!!!!!!!!!!!?"
   | (TSize _ | TVar _) -> assert false
@@ -335,6 +348,7 @@ let rec t_ML ty =
   | TInt -> "int"
   | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
   | TCamlArray t -> "(" ^ t_ML t ^ ") array"
+  | TCamlList t -> "(" ^ t_ML t ^ ") list"
   | TArray{ty;_} -> t_ML ty ^ " nativ_array"
   | TVar v ->
       assert (is_type_variable v);
@@ -352,22 +366,20 @@ let rec t_ML ty =
 let mk_platform_ml fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let tres = List.assoc "result" envo in
-  fprintf fmt "@[<v>@[<v 2>module %s = struct@," (String.capitalize_ascii name);
   fprintf fmt "@[<hov>external %s : " (low name);
   List.iter (fun (x,t) -> fprintf fmt "%s:%s -> " (low x) (t_ML t)) envi;
   if envi = [] then fprintf fmt "unit -> ";
-  fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres)  (low name) "[@@noalloc]";
-  fprintf fmt "@]@,end@,@]"
+  fprintf fmt "%s = \"caml_nios_%s_cc\" %s" (t_ML tres)  (low name) "[@@noalloc]";
+  fprintf fmt "@]@."
 
 let mk_platform_mli fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let tres = List.assoc "result" envo in
-  fprintf fmt "@[<v>@[<v 2>module %s : sig@," (String.capitalize_ascii name);
   fprintf fmt "@[<hov>external %s : " (low name);
   List.iter (fun (x,t) -> fprintf fmt "%s:%s -> " (low x)  (t_ML t)) envi;
   if envi = [] then fprintf fmt "unit -> ";
-  fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres)  (low name) "[@@noalloc]";
-  fprintf fmt "@]@,end@,@]"
+  fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres) (low name) "[@@noalloc]";
+  fprintf fmt "@]@."
 
 
 
@@ -398,7 +410,7 @@ let mk_vhdl_with_cc vars name efsm =
   and simul_c_oc = open_out simul_c_name
   and simul_h_oc = open_out simul_h_name 
   and platform_ml_oc = open_out platform_ml_name
-  and platform_mli_oc = open_out platform_mli_name 
+  and platform_mli_oc = open_out platform_mli_name
   in 
   set_formatter_out_channel desc_oc;
   c_prog ~name vars fmt efsm;

@@ -24,6 +24,9 @@ type token =
   | MINUS
   | LT
   | LPAREN
+  | LIST_TL
+  | LIST_HD
+  | LIST
   | LET
   | LEFT_ARROW
   | LE

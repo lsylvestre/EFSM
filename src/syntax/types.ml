@@ -9,6 +9,7 @@ type ty =
 | TArray of {ty:ty ; size:ty}   (*  (elements type * size)  *)
 | TCamlRef of ty
 | TCamlArray of ty
+| TCamlList of ty
 | TPtr               (* pointeur *)
 | TVar of tvar ref
 and tvar = V of int | Ty of ty
@@ -31,10 +32,13 @@ let rec print_ty fmt ty =
   | TSize(n) -> 
       fprintf fmt "%d" n
   | TCamlRef ty ->
-     fprintf fmt "ref(%a)"
+     fprintf fmt "(%a) ref"
          print_ty ty
   | TCamlArray ty ->
-     fprintf fmt "array(%a)"
+     fprintf fmt "(%a) array"
+         print_ty ty
+  | TCamlList ty ->
+     fprintf fmt "(%a) list"
          print_ty ty
   | TPtr ->
      pp_print_text fmt "ptr"
@@ -54,7 +58,9 @@ let as_type_variable {contents=t} =
   | _ -> invalid_arg "Types.as_type_variable"
 
 let print_env fmt env = 
-  Tenv.iter (fun x t -> Format.fprintf fmt "(%s, %a);" x print_ty t) env
+  Format.fprintf fmt "\n\n[";
+  Tenv.iter (fun x t -> Format.fprintf fmt "(%s, %a);" x print_ty t) env;
+  Format.fprintf fmt "]\n"
 
 let newvar = 
   let c = ref 0 in
@@ -72,6 +78,7 @@ let rec canon t =
       (* failwith "Typing_efsm.canon: uninstantiated type variable"*)
   | TCamlRef t -> TCamlRef (canon t)
   | TCamlArray t -> TCamlArray (canon t)
+  | TCamlList t -> TCamlList (canon t)
   | TArray{ty;size} -> TArray{ty=canon ty;size=canon size}
   | t -> t
 

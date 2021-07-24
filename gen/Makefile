@@ -7,3 +7,8 @@ all:
 	cat simul_ext.h >> ../c/simul.h
 	cat platform_ext.ml >> ../ml/platform.ml
 	cat platform_ext.mli >> ../ml/platform.mli
+
+
+check:
+	ghdl -a -fno-color-diagnostics *_misc.vhd *.vhd;
+	rm -f *.o *.cf

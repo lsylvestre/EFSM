@@ -28,7 +28,8 @@ module PP_atom = struct
         fprintf fmt "%b" b
     | Int n ->
         fprintf fmt "%d" n
-
+    | EmptyList ->
+        pp_print_text fmt "[]"
 
   let pp_binop fmt p =
     pp_print_text fmt @@
@@ -288,5 +289,11 @@ let rec print_exp fmt e =
         print_exp idx
   | ArrayLength e ->
       fprintf fmt "array_length (%a)"
+        print_exp e
+  | ListHd e ->
+      fprintf fmt "list_hd (%a)"
+        print_exp e
+  | ListTl e ->
+      fprintf fmt "list_tl (%a)"
         print_exp e
 end

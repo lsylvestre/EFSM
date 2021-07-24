@@ -18,6 +18,7 @@
 %token BANG
 %token CALL REF PTR
 %token DOT RIGHT_ARROW ARRAY_LENGTH
+%token LIST LIST_HD LIST_TL
 
 %left PIPE_PIPE
 %left LAND
@@ -25,7 +26,8 @@
 %left PLUS MINUS
 %left TIMES
 %nonassoc NOT UMINUS
-%nonassoc BANG
+%nonassoc BANG 
+%nonassoc ARRAY_LENGTH LIST_HD LIST_TL 
 
 %start <Ast.EFSM.prog> efsm
 %start <Ast.HSM.prog> hsm
@@ -131,6 +133,9 @@ exp_li_without_paren:
 | arr=exp_li DOT 
   LPAREN idx=exp_li RPAREN { LI.ArrayAccess{arr;idx} }
 | ARRAY_LENGTH e=exp_li    { LI.ArrayLength e }
+| LIST_HD e=exp_li         { LI.ListHd e }
+| LIST_TL e=exp_li         { LI.ListTl e }
+
 /* array, map, reduce */
 
 binding_li:
@@ -149,6 +154,7 @@ const(E):
 | b=BOOL_LIT               { mk_bool b }
 | v=std_logic              { mk_std_logic v }
 | n=INT_LIT                { mk_int n }       
+| LBRACKET RBRACKET        { EmptyList }
 
 prim(E): 
 | a1=E c=binop a2=E             { mk_binop c a1 a2 }
@@ -160,6 +166,7 @@ prim(E):
 | CALL x=IDENT 
   LPAREN args= separated_nonempty_list(COMMA,E) RPAREN 
                                 { mk_call x args }
+
 std_logic:
 | ZERO { Atom.Zero }
 | ONE  { Atom.One }
@@ -199,8 +206,10 @@ ty:
 | INT                                  { TInt }
 | BOOL                                 { TBool }
 | PTR                                  { TPtr }
+| ty=ty REF                            { TCamlRef ty }
 | ty=ty ARRAY                          { TCamlArray ty }
+| ty=ty LIST                           { TCamlList ty }
 | ty=ty ARRAY LPAREN n=INT_LIT RPAREN  { TArray{ty;size=TSize n} }
-| ty=ty REF { TCamlRef ty }
+
 
 

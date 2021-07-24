@@ -46,9 +46,9 @@ let rec unify env t1 t2 = match t1,t2 with
 | TArray{ty=t;size=s},TArray{ty=t';size=s'} -> 
     unify env t t';
     unify env s s'
-| TCamlRef t, TCamlRef t' -> 
-    unify env t t'
-| TCamlArray t, TCamlArray t' -> 
+| TCamlRef t, TCamlRef t'
+| TCamlArray t, TCamlArray t' 
+| TCamlList t, TCamlList t' -> 
     unify env t t'
 | (TSize n, TSize m) when n = m -> () 
 | TVar {contents=V n},TVar ({contents=V m} as v) -> 
@@ -85,6 +85,7 @@ let sort_array_type_decl () =
 (* ************************* *)
 
 let rec typ_atom env a =
+  print_env Format.std_formatter env;
   let open Atom in
   match a with
   | Var x -> 
@@ -98,7 +99,10 @@ let rec typ_atom env a =
       (match c with
       | Std_logic _ -> TStd_logic
       | Bool _ -> TBool 
-      | Int _ -> TInt)
+      | Int _ -> TInt
+      | EmptyList -> 
+         let v = newvar() in 
+         TCamlList v)
   | Prim (Binop c,[a1;a2]) -> 
       (match c with
       | (Add|Sub|Mul) ->
@@ -151,16 +155,16 @@ let rec typ_atom env a =
      let ts = List.map (typ_atom env) args in 
      let v = newvar() in
      (match s with
-     | "ptr" -> List.iter2 (unify env) ts [TCamlRef v]; TPtr
-     | "val" -> List.iter2 (unify env) ts [TPtr]; TInt
      | "%ref_contents" -> List.iter2 (unify env) ts [TPtr;TCamlRef v]; TPtr
      | "%array_get" -> List.iter2 (unify env) ts [TPtr;TCamlArray v;TInt]; TPtr
      | "%array_hd" -> List.iter2 (unify env) ts [TPtr;TCamlArray v]; TPtr
      | "%wosize_hd" -> List.iter2 (unify env) ts [TPtr;TPtr]; TInt
+     | "%list_head" -> List.iter2 (unify env) ts [TPtr;TCamlList v]; TPtr
+     | "%list_tail" -> List.iter2 (unify env) ts [TPtr;TCamlList v]; TPtr
+     | "%magic_ptr" -> List.iter2 (unify env) ts [TPtr]; v
      | _ ->  failwith "typing-efsm: todo")
-  | Prim(FromCaml t,[h;a]) -> 
-      unify env TPtr (typ_atom env h);
-      unify env TPtr (typ_atom env a); t
+  | Prim(FromCaml t,[a]) -> 
+      unify env t (typ_atom env a); t
   | Prim _ -> 
       failwith "typing-efsm: bad arity"
 

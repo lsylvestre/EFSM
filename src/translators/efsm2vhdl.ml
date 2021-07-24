@@ -62,7 +62,9 @@ let c_atom fmt a =
          | Bool b -> 
             fprintf fmt "%b" b
          | Int n -> 
-            fprintf fmt "to_signed(%d,31)" n)
+            fprintf fmt "to_signed(%d,31)" n
+         | EmptyList -> 
+            pp_print_text fmt "X\"00000000\"")
     | Prim p -> 
      (match p with
       | (Binop p,[a1;a2]) ->
@@ -85,15 +87,15 @@ let c_atom fmt a =
          fprintf fmt "(others => %a)" (pp_atom ~paren:false) init
      | (TyAnnot _,[a]) -> 
          pp_atom ~paren fmt a 
-     | (FromCaml t,[_;a]) -> 
-          (match t with
-           | TCamlArray _ | TCamlRef _ -> 
+     | (FromCaml t,[a]) -> 
+          (match Types.canon t with
+           | TCamlArray _ | TCamlRef _ | TCamlList _ | TPtr | TVar _ -> 
               pp_atom ~paren fmt a 
            | _ (* immediate value *) ->  
               fprintf fmt "signed(%a(31 downto 1))" (pp_atom ~paren:true) a)
      | (Call s,args) ->
          (match s,args with
-         | "%ref_contents",[heap_base;addr] ->
+         | ("%ref_contents" | "%list_head"),[heap_base;addr] ->
               fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)))"
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr    (* !!! que faire si addr n'est pas une variable *)
@@ -107,9 +109,14 @@ let c_atom fmt a =
                  (pp_atom ~paren:true) heap_base
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
          | "%wosize_hd",[heap_base;addr] ->
-              (* fprintf fmt "SHIFT_RIGHT((unsigned(%a) + unsigned(%a(19 downto 0))),2)" *)
-              fprintf fmt "signed(\"00000000000\"&std_logic_vector(%a)(21 downto 2))"
+              fprintf fmt "signed(\"00000000000\"&%a(21 downto 2))" (* "std_logic_vector(%a)(21 downto 2)) ...??" *)
                  (pp_atom ~paren:true) addr       (* !!! idem ... *)
+         | "%list_tail",[heap_base;addr]  -> 
+         fprintf fmt "std_logic_vector(unsigned(%a) + unsigned(%a(19 downto 0)) + 4)"
+                 (pp_atom ~paren:true) heap_base
+                 (pp_atom ~paren:true) addr
+         | "%magic_ptr",[a] -> 
+            pp_atom ~paren:true fmt a
          | _ -> assert false)
      | _ -> assert false) (* ill-formed primitive application *)
   in
@@ -159,9 +166,10 @@ let rec default_value fmt ty =
   | TInt -> pp_print_text fmt "to_signed(0,31)"
   | TArray{ty;_} -> 
       fprintf fmt "(others => %a)" default_value ty 
-  | TPtr | TCamlRef _ | TCamlArray _ -> pp_print_text fmt "\"00000000000000000000000000000000\""
+  | TPtr | TCamlRef _ | TCamlArray _ | TCamlList _ | TVar _ -> 
+      pp_print_text fmt "\"00000000000000000000000000000000\""
   | TSize n -> assert false
-  | TVar _ -> assert false
+  (* | TVar _ -> assert false *)
 
 
 let c_automaton ~reset ~clock state_var locals fmt (EFSM.Automaton l) =
@@ -191,7 +199,7 @@ let rec c_ty fmt ty =
   | TStd_logic -> pp_print_text fmt "std_logic"
   | TBool -> pp_print_text fmt "boolean"
   | TInt -> fprintf fmt "@[<h>caml_int@]"
-  | (TCamlRef _ | TCamlArray _ | TPtr | TVar _) -> 
+  | (TCamlRef _ | TCamlArray _ | TCamlList _ | TPtr | TVar _) -> 
        pp_print_text fmt "caml_value"
   | TArray{ty;size} -> (* 
     pp_print_text fmt "todo_array" *)

@@ -33,6 +33,7 @@ module Atom = struct
   | Std_logic of std_logic
   | Bool of bool 
   | Int of int
+  | EmptyList
 
   type op =   
   | Binop of binop
@@ -161,7 +162,10 @@ module LI = struct
   | If of exp * exp * exp
   | RefAccess of exp
   | ArrayAccess of { arr:exp ; idx:exp }
-  | ArrayLength of exp 
+  | ArrayLength of exp
+  | ListHd of exp
+  | ListTl of exp
+
   (* | Case of exp * (const * exp) list
   | Map of {x : ident ; trt : prog ; arr : prog}
   | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog} *)

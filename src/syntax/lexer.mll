@@ -56,6 +56,9 @@ rule token = parse
 | "<-"              { RIGHT_ARROW }
 | [':']             { COL }
 | "array_length"    { ARRAY_LENGTH }
+| "hd"              { LIST_HD }
+| "tl"              { LIST_TL }
+| "list"            { LIST }
 | ident as lxm      { IDENT lxm }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }
 | [' ' '\t']        { token lexbuf }
