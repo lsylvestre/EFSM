@@ -177,3 +177,10 @@ module LI = struct
   | Fold of {acc : ident ; x : ident ; trt : prog ; init : prog ; arr : prog} *)
   
 end
+
+module PLATFORM = struct
+  
+  type prog = func list * ocaml_prog
+  and func = (ident * ident list * LI.exp)
+  and ocaml_prog = string
+end

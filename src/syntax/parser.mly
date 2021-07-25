@@ -20,6 +20,8 @@
 %token CALL REF PTR
 %token DOT RIGHT_ARROW ARRAY_LENGTH
 %token LIST LIST_HD LIST_TL
+%token CIRCUIT
+%token <string> QUOTE
 
 %left COLONEQ
 %left PIPE_PIPE
@@ -36,6 +38,8 @@
 %start <Ast.PSM.prog> psm
 %start <Ast.CSM.prog> csm
 %start <Ast.LI.prog> li
+%start <Ast.PLATFORM.prog> platform
+
 %%
 
 efsm:
@@ -229,4 +233,15 @@ ident:
 | x=IDENT { x }
 | WILDCARD { Gensym.gensym "wildcard" }
 
+
+/*  ******************* apps ******************* */
+
+platform:
+fs=circuit+ s=QUOTE  { (fs,s)}
+
+circuit:
+| CIRCUIT x=IDENT 
+  LPAREN xs=separated_list(COMMA,ident) RPAREN
+  EQ e=exp_li
+                  { (x,xs,e) }
 

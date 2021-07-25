@@ -59,10 +59,12 @@ rule token = parse
 | "hd"              { LIST_HD }
 | "tl"              { LIST_TL }
 | "list"            { LIST }
+| "circuit"         { CIRCUIT }
 | ident as lxm      { IDENT lxm }
 | ['_']             { WILDCARD }
 | ['\n' ]           { (Lexing.new_line lexbuf) ; (token lexbuf) }
 | [' ' '\t']        { token lexbuf }
+| ";;" (( _ * ) as lxm) eof { QUOTE(lxm) }
 | "(*"              { comment lexbuf }
 | eof               { EOF }
 | _  as lxm         { failwith (Printf.sprintf "Unexpected character: %c"  lxm) }

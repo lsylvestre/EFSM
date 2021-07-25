@@ -15,6 +15,7 @@ type token =
   | REF
   | REC
   | RBRACKET
+  | QUOTE of (string)
   | PTR
   | PLUS
   | PIPE_PIPE
@@ -49,6 +50,7 @@ type token =
   | COMMA
   | COLONEQ
   | COL
+  | CIRCUIT
   | CALL
   | BOOL_LIT of (bool)
   | BOOL
@@ -65,6 +67,8 @@ exception Error
 (* The monolithic API. *)
 
 val psm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.PSM.prog)
+
+val platform: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.PLATFORM.prog)
 
 val li: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.LI.prog)
 

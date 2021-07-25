@@ -24,7 +24,9 @@ OBJS=src/misc.cmo\
 	 src/translators/li2csm.cmo\
 	 src/dsl/inline.cmo\
 	 src/dsl/caml_interop.cmo\
+	 src/target/gen_hw_tcl.cmo\
 	 src/target/gen_platform.cmo\
+	 src/sem/sem_efsm.cmo\
 	 src/main.cmo
 
 SRCS=`find src -name "*.ml*"`

@@ -1,5 +1,11 @@
-src/dsl/caml_interop.cmo :
-src/dsl/caml_interop.cmx :
+src/dsl/caml_interop.cmo : \
+    src/syntax/types.cmo \
+    src/translators/efsm2vhdl.cmo \
+    src/syntax/ast.cmo
+src/dsl/caml_interop.cmx : \
+    src/syntax/types.cmx \
+    src/translators/efsm2vhdl.cmx \
+    src/syntax/ast.cmx
 src/dsl/inline.cmo : \
     src/syntax/ast.cmo
 src/dsl/inline.cmx : \
@@ -14,7 +20,8 @@ src/main.cmo : \
     src/translators/hsm2efsm.cmo \
     src/target/gen_platform.cmo \
     src/translators/efsm2vhdl.cmo \
-    src/translators/csm2psm.cmo
+    src/translators/csm2psm.cmo \
+    src/dsl/caml_interop.cmo
 src/main.cmx : \
     src/typing/typing_efsm.cmx \
     src/translators/psm2hsm.cmx \
@@ -25,9 +32,14 @@ src/main.cmx : \
     src/translators/hsm2efsm.cmx \
     src/target/gen_platform.cmx \
     src/translators/efsm2vhdl.cmx \
-    src/translators/csm2psm.cmx
+    src/translators/csm2psm.cmx \
+    src/dsl/caml_interop.cmx
 src/misc.cmo :
 src/misc.cmx :
+src/sem/sem_efsm.cmo : \
+    src/syntax/ast.cmo
+src/sem/sem_efsm.cmx : \
+    src/syntax/ast.cmx
 src/syntax/ast.cmo : \
     src/syntax/types.cmo
 src/syntax/ast.cmx : \
@@ -47,8 +59,10 @@ src/syntax/parser.cmx : \
 src/syntax/parser.cmi : \
     src/syntax/ast.cmo
 src/syntax/pprint_ast.cmo : \
+    src/syntax/types.cmo \
     src/syntax/ast.cmo
 src/syntax/pprint_ast.cmx : \
+    src/syntax/types.cmx \
     src/syntax/ast.cmx
 src/syntax/types.cmo :
 src/syntax/types.cmx :

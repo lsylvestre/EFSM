@@ -22,3 +22,11 @@ par x_i = if true then c[e_i]
 -- goto calculé
 
 -- to fix : problème de portée : les paramètres des états sont inférés comme des sorties s'ils ne sont jamais lus.
+
+-- intégrer l'évaluateur EFSM
+
+-- avoir un "+" n-aire parallélisable plus efficacement
+
+-- if imbriqués en LI devrait être traduit en un seul selecteur t1 ... tn, et non en une succession d'état
+
+-- élimination des états et variables non utiles

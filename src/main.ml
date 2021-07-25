@@ -4,7 +4,7 @@ let add_file f = inputs := !inputs @ [f]
 
 let flag_print_ast = ref false
 
-type lang = EFSM | HSM | PSM | CSM | LI
+type lang = EFSM | HSM | PSM | CSM | LI | PLATFORM
 
 let flag_lang = ref LI
 let flag_gen_cc = ref true
@@ -19,26 +19,28 @@ let () =
       ("-hsm",  set_lang HSM,"HSM");
       ("-psm",  set_lang PSM,"PSM");
       ("-csm",  set_lang CSM,"PSM");
-      ("-li",  set_lang LI,"LI");
+      ("-li",   set_lang LI,"LI");
+      ("-app",  set_lang PLATFORM,"PLATFORM");
       ("-gen-cc", Arg.Set flag_gen_cc,
        "generates source files needed to extend an O2B platform")] 
       add_file "Usage:\n  ./compile files" 
 
-let mk_vhdl ?(with_cc=false) filename efsm =
+let mk_vhdl ?labels ?(with_cc=false) name efsm =
 
   let vars = Typing_efsm.typ_prog efsm in
-  let entity_name = Filename.(remove_extension @@ basename filename) in
 
   match !flag_gen_cc,!flag_lang with 
-  | false,_ -> Efsm2vhdl.c_prog ~name:entity_name vars Format.std_formatter efsm
-  | true,(CSM|LI) -> 
-      Gen_platform.mk_vhdl_with_cc vars entity_name efsm
+  | false,_ -> Efsm2vhdl.c_prog ~name vars Format.std_formatter efsm
+  | true,(CSM|LI|PLATFORM) -> 
+      Gen_platform.mk_vhdl_with_cc ?labels vars name efsm
   | true,_ -> 
      Printf.printf "*** warning: platform generation ignored.\n";
      Printf.printf "To generate a platform, please give a CSM description"
 
 let parse filename = 
   let ic = open_in filename in
+
+  let name = Filename.(remove_extension @@ basename filename) in
 
   Efsm2vhdl.allow_heap_access := false;
   Efsm2vhdl.allow_heap_assign := false;
@@ -48,22 +50,22 @@ let parse filename =
     (match !flag_lang with
     | EFSM ->
         Parser.efsm Lexer.token lexbuf
-        |> (mk_vhdl filename)
+        |> (mk_vhdl name)
     | HSM -> 
         Parser.hsm Lexer.token lexbuf
         |> Hsm2efsm.c_prog
-        |> (mk_vhdl filename)
+        |> (mk_vhdl name)
     | PSM ->  
         Parser.psm Lexer.token lexbuf
         |> Psm2hsm.c_prog
         |> Hsm2efsm.c_prog
-        |> (mk_vhdl filename)
+        |> (mk_vhdl name)
     | CSM -> 
         Parser.csm Lexer.token lexbuf
         |> Csm2psm.c_prog
         |> Psm2hsm.c_prog
         |> Hsm2efsm.c_prog
-        |> (mk_vhdl filename)
+        |> (mk_vhdl name)
     | LI -> 
         Parser.li Lexer.token lexbuf
         |> Caml_interop.rw
@@ -73,8 +75,34 @@ let parse filename =
         (* |> (fun p -> Pprint_ast.PP_PSM.pp_prog Format.std_formatter p; p) *)
         |> Psm2hsm.c_prog
         |> Hsm2efsm.c_prog
-        |> (mk_vhdl filename)
-  );
+        |> (mk_vhdl name)
+    | PLATFORM -> 
+        let (fs,s) = Parser.platform Lexer.token lexbuf in    
+        List.iter (fun (x,xs,e) -> 
+                    
+                    Efsm2vhdl.allow_heap_access := false;
+                    Efsm2vhdl.allow_heap_assign := false;
+
+                    e 
+                    |> Caml_interop.rw
+                    |> Inline.inlining
+                    |> Li2csm.c_prog
+                    |> Csm2psm.c_prog
+                    |> Psm2hsm.c_prog
+                    |> Hsm2efsm.c_prog
+                    |> (mk_vhdl ~labels:false x)
+        ) fs;
+        let open Format in
+        let dst = "gen" in
+        let app_name  = Filename.(concat dst (concat "apps" (name ^".ml"))) in
+        let fmt = std_formatter in
+        let app_oc = open_out app_name in
+        set_formatter_out_channel app_oc;
+        fprintf fmt "open Platform@,@,";
+        pp_print_text fmt s;
+        pp_print_flush fmt ();
+        close_out app_oc
+    );
      close_in ic
   with e -> 
     close_in ic; raise e ;;

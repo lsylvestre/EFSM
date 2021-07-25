@@ -329,12 +329,12 @@ let mk_platform_c fmt (envi,envo,_) name =
 
   fprintf fmt "@,IOWR(%s_CC_BASE, %s_CC_CTL, 1); // to be improved" upName upName; 
   (* pas très heureux, besoin d'écrire deux fois start, 
-     sinon à l'instruction suivante, le rdy est pottentiiellement toujours à 0 *)
+     sinon à l'instruction suivante, le rdy est potentiellement toujours à 0 *)
 
-  fprintf fmt "@,@[<v 2>while ( (result = IORD(%s_CC_BASE, %s_CC_CTL)) == 0 ); // Wait for rdy@," upName upName;
+  fprintf fmt "@,@,while ( (result = IORD(%s_CC_BASE, %s_CC_CTL)) == 0 ); // Wait for rdy@," upName upName;
   fprintf fmt "result = IORD(%s_CC_BASE, %s_CC_RESULT); // Read result@," upName upName;
   fprintf fmt "return result;@]";
-  fprintf fmt "@]@,}@,@]"
+  fprintf fmt "@,@]}@,@]@."
 
 let mk_platform_h fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
@@ -364,27 +364,41 @@ let mk_simul_c fmt (envi,envo,_) name =
   pp_print_text fmt ")\\n\"";
   List.iter (fun (x,t) -> fprintf fmt ", %s" (low x)) envi;
   fprintf fmt ");@]@,";
-  fprintf fmt "return 1;@,@]";
-  fprintf fmt "@]@,}@,@]"
+  fprintf fmt "return 1;@]";
+  fprintf fmt "@,@]}@,@]@."
 
 let mk_simul_h = mk_platform_h
 
-let rec t_ML ty =
+
+let rec t_ML fmt ty =
+  let parenthesized b cb = 
+    if b then (fprintf fmt "("; cb (); fprintf fmt ")") 
+    else cb ()
+  in
   let open Types in
-  match ty with
+  let rec aux ~paren = function
   | TStd_logic
-  | TBool -> "bool"
-  | TInt -> "int"
-  | TUnit -> "unit"
-  | TCamlRef t -> "(" ^ t_ML t ^ ") ref"
-  | TCamlArray t -> "(" ^ t_ML t ^ ") array"
-  | TCamlList t -> "(" ^ t_ML t ^ ") list"
-  | TArray{ty;_} -> t_ML ty ^ " nativ_array"
+  | TBool -> fprintf fmt "bool"
+  | TInt -> fprintf fmt "int"
+  | TUnit -> fprintf fmt "unit"
+  | TCamlRef t -> 
+      parenthesized paren @@ fun () -> 
+      aux ~paren:true t; fprintf fmt " ref"
+  | TCamlArray t -> 
+      parenthesized paren @@ fun () -> 
+      aux ~paren:true t; fprintf fmt " array"
+  | TCamlList t -> 
+      parenthesized paren @@ fun () -> 
+      aux ~paren:true t; fprintf fmt " list"
+  | TArray{ty;_} -> 
+      parenthesized paren @@ fun () -> 
+      aux ~paren:true ty; fprintf fmt " nativ_array"
   | TVar v ->
       assert (is_type_variable v);
-      Printf.sprintf "'a%d" (as_type_variable v)
+      fprintf fmt "'a%d" (as_type_variable v)
   | TPtr -> assert false (* todo *)
-  | TSize _ -> assert false
+  | TSize _ -> assert false in
+  aux ~paren:false ty
 
 
 (* pour le moment, on ignore les résultats multiples. 
@@ -393,34 +407,33 @@ let rec t_ML ty =
    S'il n'y a aucune entrée, l'externals est de type [unit -> t],
    i.e. on rajoute un argument unit pour obtenir un type effectivement fonctionnel. *)
 
-let mk_platform_ml fmt (envi,envo,_) name = 
+let mk_platform_ml ?(labels=true) fmt (envi,envo,_) name = 
   let envi = List.filter (fun (x,_) -> x <> "start") envi in
   let tres = List.assoc "result" envo in
   fprintf fmt "@[<hov>external %s : " (low name);
-  List.iter (fun (x,t) -> fprintf fmt "%s:%s -> " (low x) (t_ML t)) envi;
+  List.iter (fun (x,t) ->
+                if labels then (fprintf fmt "%s:" (low x));
+                fprintf fmt "%a -> " t_ML t) envi;
   if envi = [] then fprintf fmt "unit -> ";
-  fprintf fmt "%s = \"caml_nios_%s_cc\" %s" (t_ML tres)  (low name) "[@@noalloc]";
+  fprintf fmt "%a = \"caml_nios_%s_cc\" %s" t_ML tres  (low name) "[@@noalloc]";
   fprintf fmt "@]@."
 
-let mk_platform_mli fmt (envi,envo,_) name = 
-  let envi = List.filter (fun (x,_) -> x <> "start") envi in
-  let tres = List.assoc "result" envo in
-  fprintf fmt "@[<hov>external %s : " (low name);
-  List.iter (fun (x,t) -> fprintf fmt "%s:%s -> " (low x)  (t_ML t)) envi;
-  if envi = [] then fprintf fmt "unit -> ";
-  fprintf fmt "%s = \"caml_nios_%s_cc\" %s@]" (t_ML tres) (low name) "[@@noalloc]";
-  fprintf fmt "@]@."
+let mk_platform_mli = mk_platform_ml
 
 
 
 
-let mk_vhdl_with_cc vars name efsm =
+let mk_vhdl_with_cc ?labels ?xs_opt vars name efsm =
   let open Filename in
   let (^^) = Filename.concat in
   let open Format in
   let open Efsm2vhdl in
+
+  let name = String.lowercase_ascii name in
+
   let dst = "gen"
   and rtl_dir = "rtl"
+  and qsys_dir = "qsys"
   and c_dir   = "c" 
   and ml_dir  = "ml" in
   let desc_name         = dst ^^ rtl_dir ^^  (name ^".vhd")
@@ -433,6 +446,8 @@ let mk_vhdl_with_cc vars name efsm =
   and simul_h_name      = dst ^^ c_dir   ^^  (name ^ "_simul.h")
   and platform_ml_name  = dst ^^ ml_dir  ^^  (name ^ "_platform.ml")
   and platform_mli_name = dst ^^ ml_dir  ^^  (name ^ "_platform.mli")
+  and hw_tcl_name       = dst ^^ qsys_dir ^^  (name ^ "_cc_hw.tcl")
+  and ext_tcl_name      = dst ^^ qsys_dir ^^  (name ^ "_cc_ext.tcl")
   in
   let fmt = std_formatter in
   let desc_oc = open_out desc_name
@@ -445,6 +460,8 @@ let mk_vhdl_with_cc vars name efsm =
   and simul_h_oc = open_out simul_h_name 
   and platform_ml_oc = open_out platform_ml_name
   and platform_mli_oc = open_out platform_mli_name
+  and hw_tcl_oc = open_out hw_tcl_name
+  and ext_tcl_oc = open_out ext_tcl_name
   in 
   set_formatter_out_channel desc_oc;
   c_prog ~name vars fmt efsm;
@@ -453,7 +470,7 @@ let mk_vhdl_with_cc vars name efsm =
   mk_package name fmt;
   pp_print_flush fmt ();
 
-  let vars' = 
+  let vars' =
     let (envi,envo,l) = vars in
     let f = List.filter (fun (x,t) -> 
       match x with 
@@ -470,7 +487,12 @@ let mk_vhdl_with_cc vars name efsm =
       | "caml_heap_base"
         -> false 
       | _ -> true) in
-    (f envi,f envo,l)
+    let envi = f envi in
+    let envo = f envo in
+    let envi = match xs_opt with
+               | None -> envi 
+               | Some xs -> List.map (fun x -> (x,List.assoc x envi)) xs in 
+    (envi,envo,l)
   in
 
   set_formatter_out_channel cc_oc;
@@ -497,16 +519,20 @@ let mk_vhdl_with_cc vars name efsm =
   mk_simul_h fmt vars' name;
   pp_print_flush fmt ();
 
-  set_formatter_out_channel simul_h_oc;
-  mk_simul_h fmt vars' name;
-  pp_print_flush fmt ();
-
   set_formatter_out_channel platform_ml_oc;
-  mk_platform_ml fmt vars' name;
+  mk_platform_ml ?labels fmt vars' name;
   pp_print_flush fmt ();
 
   set_formatter_out_channel platform_mli_oc;
-  mk_platform_mli fmt vars' name;
+  mk_platform_mli ?labels fmt vars' name;
+  pp_print_flush fmt ();
+
+  set_formatter_out_channel hw_tcl_oc;
+  Gen_hw_tcl.mk_hw_tcl name fmt;
+  pp_print_flush fmt ();
+
+  set_formatter_out_channel ext_tcl_oc;
+  Gen_hw_tcl.mk_ext_gen_qsys name fmt;
   pp_print_flush fmt ();
   
   close_out desc_oc;
@@ -518,5 +544,7 @@ let mk_vhdl_with_cc vars name efsm =
   close_out simul_h_oc;
   close_out platform_ml_oc;
   close_out platform_mli_oc;
+  close_out hw_tcl_oc;
+  close_out ext_tcl_oc;
 
-  Printf.printf "info: platform  \"%s\"  generated in folder gen/.\n" name
+  Printf.printf "info: circuit  \"%s\"  generated in folder gen/.\n" name
