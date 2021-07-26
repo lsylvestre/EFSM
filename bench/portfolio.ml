@@ -23,7 +23,7 @@ circuit gcd(a,b) =
   in 
   aux(a,b)
 
-(* fonctions sur tableaux *)
+(* tableaux *)
 
 circuit rev_array(a) =
   let rec aux(i,j) =
@@ -43,12 +43,12 @@ circuit sum_array(a) =
   in
   aux(0,0)
 
-(* fonctions sur références *)
+(* références *)
 
 circuit inc(r) = 
   r := !r + 1
 
-(* fonctions sur références *)
+(* listes *)
 
 circuit len(l) =
   let rec aux(l,acc) =
