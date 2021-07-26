@@ -30,7 +30,7 @@ OBJS=src/misc.cmo\
 	 src/main.cmo
 
 SRCS=`find src -name "*.ml*"`
-all: $(OBJS)
+all: prepare $(OBJS)
 	$(CAMLC) $(FLAGS) $(INCLUDES) -o $(EXE) $(OBJS)
 
 .SUFFIXES: .mll .mly .ml .mli .cmo .cmi 
@@ -52,6 +52,11 @@ depend:
 
 include .depend
 
+prepare:
+	mkdir -p gen/rtl/misc
+	mkdir -p gen/c
+	mkdir -p gen/ml
+	mkdir -p gen/apps
 
 
 FILE=

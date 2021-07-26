@@ -6,7 +6,7 @@ let flag_print_ast = ref false
 
 type lang = EFSM | HSM | PSM | CSM | LI | PLATFORM
 
-let flag_lang = ref LI
+let flag_lang = ref PLATFORM
 let flag_gen_cc = ref true
 
 
