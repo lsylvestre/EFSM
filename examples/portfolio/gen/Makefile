@@ -35,7 +35,7 @@ all:
 
 	qsys-generate --synthesis=VHDL ../$(DST)/qsys/platform.qsys
 
-	(cd ../$(DST) ; make hw-build ; make omicrob ; make bsp ; make hw)
+	(cd ../$(DST) ; make hw-build ; make omicrob ; make bsp)
 
 clean:
 	rm -Rf c ml rtl
