@@ -252,7 +252,7 @@ let rec c_ty fmt ty =
 
 (* à mettre en argument de c_prog *)
 let outputs_initial_values = 
-  Atom.[("rdy",Std_logic Zero);("avm_rm_read",Std_logic Zero)]
+  Atom.[("rdy",Std_logic One)(* Zero ?*);("avm_rm_read",Std_logic Zero)]
 
 
 let c_prog ?(reset="reset") ?(clock="clk") 

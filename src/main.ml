@@ -4,10 +4,10 @@ let add_file f = inputs := !inputs @ [f]
 
 let flag_print_ast = ref false
 
-type lang = EFSM | HSM | PSM | CSM | LI | PLATFORM
+type lang = EFSM | FCF | LI | PLATFORM
 
 let flag_lang = ref PLATFORM
-let flag_gen_cc = ref true
+let flag_gen_cc = ref false
 
 
 let () =
@@ -16,9 +16,7 @@ let () =
  in
  Arg.parse [
       ("-efsm", set_lang EFSM,"EFSM");
-      ("-hsm",  set_lang HSM,"HSM");
-      ("-psm",  set_lang PSM,"PSM");
-      ("-csm",  set_lang CSM,"PSM");
+      ("-fcf",   set_lang FCF,"FCF");
       ("-li",   set_lang LI,"LI");
       ("-app",  set_lang PLATFORM,"PLATFORM");
       ("-gen-cc", Arg.Set flag_gen_cc,
@@ -31,7 +29,7 @@ let mk_vhdl ?labels ?(with_cc=false) name efsm =
 
   match !flag_gen_cc,!flag_lang with 
   | false,_ -> Efsm2vhdl.c_prog ~name vars Format.std_formatter efsm
-  | true,(CSM|LI|PLATFORM) -> 
+  | true,(FCF|LI|PLATFORM) -> 
       Gen_platform.mk_vhdl_with_cc ?labels vars name efsm
   | true,_ -> 
      Printf.printf "*** warning: platform generation ignored.\n";
@@ -51,30 +49,18 @@ let parse filename =
     | EFSM ->
         Parser.efsm Lexer.token lexbuf
         |> (mk_vhdl name)
-    | HSM -> 
-        Parser.hsm Lexer.token lexbuf
-        |> Hsm2efsm.c_prog
-        |> (mk_vhdl name)
-    | PSM ->  
-        Parser.psm Lexer.token lexbuf
-        |> Psm2hsm.c_prog
-        |> Hsm2efsm.c_prog
-        |> (mk_vhdl name)
-    | CSM -> 
-        Parser.csm Lexer.token lexbuf
-        |> Csm2psm.c_prog
-        |> Psm2hsm.c_prog
-        |> Hsm2efsm.c_prog
+    | FCF ->
+        Parser.fcf Lexer.token lexbuf
+        |> Fcf_rename.rename_prog
+        |> Fcf2efsm.compile_main
         |> (mk_vhdl name)
     | LI -> 
         Parser.li Lexer.token lexbuf
         |> Caml_interop.rw
-        |> Inline.inlining
-        |> Li2csm.c_prog
-        |> Csm2psm.c_prog
-        (* |> (fun p -> Pprint_ast.PP_PSM.pp_prog Format.std_formatter p; p) *)
-        |> Psm2hsm.c_prog
-        |> Hsm2efsm.c_prog
+        |> Distribute.distribute
+        |> Li2fcf.c_prog
+        |> Fcf_rename.rename_prog
+        |> Fcf2efsm.compile_main
         |> (mk_vhdl name)
     | PLATFORM -> 
         let (fs,s) = Parser.platform Lexer.token lexbuf in    
@@ -84,12 +70,13 @@ let parse filename =
                     Efsm2vhdl.allow_heap_assign := false;
 
                     e 
+
                     |> Caml_interop.rw
-                    |> Inline.inlining
-                    |> Li2csm.c_prog
-                    |> Csm2psm.c_prog
-                    |> Psm2hsm.c_prog
-                    |> Hsm2efsm.c_prog
+                    |> Distribute.distribute
+                    |> Li2fcf.c_prog  
+                    |> Fcf_rename.rename_prog
+                    |> Fcf2efsm.compile_main
+
                     |> (mk_vhdl ~labels:false x)
         ) fs;
         let open Format in

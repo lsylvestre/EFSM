@@ -1,3 +1,5 @@
+type ident = string
+
 module Gensym = struct
   
   let gensym =
@@ -6,8 +8,6 @@ module Gensym = struct
 end
 
 module Atom = struct
-
-  type ident = string
 
   type std_logic =  (* pas exposé dans le parser *)
   | U
@@ -73,6 +73,27 @@ let mk_call x (args:'a list) = (Call x,args)
 let mk_prim p = Prim p
 let mk_const c = Const c
 
+let mk_not a =
+  match a with 
+  | Const(Bool b) -> Const(Bool (not b)) 
+  | _ -> Prim (Unop Not,[a])
+
+let mk_fold_binop p l =
+  let op = Binop p in
+  match l with
+  | [] -> invalid_arg "mk_fold_binop"
+  | [a] -> a
+  | a::l -> List.fold_left (fun acc a -> Prim(op,[acc;a])) a l 
+
+let mk_and a a' =
+  match a,a' with 
+  | Const(Bool true),a'' 
+  | a'',Const(Bool true) 
+      -> a''
+  | (Const(Bool false) as f),_ 
+  | _,(Const(Bool false) as f) -> f
+  | _ -> Prim (Binop And,[a;a'])
+
 let mk_bool' b         = mk_const @@ mk_bool b
 let mk_int' n          = mk_const @@ mk_int n
 let mk_std_logic' v    = mk_const @@ mk_std_logic v
@@ -86,11 +107,22 @@ let mk_call' x args = mk_prim @@ mk_call x args
 
 let mk_var x = Var x 
 
+
 module Inst = struct
   type 'a inst = 
   | Assign of ('a lvalue * 'a) list
   and 'a lvalue = (ident * 'a option)
 end
+
+let mk_assign1 x ?idx e = 
+  Inst.Assign [((x,idx),e)]
+
+let mk_assign lvs args = 
+  if List.length lvs <> List.length args then invalid_arg "mk_assign";
+  let bs = List.combine lvs args in
+  Inst.Assign bs
+
+let mk_lvalue ?idx x = (x,idx)
 
 ;;
 
@@ -112,41 +144,19 @@ module EFSM = struct
     | [] -> assert false
 end
 
-module HSM = struct
+module FCF = struct
 
-  type prog = automaton list
-  and automaton = 
-  | State of state 
-  | LetRec of selector list * automaton
-  and selector = state * transition list
-  and transition = atom * atom inst * automaton
-  
-end
-
-
-module PSM = struct
-
-  type prog = automaton list
-  and automaton = 
-  | State of state * atom list
-  | Seq of atom inst * automaton
-  | LetRec of selector list * automaton
-  and selector = state * ident list * transition list
-  and transition = atom * automaton
-  
-end
-
-module CSM = struct
-
-  type prog = automaton
-  and automaton = 
-  | State of state * atom list
-  | Seq of atom inst * automaton
-  | LetRec of selector list * automaton
-  | Return of atom
-  | Let of (ident * automaton) list * automaton
-  and selector = state * ident list * transition list
-  and transition = atom * automaton
+  type prog = exp
+  and exp = 
+  | State of (state * atom list)
+  | Atom of atom
+  | If of atom * exp * exp
+  | Assign of ident * atom * exp
+  | LetAutomaton of handler list * exp
+  | Let of ident * exp * exp
+  | LetPar of (ident * exp) list * exp
+  (* | Let of (ident * automaton) list * automaton *)
+  and handler = state * ident list * exp
   
 end
 

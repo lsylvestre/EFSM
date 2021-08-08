@@ -48,14 +48,17 @@ let rec inline extra_env env e =
       if List.mem_assoc x env 
       then let es = List.map inline' es in
            App(x,es)
-      else let (xs,e') = List.assoc x extra_env in
+      else if List.mem_assoc x extra_env 
+      then let (xs,e') = List.assoc x extra_env in
            let e'' = inline (env@extra_env) [(x,(xs,Var "fake"))] e' in   (* avant, c'était : (x,([],Var "fake"))]  *)
            let es = List.map inline' es in
            LetRec([(x,xs,e'')],App(x,es))
+      else (* computed goto *)
+           App(x,es)
  | CamlPrim _ -> assert false (* already encoded *)
 
 module S = Set.Make(struct 
-                     type t = (Atom.ident * Atom.ident list * exp) 
+                     type t = (ident * ident list * exp) 
                      let compare = compare 
                     end) 
 
@@ -87,7 +90,7 @@ let rec dead_code_elim e =
      Seq(Assign(s'),dead_code_elim e)
   | CamlPrim _ -> assert false (* already encoded *)
 
-let inlining e = 
+let distribute e = 
   let e' = inline [] [] e in
   let e' = dead_code_elim e' in
   (* Pprint_ast.PP_LI.print_exp Format.std_formatter e';

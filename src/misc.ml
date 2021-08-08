@@ -1,3 +1,21 @@
+
+let list_split3 l = 
+  let rec aux l1 l2 l3 = function
+  | [] -> (l1,l2,l3)
+  | (x1,x2,x3)::l -> aux (x1::l1) (x2::l2) (x3::l3) l
+in aux [] [] [] (List.rev l)
+
+let list_map3 f l1 l2 l3 = 
+  let rec aux acc l1 l2 l3 =
+  match l1,l2,l3 with
+  | [],[],[] -> List.rev acc
+  | (x1::l1,x2::l2,x3::l3) -> 
+      let v = f x1 x2 x3 in
+      aux (v::acc) l1 l2 l3
+  | _ -> invalid_arg "list_map3"
+  in aux [] l1 l2 l3
+
+
 let rec list_iter3 f l1 l2 l3 =
   match (l1, l2,l3) with
     ([], [],[]) -> ()

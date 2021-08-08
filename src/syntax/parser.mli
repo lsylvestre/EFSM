@@ -20,6 +20,7 @@ type token =
   | PLUS
   | PIPE_PIPE
   | PIPE
+  | PAR
   | ONE
   | NOT
   | NEQ
@@ -47,10 +48,12 @@ type token =
   | END
   | ELSE
   | DOT
+  | DO
   | COMMA
   | COLONEQ
   | COL
   | CIRCUIT
+  | CAP_IDENT of (string)
   | CALL
   | BOOL_LIT of (bool)
   | BOOL
@@ -66,14 +69,10 @@ exception Error
 
 (* The monolithic API. *)
 
-val psm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.PSM.prog)
-
 val platform: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.PLATFORM.prog)
 
 val li: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.LI.prog)
 
-val hsm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.HSM.prog)
+val fcf: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.FCF.prog)
 
 val efsm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.EFSM.prog)
-
-val csm: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Ast.CSM.prog)

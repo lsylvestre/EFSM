@@ -18,11 +18,10 @@ OBJS=src/misc.cmo\
 	 src/syntax/variables.cmo\
 	 src/typing/typing_efsm.cmo\
 	 src/translators/efsm2vhdl.cmo\
-	 src/translators/hsm2efsm.cmo\
-	 src/translators/psm2hsm.cmo\
-	 src/translators/csm2psm.cmo\
-	 src/translators/li2csm.cmo\
-	 src/dsl/inline.cmo\
+	 src/translators/fcf2efsm.cmo\
+	 src/translators/fcf_rename.cmo\
+	 src/translators/li2fcf.cmo\
+	 src/dsl/distribute.cmo\
 	 src/dsl/caml_interop.cmo\
 	 src/target/gen_hw_tcl.cmo\
 	 src/target/gen_platform.cmo\

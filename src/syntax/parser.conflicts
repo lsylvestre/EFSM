@@ -1,5 +1,5 @@
 
-** Conflict (shift/reduce) in state 331.
+** Conflict (shift/reduce) in state 317.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -15,7 +15,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 331, looking ahead at HAT, reducing production
+** In state 317, looking ahead at HAT, reducing production
 ** prim(exp_li) -> NOT exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -24,7 +24,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 NOT exp_li . 
 
-** In state 331, looking ahead at HAT, shifting is permitted
+** In state 317, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 NOT exp_li 
@@ -32,7 +32,7 @@ NOT exp_li
     prim(exp_li) 
     exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 330.
+** Conflict (shift/reduce) in state 316.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -48,7 +48,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 330, looking ahead at HAT, reducing production
+** In state 316, looking ahead at HAT, reducing production
 ** prim(exp_li) -> MINUS exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -57,7 +57,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 MINUS exp_li . 
 
-** In state 330, looking ahead at HAT, shifting is permitted
+** In state 316, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 MINUS exp_li 
@@ -65,7 +65,7 @@ MINUS exp_li
       prim(exp_li) 
       exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 321.
+** Conflict (shift/reduce) in state 307.
 ** Token involved: RPAREN
 ** This state is reached from li after reading:
 
@@ -80,7 +80,7 @@ exp_li_without_paren
 inst(exp_li) SEMICOL exp_li 
 (?)
 
-** In state 321, looking ahead at RPAREN, shifting is permitted
+** In state 307, looking ahead at RPAREN, shifting is permitted
 ** because of the following sub-derivation:
 
 LPAREN loption(separated_nonempty_list(COMMA,lvalue(exp_li))) RPAREN COLONEQ LPAREN loption(separated_nonempty_list(COMMA,exp_li)) RPAREN 
@@ -90,14 +90,14 @@ LPAREN loption(separated_nonempty_list(COMMA,lvalue(exp_li))) RPAREN COLONEQ LPA
                                                                                     caml_prim 
                                                                                     . RPAREN exp_li LPAREN COLONEQ exp_li 
 
-** In state 321, looking ahead at RPAREN, reducing production
+** In state 307, looking ahead at RPAREN, reducing production
 ** loption(separated_nonempty_list(COMMA,exp_li)) ->
 ** is permitted because of the following sub-derivation:
 
 LPAREN loption(separated_nonempty_list(COMMA,lvalue(exp_li))) RPAREN COLONEQ LPAREN loption(separated_nonempty_list(COMMA,exp_li)) RPAREN // lookahead token appears
                                                                                     . 
 
-** Conflict (shift/reduce) in state 308.
+** Conflict (shift/reduce) in state 294.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -112,7 +112,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 308, looking ahead at HAT, reducing production
+** In state 294, looking ahead at HAT, reducing production
 ** caml_prim -> LIST_TL exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -122,7 +122,7 @@ exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
 LIST_TL exp_li . 
 
-** In state 308, looking ahead at HAT, shifting is permitted
+** In state 294, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
@@ -131,7 +131,7 @@ LIST_TL exp_li
         prim(exp_li) 
         exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 307.
+** Conflict (shift/reduce) in state 293.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -146,7 +146,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 307, looking ahead at HAT, reducing production
+** In state 293, looking ahead at HAT, reducing production
 ** caml_prim -> LIST_HD exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -156,7 +156,7 @@ exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
 LIST_HD exp_li . 
 
-** In state 307, looking ahead at HAT, shifting is permitted
+** In state 293, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
@@ -165,7 +165,7 @@ LIST_HD exp_li
         prim(exp_li) 
         exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 300.
+** Conflict (shift/reduce) in state 286.
 ** Tokens involved: TIMES PLUS PIPE_PIPE NEQ MINUS LT LE LAND HAT GT GE EQ DOT
 ** The following explanations concentrate on token TIMES.
 ** This state is reached from li after reading:
@@ -180,7 +180,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 300, looking ahead at TIMES, reducing production
+** In state 286, looking ahead at TIMES, reducing production
 ** exp_li_without_paren -> LET separated_nonempty_list(AND,binding_li) IN exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -189,7 +189,7 @@ exp_li TIMES exp_li // lookahead token appears
 exp_li_without_paren // lookahead token is inherited
 LET separated_nonempty_list(AND,binding_li) IN exp_li . 
 
-** In state 300, looking ahead at TIMES, shifting is permitted
+** In state 286, looking ahead at TIMES, shifting is permitted
 ** because of the following sub-derivation:
 
 LET separated_nonempty_list(AND,binding_li) IN exp_li 
@@ -197,7 +197,7 @@ LET separated_nonempty_list(AND,binding_li) IN exp_li
                                                prim(exp_li) 
                                                exp_li . TIMES exp_li 
 
-** Conflict (shift/reduce) in state 288.
+** Conflict (shift/reduce) in state 274.
 ** Tokens involved: TIMES PLUS PIPE_PIPE NEQ MINUS LT LE LAND HAT GT GE EQ DOT
 ** The following explanations concentrate on token TIMES.
 ** This state is reached from li after reading:
@@ -212,7 +212,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 288, looking ahead at TIMES, reducing production
+** In state 274, looking ahead at TIMES, reducing production
 ** exp_li_without_paren -> LET REC separated_nonempty_list(AND,fun_binding_li) IN exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -221,7 +221,7 @@ exp_li TIMES exp_li // lookahead token appears
 exp_li_without_paren // lookahead token is inherited
 LET REC separated_nonempty_list(AND,fun_binding_li) IN exp_li . 
 
-** In state 288, looking ahead at TIMES, shifting is permitted
+** In state 274, looking ahead at TIMES, shifting is permitted
 ** because of the following sub-derivation:
 
 LET REC separated_nonempty_list(AND,fun_binding_li) IN exp_li 
@@ -229,7 +229,7 @@ LET REC separated_nonempty_list(AND,fun_binding_li) IN exp_li
                                                        prim(exp_li) 
                                                        exp_li . TIMES exp_li 
 
-** Conflict (shift/reduce) in state 287.
+** Conflict (shift/reduce) in state 273.
 ** Tokens involved: TIMES PLUS PIPE_PIPE NEQ MINUS LT LE LAND HAT GT GE EQ DOT
 ** The following explanations concentrate on token TIMES.
 ** This state is reached from li after reading:
@@ -244,7 +244,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 287, looking ahead at TIMES, reducing production
+** In state 273, looking ahead at TIMES, reducing production
 ** exp_li_without_paren -> IF exp_li THEN exp_li ELSE exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -253,7 +253,7 @@ exp_li TIMES exp_li // lookahead token appears
 exp_li_without_paren // lookahead token is inherited
 IF exp_li THEN exp_li ELSE exp_li . 
 
-** In state 287, looking ahead at TIMES, shifting is permitted
+** In state 273, looking ahead at TIMES, shifting is permitted
 ** because of the following sub-derivation:
 
 IF exp_li THEN exp_li ELSE exp_li 
@@ -261,7 +261,7 @@ IF exp_li THEN exp_li ELSE exp_li
                            prim(exp_li) 
                            exp_li . TIMES exp_li 
 
-** Conflict (shift/reduce) in state 280.
+** Conflict (shift/reduce) in state 266.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -276,7 +276,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 280, looking ahead at HAT, reducing production
+** In state 266, looking ahead at HAT, reducing production
 ** caml_prim -> BANG exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -286,7 +286,7 @@ exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
 BANG exp_li . 
 
-** In state 280, looking ahead at HAT, shifting is permitted
+** In state 266, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
@@ -295,7 +295,7 @@ BANG exp_li
      prim(exp_li) 
      exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 279.
+** Conflict (shift/reduce) in state 265.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -310,7 +310,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 279, looking ahead at HAT, reducing production
+** In state 265, looking ahead at HAT, reducing production
 ** caml_prim -> ARRAY_LENGTH exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -320,7 +320,7 @@ exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
 ARRAY_LENGTH exp_li . 
 
-** In state 279, looking ahead at HAT, shifting is permitted
+** In state 265, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
@@ -329,7 +329,7 @@ ARRAY_LENGTH exp_li
              prim(exp_li) 
              exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 277.
+** Conflict (shift/reduce) in state 263.
 ** Tokens involved: TIMES PLUS PIPE_PIPE NEQ MINUS LT LE LAND HAT GT GE EQ DOT
 ** The following explanations concentrate on token TIMES.
 ** This state is reached from li after reading:
@@ -344,7 +344,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 277, looking ahead at TIMES, reducing production
+** In state 263, looking ahead at TIMES, reducing production
 ** exp_li_without_paren -> inst(exp_li) SEMICOL exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -353,7 +353,7 @@ exp_li TIMES exp_li // lookahead token appears
 exp_li_without_paren // lookahead token is inherited
 inst(exp_li) SEMICOL exp_li . 
 
-** In state 277, looking ahead at TIMES, shifting is permitted
+** In state 263, looking ahead at TIMES, shifting is permitted
 ** because of the following sub-derivation:
 
 inst(exp_li) SEMICOL exp_li 
@@ -361,7 +361,7 @@ inst(exp_li) SEMICOL exp_li
                      prim(exp_li) 
                      exp_li . TIMES exp_li 
 
-** Conflict (shift/reduce) in state 265.
+** Conflict (shift/reduce) in state 251.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -376,7 +376,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 265, looking ahead at HAT, reducing production
+** In state 251, looking ahead at HAT, reducing production
 ** caml_prim -> RPAREN exp_li LPAREN COLONEQ exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -386,7 +386,7 @@ exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
 RPAREN exp_li LPAREN COLONEQ exp_li . 
 
-** In state 265, looking ahead at HAT, shifting is permitted
+** In state 251, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
@@ -395,7 +395,7 @@ RPAREN exp_li LPAREN COLONEQ exp_li
                              prim(exp_li) 
                              exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 261.
+** Conflict (shift/reduce) in state 247.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -410,7 +410,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 261, looking ahead at HAT, reducing production
+** In state 247, looking ahead at HAT, reducing production
 ** caml_prim -> ident COLONEQ exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -420,7 +420,7 @@ exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
 ident COLONEQ exp_li . 
 
-** In state 261, looking ahead at HAT, shifting is permitted
+** In state 247, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
@@ -429,7 +429,7 @@ ident COLONEQ exp_li
               prim(exp_li) 
               exp_li . HAT INT_LIT 
 
-** Conflict (reduce/reduce) in state 259.
+** Conflict (reduce/reduce) in state 245.
 ** Token involved: RPAREN
 ** This state is reached from li after reading:
 
@@ -442,7 +442,7 @@ li
 exp_li EOF 
 (?)
 
-** In state 259, looking ahead at RPAREN, reducing production
+** In state 245, looking ahead at RPAREN, reducing production
 ** lvalue(exp_li) -> ident LBRACKET exp_li RBRACKET
 ** is permitted because of the following sub-derivation:
 
@@ -453,7 +453,7 @@ LPAREN loption(separated_nonempty_list(COMMA,lvalue(exp_li))) RPAREN COLONEQ LPA
        lvalue(exp_li) // lookahead token is inherited
        ident LBRACKET exp_li RBRACKET . 
 
-** In state 259, looking ahead at RPAREN, reducing production
+** In state 245, looking ahead at RPAREN, reducing production
 ** prim(exp_li) -> ident LBRACKET exp_li RBRACKET
 ** is permitted because of the following sub-derivation:
 
@@ -462,7 +462,7 @@ LPAREN exp_li RPAREN // lookahead token appears
        prim(exp_li) // lookahead token is inherited
        ident LBRACKET exp_li RBRACKET . 
 
-** Conflict (shift/reduce) in state 258.
+** Conflict (shift/reduce) in state 244.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -478,7 +478,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 258, looking ahead at HAT, reducing production
+** In state 244, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li EQ exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -487,7 +487,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li EQ exp_li . 
 
-** In state 258, looking ahead at HAT, shifting is permitted
+** In state 244, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li EQ exp_li 
@@ -495,7 +495,7 @@ exp_li EQ exp_li
           prim(exp_li) 
           exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 256.
+** Conflict (shift/reduce) in state 242.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -511,7 +511,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 256, looking ahead at HAT, reducing production
+** In state 242, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li GE exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -520,7 +520,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li GE exp_li . 
 
-** In state 256, looking ahead at HAT, shifting is permitted
+** In state 242, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li GE exp_li 
@@ -528,7 +528,7 @@ exp_li GE exp_li
           prim(exp_li) 
           exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 254.
+** Conflict (shift/reduce) in state 240.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -544,7 +544,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 254, looking ahead at HAT, reducing production
+** In state 240, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li GT exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -553,7 +553,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li GT exp_li . 
 
-** In state 254, looking ahead at HAT, shifting is permitted
+** In state 240, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li GT exp_li 
@@ -561,7 +561,7 @@ exp_li GT exp_li
           prim(exp_li) 
           exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 252.
+** Conflict (shift/reduce) in state 238.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -577,7 +577,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 252, looking ahead at HAT, reducing production
+** In state 238, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li LAND exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -586,7 +586,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li LAND exp_li . 
 
-** In state 252, looking ahead at HAT, shifting is permitted
+** In state 238, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li LAND exp_li 
@@ -594,7 +594,7 @@ exp_li LAND exp_li
             prim(exp_li) 
             exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 250.
+** Conflict (shift/reduce) in state 236.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -610,7 +610,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 250, looking ahead at HAT, reducing production
+** In state 236, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li LE exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -619,7 +619,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li LE exp_li . 
 
-** In state 250, looking ahead at HAT, shifting is permitted
+** In state 236, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li LE exp_li 
@@ -627,7 +627,7 @@ exp_li LE exp_li
           prim(exp_li) 
           exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 248.
+** Conflict (shift/reduce) in state 234.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -643,7 +643,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 248, looking ahead at HAT, reducing production
+** In state 234, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li LT exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -652,7 +652,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li LT exp_li . 
 
-** In state 248, looking ahead at HAT, shifting is permitted
+** In state 234, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li LT exp_li 
@@ -660,7 +660,7 @@ exp_li LT exp_li
           prim(exp_li) 
           exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 246.
+** Conflict (shift/reduce) in state 232.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -676,7 +676,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 246, looking ahead at HAT, reducing production
+** In state 232, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li MINUS exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -685,7 +685,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li MINUS exp_li . 
 
-** In state 246, looking ahead at HAT, shifting is permitted
+** In state 232, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li MINUS exp_li 
@@ -693,7 +693,7 @@ exp_li MINUS exp_li
              prim(exp_li) 
              exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 244.
+** Conflict (shift/reduce) in state 230.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -709,7 +709,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 244, looking ahead at HAT, reducing production
+** In state 230, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li NEQ exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -718,7 +718,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li NEQ exp_li . 
 
-** In state 244, looking ahead at HAT, shifting is permitted
+** In state 230, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li NEQ exp_li 
@@ -726,7 +726,7 @@ exp_li NEQ exp_li
            prim(exp_li) 
            exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 242.
+** Conflict (shift/reduce) in state 228.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -742,7 +742,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 242, looking ahead at HAT, reducing production
+** In state 228, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li PIPE_PIPE exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -751,7 +751,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li PIPE_PIPE exp_li . 
 
-** In state 242, looking ahead at HAT, shifting is permitted
+** In state 228, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li PIPE_PIPE exp_li 
@@ -759,7 +759,7 @@ exp_li PIPE_PIPE exp_li
                  prim(exp_li) 
                  exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 238.
+** Conflict (shift/reduce) in state 224.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -775,7 +775,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 238, looking ahead at HAT, reducing production
+** In state 224, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li PLUS exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -784,7 +784,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li PLUS exp_li . 
 
-** In state 238, looking ahead at HAT, shifting is permitted
+** In state 224, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li PLUS exp_li 
@@ -792,12 +792,12 @@ exp_li PLUS exp_li
             prim(exp_li) 
             exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 236.
+** Conflict (shift/reduce) in state 222.
 ** Tokens involved: TIMES PLUS PIPE_PIPE NEQ MINUS LT LE LAND HAT GT GE EQ DOT
 ** The following explanations concentrate on token TIMES.
 ** This state is reached from li after reading:
 
-exp_li DOT LPAREN exp_li RPAREN RIGHT_ARROW exp_li
+exp_li DOT LPAREN exp_li RPAREN LEFT_ARROW exp_li
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
@@ -807,26 +807,26 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 236, looking ahead at TIMES, reducing production
-** caml_prim -> exp_li DOT LPAREN exp_li RPAREN RIGHT_ARROW exp_li
+** In state 222, looking ahead at TIMES, reducing production
+** caml_prim -> exp_li DOT LPAREN exp_li RPAREN LEFT_ARROW exp_li
 ** is permitted because of the following sub-derivation:
 
 prim(exp_li) 
 exp_li TIMES exp_li // lookahead token appears
 exp_li_without_paren // lookahead token is inherited
 caml_prim // lookahead token is inherited
-exp_li DOT LPAREN exp_li RPAREN RIGHT_ARROW exp_li . 
+exp_li DOT LPAREN exp_li RPAREN LEFT_ARROW exp_li . 
 
-** In state 236, looking ahead at TIMES, shifting is permitted
+** In state 222, looking ahead at TIMES, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
-exp_li DOT LPAREN exp_li RPAREN RIGHT_ARROW exp_li 
-                                            exp_li_without_paren 
-                                            prim(exp_li) 
-                                            exp_li . TIMES exp_li 
+exp_li DOT LPAREN exp_li RPAREN LEFT_ARROW exp_li 
+                                           exp_li_without_paren 
+                                           prim(exp_li) 
+                                           exp_li . TIMES exp_li 
 
-** Conflict (shift/reduce) in state 228.
+** Conflict (shift/reduce) in state 214.
 ** Tokens involved: HAT DOT
 ** The following explanations concentrate on token HAT.
 ** This state is reached from li after reading:
@@ -842,7 +842,7 @@ exp_li_without_paren
 prim(exp_li) 
 (?)
 
-** In state 228, looking ahead at HAT, reducing production
+** In state 214, looking ahead at HAT, reducing production
 ** prim(exp_li) -> exp_li TIMES exp_li
 ** is permitted because of the following sub-derivation:
 
@@ -851,7 +851,7 @@ exp_li_without_paren // lookahead token is inherited
 prim(exp_li) // lookahead token is inherited
 exp_li TIMES exp_li . 
 
-** In state 228, looking ahead at HAT, shifting is permitted
+** In state 214, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 exp_li TIMES exp_li 
@@ -859,7 +859,7 @@ exp_li TIMES exp_li
              prim(exp_li) 
              exp_li . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 223.
+** Conflict (shift/reduce) in state 209.
 ** Tokens involved: RPAREN LPAREN COLONEQ
 ** The following explanations concentrate on token COLONEQ.
 ** This state is reached from li after reading:
@@ -874,13 +874,13 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 223, looking ahead at COLONEQ, shifting is permitted
+** In state 209, looking ahead at COLONEQ, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
 ident . COLONEQ exp_li 
 
-** In state 223, looking ahead at COLONEQ, reducing production
+** In state 209, looking ahead at COLONEQ, reducing production
 ** lvalue(exp_li) -> ident
 ** is permitted because of the following sub-derivation:
 
@@ -888,7 +888,7 @@ inst(exp_li) SEMICOL exp_li
 lvalue(exp_li) COLONEQ exp_li // lookahead token appears
 ident . 
 
-** Conflict (shift/reduce) in state 222.
+** Conflict (shift/reduce) in state 208.
 ** Tokens involved: RPAREN MINUS LPAREN
 ** The following explanations concentrate on token MINUS.
 ** This state is reached from li after reading:
@@ -903,7 +903,7 @@ exp_li EOF
 exp_li_without_paren 
 (?)
 
-** In state 222, looking ahead at MINUS, reducing production
+** In state 208, looking ahead at MINUS, reducing production
 ** exp_li_without_paren -> ident LPAREN RPAREN
 ** is permitted because of the following sub-derivation:
 
@@ -912,7 +912,7 @@ exp_li MINUS exp_li // lookahead token appears
 exp_li_without_paren // lookahead token is inherited
 ident LPAREN RPAREN . 
 
-** In state 222, looking ahead at MINUS, shifting is permitted
+** In state 208, looking ahead at MINUS, shifting is permitted
 ** because of the following sub-derivation:
 
 ident LPAREN exp_li COMMA separated_nonempty_list(COMMA,exp_li) RPAREN 
@@ -923,7 +923,7 @@ ident LPAREN exp_li COMMA separated_nonempty_list(COMMA,exp_li) RPAREN
                     prim(exp_li) 
                     . MINUS exp_li 
 
-** Conflict (shift/reduce) in state 220.
+** Conflict (shift/reduce) in state 206.
 ** Tokens involved: LPAREN COLONEQ
 ** The following explanations concentrate on token COLONEQ.
 ** This state is reached from li after reading:
@@ -941,13 +941,13 @@ NOT exp_li
     exp_li_without_paren 
     (?)
 
-** In state 220, looking ahead at COLONEQ, shifting is permitted
+** In state 206, looking ahead at COLONEQ, shifting is permitted
 ** because of the following sub-derivation:
 
 caml_prim 
 ident . COLONEQ exp_li 
 
-** In state 220, looking ahead at COLONEQ, reducing production
+** In state 206, looking ahead at COLONEQ, reducing production
 ** lvalue(exp_li) -> ident
 ** is permitted because of the following sub-derivation:
 
@@ -955,7 +955,7 @@ inst(exp_li) SEMICOL exp_li
 lvalue(exp_li) COLONEQ exp_li // lookahead token appears
 ident . 
 
-** Conflict (shift/reduce) in state 197.
+** Conflict (shift/reduce) in state 183.
 ** Tokens involved: RPAREN MINUS LPAREN
 ** The following explanations concentrate on token MINUS.
 ** This state is reached from li after reading:
@@ -969,7 +969,7 @@ li
 exp_li EOF 
 (?)
 
-** In state 197, looking ahead at MINUS, reducing production
+** In state 183, looking ahead at MINUS, reducing production
 ** const(exp_li) -> LPAREN RPAREN
 ** is permitted because of the following sub-derivation:
 
@@ -980,7 +980,7 @@ exp_li_without_paren // lookahead token is inherited
 const(exp_li) // lookahead token is inherited
 LPAREN RPAREN . 
 
-** In state 197, looking ahead at MINUS, shifting is permitted
+** In state 183, looking ahead at MINUS, shifting is permitted
 ** because of the following sub-derivation:
 
 LPAREN exp_li RPAREN 
@@ -991,7 +991,7 @@ LPAREN exp_li RPAREN
               prim(exp_li) 
               . MINUS exp_li 
 
-** Conflict (shift/reduce) in state 196.
+** Conflict (shift/reduce) in state 182.
 ** Token involved: RPAREN
 ** This state is reached from li after reading:
 
@@ -1004,7 +1004,7 @@ li
 exp_li EOF 
 (?)
 
-** In state 196, looking ahead at RPAREN, shifting is permitted
+** In state 182, looking ahead at RPAREN, shifting is permitted
 ** because of the following sub-derivation:
 
 LPAREN exp_li RPAREN 
@@ -1012,7 +1012,7 @@ LPAREN exp_li RPAREN
        caml_prim 
        . RPAREN exp_li LPAREN COLONEQ exp_li 
 
-** In state 196, looking ahead at RPAREN, reducing production
+** In state 182, looking ahead at RPAREN, reducing production
 ** loption(separated_nonempty_list(COMMA,lvalue(exp_li))) ->
 ** is permitted because of the following sub-derivation:
 
@@ -1021,22 +1021,48 @@ inst(exp_li) SEMICOL exp_li
 LPAREN loption(separated_nonempty_list(COMMA,lvalue(exp_li))) RPAREN COLONEQ LPAREN loption(separated_nonempty_list(COMMA,exp_li)) RPAREN // lookahead token appears
        . 
 
-** Conflict (shift/reduce) in state 72.
-** Token involved: HAT
-** This state is reached from csm after reading:
+** Conflict (shift/reduce) in state 174.
+** Token involved: RPAREN
+** This state is reached from fcf after reading:
 
-RETURN NOT atom
+LPAREN atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+(?)
 
-** In state 72, looking ahead at HAT, reducing production
+** In state 174, looking ahead at RPAREN, shifting is permitted
+** because of the following sub-derivation:
+
+atom 
+LPAREN atom . RPAREN 
+
+** In state 174, looking ahead at RPAREN, reducing production
+** exp_fcf -> atom
+** is permitted because of the following sub-derivation:
+
+LPAREN exp_fcf RPAREN // lookahead token appears
+       atom . 
+
+** Conflict (shift/reduce) in state 77.
+** Token involved: HAT
+** This state is reached from fcf after reading:
+
+NOT atom
+
+** The derivations that appear below have the following common factor:
+** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
+
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
+
+** In state 77, looking ahead at HAT, reducing production
 ** prim(atom) -> NOT atom
 ** is permitted because of the following sub-derivation:
 
@@ -1044,29 +1070,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 NOT atom . 
 
-** In state 72, looking ahead at HAT, shifting is permitted
+** In state 77, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 NOT atom 
     prim(atom) 
     atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 71.
+** Conflict (shift/reduce) in state 76.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN MINUS atom
+MINUS atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 71, looking ahead at HAT, reducing production
+** In state 76, looking ahead at HAT, reducing production
 ** prim(atom) -> MINUS atom
 ** is permitted because of the following sub-derivation:
 
@@ -1074,29 +1100,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 MINUS atom . 
 
-** In state 71, looking ahead at HAT, shifting is permitted
+** In state 76, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 MINUS atom 
       prim(atom) 
       atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 49.
+** Conflict (shift/reduce) in state 54.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom EQ atom
+atom EQ atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 49, looking ahead at HAT, reducing production
+** In state 54, looking ahead at HAT, reducing production
 ** prim(atom) -> atom EQ atom
 ** is permitted because of the following sub-derivation:
 
@@ -1104,29 +1130,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom EQ atom . 
 
-** In state 49, looking ahead at HAT, shifting is permitted
+** In state 54, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom EQ atom 
         prim(atom) 
         atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 47.
+** Conflict (shift/reduce) in state 52.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom GE atom
+atom GE atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 47, looking ahead at HAT, reducing production
+** In state 52, looking ahead at HAT, reducing production
 ** prim(atom) -> atom GE atom
 ** is permitted because of the following sub-derivation:
 
@@ -1134,29 +1160,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom GE atom . 
 
-** In state 47, looking ahead at HAT, shifting is permitted
+** In state 52, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom GE atom 
         prim(atom) 
         atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 45.
+** Conflict (shift/reduce) in state 50.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom GT atom
+atom GT atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 45, looking ahead at HAT, reducing production
+** In state 50, looking ahead at HAT, reducing production
 ** prim(atom) -> atom GT atom
 ** is permitted because of the following sub-derivation:
 
@@ -1164,29 +1190,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom GT atom . 
 
-** In state 45, looking ahead at HAT, shifting is permitted
+** In state 50, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom GT atom 
         prim(atom) 
         atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 43.
+** Conflict (shift/reduce) in state 48.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom LAND atom
+atom LAND atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 43, looking ahead at HAT, reducing production
+** In state 48, looking ahead at HAT, reducing production
 ** prim(atom) -> atom LAND atom
 ** is permitted because of the following sub-derivation:
 
@@ -1194,29 +1220,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom LAND atom . 
 
-** In state 43, looking ahead at HAT, shifting is permitted
+** In state 48, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom LAND atom 
           prim(atom) 
           atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 41.
+** Conflict (shift/reduce) in state 46.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom LE atom
+atom LE atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 41, looking ahead at HAT, reducing production
+** In state 46, looking ahead at HAT, reducing production
 ** prim(atom) -> atom LE atom
 ** is permitted because of the following sub-derivation:
 
@@ -1224,29 +1250,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom LE atom . 
 
-** In state 41, looking ahead at HAT, shifting is permitted
+** In state 46, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom LE atom 
         prim(atom) 
         atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 39.
+** Conflict (shift/reduce) in state 44.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom LT atom
+atom LT atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 39, looking ahead at HAT, reducing production
+** In state 44, looking ahead at HAT, reducing production
 ** prim(atom) -> atom LT atom
 ** is permitted because of the following sub-derivation:
 
@@ -1254,29 +1280,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom LT atom . 
 
-** In state 39, looking ahead at HAT, shifting is permitted
+** In state 44, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom LT atom 
         prim(atom) 
         atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 37.
+** Conflict (shift/reduce) in state 42.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom MINUS atom
+atom MINUS atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 37, looking ahead at HAT, reducing production
+** In state 42, looking ahead at HAT, reducing production
 ** prim(atom) -> atom MINUS atom
 ** is permitted because of the following sub-derivation:
 
@@ -1284,29 +1310,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom MINUS atom . 
 
-** In state 37, looking ahead at HAT, shifting is permitted
+** In state 42, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom MINUS atom 
            prim(atom) 
            atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 35.
+** Conflict (shift/reduce) in state 40.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom NEQ atom
+atom NEQ atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 35, looking ahead at HAT, reducing production
+** In state 40, looking ahead at HAT, reducing production
 ** prim(atom) -> atom NEQ atom
 ** is permitted because of the following sub-derivation:
 
@@ -1314,29 +1340,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom NEQ atom . 
 
-** In state 35, looking ahead at HAT, shifting is permitted
+** In state 40, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom NEQ atom 
          prim(atom) 
          atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 33.
+** Conflict (shift/reduce) in state 38.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom PIPE_PIPE atom
+atom PIPE_PIPE atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 33, looking ahead at HAT, reducing production
+** In state 38, looking ahead at HAT, reducing production
 ** prim(atom) -> atom PIPE_PIPE atom
 ** is permitted because of the following sub-derivation:
 
@@ -1344,29 +1370,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom PIPE_PIPE atom . 
 
-** In state 33, looking ahead at HAT, shifting is permitted
+** In state 38, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom PIPE_PIPE atom 
                prim(atom) 
                atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 31.
+** Conflict (shift/reduce) in state 36.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom PLUS atom
+atom PLUS atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 31, looking ahead at HAT, reducing production
+** In state 36, looking ahead at HAT, reducing production
 ** prim(atom) -> atom PLUS atom
 ** is permitted because of the following sub-derivation:
 
@@ -1374,29 +1400,29 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom PLUS atom . 
 
-** In state 31, looking ahead at HAT, shifting is permitted
+** In state 36, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom PLUS atom 
           prim(atom) 
           atom . HAT INT_LIT 
 
-** Conflict (shift/reduce) in state 26.
+** Conflict (shift/reduce) in state 31.
 ** Token involved: HAT
-** This state is reached from csm after reading:
+** This state is reached from fcf after reading:
 
-RETURN atom TIMES atom
+atom TIMES atom
 
 ** The derivations that appear below have the following common factor:
 ** (The question mark symbol (?) represents the spot where the derivations begin to differ.)
 
-csm 
-automaton_csm EOF 
-RETURN atom 
-       prim(atom) 
-       (?)
+fcf 
+exp_fcf EOF 
+atom 
+prim(atom) 
+(?)
 
-** In state 26, looking ahead at HAT, reducing production
+** In state 31, looking ahead at HAT, reducing production
 ** prim(atom) -> atom TIMES atom
 ** is permitted because of the following sub-derivation:
 
@@ -1404,7 +1430,7 @@ atom HAT INT_LIT // lookahead token appears
 prim(atom) // lookahead token is inherited
 atom TIMES atom . 
 
-** In state 26, looking ahead at HAT, shifting is permitted
+** In state 31, looking ahead at HAT, shifting is permitted
 ** because of the following sub-derivation:
 
 atom TIMES atom 

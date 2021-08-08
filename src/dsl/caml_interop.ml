@@ -22,7 +22,7 @@ let access ?(tt=Types.newvar ()) p args ~callbk =
        App(get,args))
 
 let assign ?(tt=Types.newvar ()) p args new_exp = 
-  Efsm2vhdl.allow_heap_access := true;
+  (* Efsm2vhdl.allow_heap_access := true; *)
   Efsm2vhdl.allow_heap_assign := true;
   let eval = Gensym.gensym "eval" in
   let write = Gensym.gensym "write" in

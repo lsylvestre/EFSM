@@ -92,7 +92,8 @@ module PP_atom = struct
     | Prim(ArrayMake n,[a]) ->
        fprintf fmt "(%a)^%d"
           (pp_atom_aux ~paren:false) a n
-    | Prim((FromCaml _| ToCaml _),_) -> failwith "todo pprint_ast"
+    | Prim((FromCaml _| ToCaml _),[a]) -> 
+       fprintf fmt "<TODO>(%a)" (pp_atom_aux ~paren:false) a
     | _ -> ill_formed_constant_application ();
            assert false
   in
@@ -146,87 +147,6 @@ module PP_EFSM = struct
     fprintf fmt "@]") l;
   fprintf fmt "@,end@]"
   
-  let pp_prog fmt p =
-    fprintf fmt "@[<v>";
-    pp_print_list 
-        ~pp_sep:(fun fmt () -> fprintf fmt "@,||@,") 
-        pp_automaton fmt p;
-    fprintf fmt "@]";
-end
-
-module PP_HSM = struct
-  open PP_atom
-  open PP_inst
-  open HSM
-
-  let rec pp_automaton fmt = function
-  | State(q) -> pp_state fmt q
-  | LetRec(l,a) ->
-  fprintf fmt "@[<v 2>let rec ";
-  pp_print_list 
-        ~pp_sep:(fun fmt () -> fprintf fmt "and ") 
-  (fun fmt (q,ts) -> 
-    fprintf fmt "%a =@," pp_state q; 
-    List.iter (pp_transition fmt) ts) fmt l;
-  fprintf fmt "@]in ";
-  pp_automaton fmt a;
-  
-  and pp_transition fmt (e,s,a') = 
-  fprintf fmt "@[<v>if %a@,then %a;@,%a@]@,"
-    pp_atom e
-    pp_inst s
-    pp_automaton a'
-
-  let pp_prog fmt p =
-    fprintf fmt "@[<v>";
-    pp_print_list 
-        ~pp_sep:(fun fmt () -> fprintf fmt "@,||@,") 
-        pp_automaton fmt p;
-    fprintf fmt "@]";
-end
-
-module PP_PSM = struct
-  open PP_atom
-  open PP_inst
-  open PSM
-
-  let rec pp_automaton fmt = function
-  | State(q,es) -> 
-      fprintf fmt "%a(" pp_state q;
-      pp_print_list
-        ~pp_sep:(fun fmt () -> fprintf fmt ", ") 
-        pp_atom fmt es;
-      fprintf fmt ")";
-    fprintf fmt "@]"
-  | Seq(s,a) -> 
-     fprintf fmt "%a;@,%a" 
-       pp_inst s
-       pp_automaton a
-  | LetRec(l,a) ->
-  fprintf fmt "@[<v 2>let rec ";
-  pp_print_list 
-        ~pp_sep:(fun fmt () -> fprintf fmt "and ") 
-  (fun fmt (q,xs,ts) -> 
-    fprintf fmt "%a(" pp_state q;
-    pp_print_list
-        ~pp_sep:(fun fmt () -> fprintf fmt ", ") 
-        pp_ident fmt xs;
-  fprintf fmt ") =@,@["; 
-    pp_print_list 
-      ~pp_sep:(fun fmt () -> fprintf fmt "@,") 
-    (fun fmt t -> 
-      fprintf fmt "@[<v>";
-      pp_transition fmt t;
-      fprintf fmt "@]") fmt ts) fmt l;
-  fprintf fmt "@]@,@]in@,";
-  pp_automaton fmt a;
-  
-  and pp_transition fmt (e,a') = 
-  fprintf fmt "@[<v>if %a@,then %a"
-    pp_atom e
-    pp_automaton a';
-   fprintf fmt "@]"
-
   let pp_prog fmt p =
     fprintf fmt "@[<v>";
     pp_print_list 

@@ -45,8 +45,10 @@ circuit sum_array(a) =
 
 (* références *)
 
-circuit inc(r) = 
+(* to fix *)
+(* circuit inc(r) = 
   r := !r + 1
+*)
 
 (* listes *)
 

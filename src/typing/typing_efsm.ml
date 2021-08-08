@@ -41,28 +41,29 @@ let v_prog p =
 
 open Types
 
-let rec unify env t1 t2 = match t1,t2 with
-| TStd_logic, TStd_logic | TBool, TBool | TInt,TInt | TUnit, TUnit | TPtr,TPtr -> ()
-| TArray{ty=t;size=s},TArray{ty=t';size=s'} -> 
-    unify env t t';
-    unify env s s'
-| TCamlRef t, TCamlRef t'
-| TCamlArray t, TCamlArray t' 
-| TCamlList t, TCamlList t' -> 
-    unify env t t'
-| (TSize n, TSize m) when n = m -> () 
-| TVar {contents=V n},TVar ({contents=V m} as v) -> 
-v := V n
-| TVar {contents=Ty ty},TVar ({contents=V n} as v) 
-| TVar ({contents=V n} as v),TVar {contents=Ty ty} -> v := Ty ty
-| TVar {contents=Ty t1'},TVar {contents=Ty t2'} -> unify env t1' t2'
-| TVar {contents=Ty t},t' | t,TVar {contents=Ty t'} -> unify env t t' 
-| TVar ({contents=V n} as v),t | t,TVar ({contents=V n} as v) -> v := Ty t
-| _ -> print_env Format.std_formatter env;
-       Format.fprintf Format.std_formatter "\ncannot unify types %a and %a\n" 
-         print_ty t1 
-         print_ty t2;
-       failwith "unify"
+let rec unify env t1 t2 = 
+  match t1,t2 with
+  | TStd_logic, TStd_logic | TBool, TBool | TInt,TInt | TUnit, TUnit | TPtr,TPtr -> ()
+  | TArray{ty=t;size=s},TArray{ty=t';size=s'} -> 
+      unify env t t';
+      unify env s s'
+  | TCamlRef t, TCamlRef t'
+  | TCamlArray t, TCamlArray t' 
+  | TCamlList t, TCamlList t' -> 
+      unify env t t'
+  | (TSize n, TSize m) when n = m -> () 
+  | TVar {contents=V n},TVar ({contents=V m} as v) -> 
+  v := V n
+  | TVar {contents=Ty ty},TVar ({contents=V n} as v) 
+  | TVar ({contents=V n} as v),TVar {contents=Ty ty} -> v := Ty ty
+  | TVar {contents=Ty t1'},TVar {contents=Ty t2'} -> unify env t1' t2'
+  | TVar {contents=Ty t},t' | t,TVar {contents=Ty t'} -> unify env t t' 
+  | TVar ({contents=V n} as v),t | t,TVar ({contents=V n} as v) -> v := Ty t
+  | _ -> print_env Format.std_formatter env;
+         Format.fprintf Format.std_formatter "\ncannot unify types %a and %a\n" 
+           print_ty t1 
+           print_ty t2;
+         failwith "unify"
 
 (* ************************* *)
 
@@ -194,7 +195,7 @@ let typ_inst env = function
 
 let typ_transition env (_,ts) = 
   List.iter (fun (a,s,_) ->
-               unify env TBool (typ_atom env a); 
+               unify env TBool (typ_atom env a);
                typ_inst env s) ts
 
 let check_state_scope glob_states (EFSM.Automaton l) =
@@ -203,7 +204,8 @@ let check_state_scope glob_states (EFSM.Automaton l) =
     List.iter (fun (_,_,q) -> 
                  if not (Vs.mem q qs) then 
                  if not (List.mem q glob_states) then
-                 failwith ("typing_efsm: unbound state " ^ q)
+                 () (* computed goto ? *)
+                 (* failwith ("typing_efsm: unbound state " ^ q) *)
      ) ts
   ) l
 

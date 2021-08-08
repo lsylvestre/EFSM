@@ -8,7 +8,7 @@
 %token PIPE LEFT_ARROW AUTOMATON END
 %token LET REC AND IN IF THEN ELSE RETURN
 %token WILDCARD
-%token <string> IDENT
+%token <string> IDENT CAP_IDENT
 %token <bool> BOOL_LIT 
 %token <int> INT_LIT
 %token PLUS MINUS TIMES LT LE GT GE NEQ LAND NOT
@@ -21,6 +21,7 @@
 %token DOT RIGHT_ARROW ARRAY_LENGTH
 %token LIST LIST_HD LIST_TL
 %token CIRCUIT
+%token DO PAR
 %token <string> QUOTE
 
 %left COLONEQ
@@ -34,9 +35,7 @@
 %nonassoc ARRAY_LENGTH LIST_HD LIST_TL 
 
 %start <Ast.EFSM.prog> efsm
-%start <Ast.HSM.prog> hsm
-%start <Ast.PSM.prog> psm
-%start <Ast.CSM.prog> csm
+%start <Ast.FCF.prog> fcf
 %start <Ast.LI.prog> li
 %start <Ast.PLATFORM.prog> platform
 
@@ -49,63 +48,39 @@ automaton_efsm:
 | AUTOMATON PIPE? l=separated_nonempty_list(PIPE,psi_efsm) END { EFSM.Automaton l }
 
 psi_efsm:
-| q=state LEFT_ARROW ts=transition_efsm* { (q,ts) }
+| q=state RIGHT_ARROW ts=transition_efsm* { (q,ts) }
 
 transition_efsm:
 | IF g=atom THEN s=inst(atom) SEMICOL q=state { (g,s,q) }
 
-/*  ******************* HSM ******************* */
+/*  ******************* FCF ******************* */
 
-hsm:
-| p=separated_nonempty_list(PIPE_PIPE,automaton_hsm) EOF { p }
+fcf:
+| a=exp_fcf EOF { a }
 
-automaton_hsm:
-| q=state { HSM.State q }
-| LET REC bs=separated_nonempty_list(AND,psi_hsm) IN a=automaton_hsm { HSM.LetRec (bs,a) }
+p_state(E):
+| q=CAP_IDENT { (q,[])}
+| q=CAP_IDENT LPAREN l=separated_list(COMMA,E) RPAREN { (q,l) }
 
-psi_hsm:
-| q=state EQ ts=transition_hsm* { (q,ts) }
+exp_fcf:
+| LPAREN e=exp_fcf RPAREN                        { e }
+| a=atom                                         { FCF.Atom a }
+| p=p_state(atom)                                { FCF.State p }
+| IF a=atom THEN e1=exp_fcf ELSE e2=exp_fcf      { FCF.If(a,e1,e2) } 
+| DO x=IDENT COLONEQ a=atom IN e=exp_fcf         { FCF.Assign(x,a,e) } 
+| LET AUTOMATON 
+        bs=separated_nonempty_list(PIPE,b_fcf) 
+      END IN a=exp_fcf                           { FCF.LetAutomaton (bs,a) }
+| LET x=ident EQ e1=exp_fcf IN e2=exp_fcf        { FCF.Let(x,e1,e2) }
+| LET PAR 
+    bs=separated_nonempty_list(AND,binding_fcf) 
+  IN e=exp_fcf                                   { FCF.LetPar (bs,e) }
 
-transition_hsm:
-| IF g=atom THEN s=inst(atom) SEMICOL a=automaton_hsm { (g,s,a) }
+b_fcf:
+| b=p_state(ident) RIGHT_ARROW e=exp_fcf { let (q,xs) = b in (q,xs,e) }
 
-/*  ******************* PSM ******************* */
-
-psm:
-| p=separated_nonempty_list(PIPE_PIPE,automaton_psm) EOF { p }
-
-automaton_psm:
-| q=state LPAREN es=separated_list(COMMA,atom) RPAREN { PSM.State (q,es) }
-| s=inst(atom) SEMICOL a=automaton_psm { PSM.Seq(s,a) } 
-| LET REC bs=separated_nonempty_list(AND,psi_psm) IN a=automaton_psm { PSM.LetRec (bs,a) }
-
-psi_psm:
-| q=state LPAREN xs=separated_list(COMMA,ident) RPAREN EQ ts=transition_psm* { (q,xs,ts) }
-
-transition_psm:
-| IF g=atom THEN a=automaton_psm { (g,a) }
-
-/*  ******************* CSM ******************* */
-
-csm:
-| a=automaton_csm EOF { a }
-
-automaton_csm:
-| q=state LPAREN es=separated_list(COMMA,atom) RPAREN { CSM.State (q,es) }
-| s=inst(atom) SEMICOL a=automaton_csm { CSM.Seq(s,a) } 
-| LET REC bs=separated_nonempty_list(AND,psi_csm) IN a=automaton_csm { CSM.LetRec (bs,a) }
-| RETURN a=atom { CSM.Return a }
-| LET bs=separated_nonempty_list(AND,binding_csm) IN a=automaton_csm { CSM.Let (bs,a) }
-
-psi_csm:
-| q=state LPAREN xs=separated_list(COMMA,ident) RPAREN EQ ts=transition_csm* { (q,xs,ts) }
-
-transition_csm:
-| a=automaton_csm { (mk_bool' true,a) }
-| IF e=atom THEN a=automaton_csm { (e,a) }
-
-binding_csm:
-| x=ident EQ a=automaton_csm { (x,a) }
+binding_fcf:
+| x=ident EQ e=exp_fcf { (x,e) }
 
 /*  ******************* LI ******************* */
 li:
@@ -146,7 +121,7 @@ caml_prim:
   LPAREN idx=exp_li RPAREN  { LI.ArrayAccess{arr;idx} }
 | arr=exp_li DOT 
   LPAREN idx=exp_li RPAREN 
-  RIGHT_ARROW e=exp_li 
+  LEFT_ARROW e=exp_li 
                             { LI.ArrayAssign{arr;idx;e} }
 | ARRAY_LENGTH e=exp_li     { LI.ArrayLength e }
 | LIST_HD e=exp_li          { LI.ListHd e }
@@ -171,7 +146,7 @@ const(E):
 | b=BOOL_LIT               { mk_bool b }
 | v=std_logic              { mk_std_logic v }
 | n=INT_LIT                { mk_int n }       
-| LPAREN RPAREN            { Unit }
+| LPAREN RPAREN            { Atom.Unit }
 | LBRACKET RBRACKET        { EmptyList }
 
 prim(E): 

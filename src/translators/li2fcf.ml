@@ -21,28 +21,35 @@ let rec exp_to_atom = function
 | _ -> raise Not_an_atom
 
 (* csm *)
-let rec contain_seq a =
-  let open CSM in
-  match a with
-  | (State _ | Return _) -> false
-  | Seq _ -> true
-  | LetRec (bs,a) -> 
-      List.exists (fun (_,_,ts) ->
-        List.exists (fun (_,a) -> contain_seq a) ts) 
-      bs || contain_seq a
-  | Let (bs,a) -> 
+let rec contain_seq e =
+  let open FCF in
+  match e with
+  | (State _ | Atom _) -> false
+  | Assign _ -> true
+  | LetAutomaton (bs,e) -> 
+      List.exists (fun (_,_,e) -> contain_seq e) bs || contain_seq e
+  | If(a,e1,e2) ->
+      contain_seq e1 || contain_seq e2
+  | Let (_,_,e) -> 
+      contain_seq e 
+  | LetPar (bs,e) -> 
       (* on pourrait optimiser: 
          en supposant que les Let(bs,a) ont déjà été traité 
          et ne contiennent dont aucune séquence *)
-      List.exists (fun (_,a) -> contain_seq a) bs || contain_seq a
+      List.exists (fun (_,e) -> contain_seq e) bs || contain_seq e
 
-let csm_mk_let bs a =
+let csm_mk_let bs e =
   match bs with 
-  | [] -> a 
-  | _ -> CSM.Let(bs,a)
+  | [] -> e
+  | [(x,e0)] -> FCF.Let(x,e0,e)
+  | _ -> FCF.LetPar(bs,e)
+
+let pause e = 
+  let x = Gensym.gensym "pause" in
+  FCF.LetAutomaton([(x,[],e)],FCF.State(x,[]))
 
 let rec c_exp e = 
-  if is_atom e then CSM.Return (exp_to_atom e) else
+  if is_atom e then FCF.Atom (exp_to_atom e) else
   match e with
   | Var _ | Const _ -> assert false (* is an atom *)
   | CamlPrim _ -> assert false (* already encoded *)
@@ -71,25 +78,20 @@ let rec c_exp e =
         | bs' -> let bs_seq,bs_noseq = 
                     List.partition (fun (_,e) -> contain_seq e) bs'
                  in
-                 List.fold_left (fun acc (x,e) -> CSM.Let([(x,e)],acc))
+                 List.fold_left (fun acc (x,e) -> FCF.Let(x,e,acc))
                         (csm_mk_let bs_noseq a) bs_seq
       in
       (match bsa with 
       | [] -> a'
       | _ -> let xs,args = List.split bsa in
-             CSM.LetRec([(q,xs,[(mk_bool' true,a')])], CSM.State(q,List.map exp_to_atom args)))
+             FCF.LetAutomaton([(q,xs,a')], FCF.State(q,List.map exp_to_atom args)))
   | LetRec(bs,e) -> 
-      let bs' = List.map (fun (f,ys,e) -> (f,ys,[(mk_bool' true,c_exp e)])) bs in
+      let bs' = List.map (fun (f,ys,e) -> (f,ys,c_exp e)) bs in
       let a = c_exp e in
-      CSM.LetRec(bs',a)
+      FCF.LetAutomaton(bs',a)
   | If(e1,e2,e3) -> 
       if is_atom e1 
-      then
-        let e = exp_to_atom e1 in 
-        let a2 = c_exp e2 in
-        let a3 = c_exp e3 in
-        let q = Gensym.gensym "dsl_q" in
-        CSM.LetRec([(q,[],[(e,a2);(mk_unop' Atom.Not e,a3)])],CSM.State(q,[]))
+      then FCF.If(exp_to_atom e1,c_exp e2,c_exp e3)
       else 
         c_exp @@
         let x = Gensym.gensym "dsl_cond" in
@@ -100,7 +102,7 @@ let rec c_exp e =
        et les expressions plus complexes (lesquelles requièrent un [let]) *)
     then
       let es' = List.map exp_to_atom es in
-      CSM.State(x,es')
+      FCF.State(x,es')
     else 
       c_exp @@
       let bs = List.map (fun e -> let x = Gensym.gensym "dsl" in (x,e)) es in
@@ -109,16 +111,20 @@ let rec c_exp e =
   | Seq(s,e) ->
      (match s with
      | Assign bs ->
-       let es = List.map snd bs in
-       if List.for_all is_atom es 
-       then
-         let bs' = List.map (fun ((x,o),e) -> 
-                              let o' = Option.map exp_to_atom o in
-                              ((x,o'), exp_to_atom e)) bs in
-         let a = c_exp e in
-         CSM.Seq(Assign(bs'),a)
-       else 
-         failwith "todo li2csm seq") (**
+         let es = List.map snd bs in
+         if List.for_all is_atom es 
+         then
+           let bs' = List.map (fun ((x,o),e) -> 
+                                let o' = Option.map exp_to_atom o in
+                                ((x,o'), exp_to_atom e)) bs in
+           List.fold_right (fun (x,ea) e -> 
+                              let x = match x with 
+                                      | (y,None) -> y
+                                      | (_,Some _) -> failwith "todo" 
+                              in
+                              FCF.Assign(x,ea,e)) bs' (pause (c_exp e))
+         else 
+           failwith "todo li2csm seq") (**
         c_exp @@
         let bs2 = List.map (fun ((x,o),e) -> 
                     (* pour le moment, 
